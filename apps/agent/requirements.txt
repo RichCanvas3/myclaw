@@ -1,0 +1,20 @@
+fastapi>=0.115,<0.120
+uvicorn[standard]>=0.30,<0.40
+python-dotenv>=1,<2
+
+# LangServe / LangGraph / LangChain
+langserve>=0.3,<0.5
+langgraph>=0.2,<0.4
+langchain>=0.2,<0.4
+langchain-openai>=0.1,<0.3
+
+# DB + vectors
+SQLAlchemy>=2.0,<3
+psycopg[binary]>=3.2,<4
+pgvector>=0.3,<1
+
+# Utilities
+sse-starlette>=2,<3
+
+# Dev tooling
+ruff>=0.12,<1

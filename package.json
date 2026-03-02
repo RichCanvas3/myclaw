@@ -1,0 +1,17 @@
+{
+  "name": "myclaw",
+  "private": true,
+  "packageManager": "pnpm@10.25.0",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "format": "prettier -w .",
+    "format:check": "prettier -c ."
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.6"
+  }
+}

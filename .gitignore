@@ -1,0 +1,40 @@
+.DS_Store
+.idea/
+.vscode/
+
+# Node
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Turbo
+.turbo/
+
+# Next.js
+.next/
+out/
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+ENV/
+env/
+
+# Build artifacts
+dist/
+build/
+coverage/
