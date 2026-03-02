@@ -12,12 +12,11 @@ from sqlalchemy.ext.asyncio import (
 
 
 def create_engine(database_url: str) -> AsyncEngine:
-    # Ensure async driver; allow users to pass either sync/async SQLAlchemy URLs.
     url = database_url
-    if url.startswith("postgresql+psycopg://"):
-        url = url.replace("postgresql+psycopg://", "postgresql+psycopg_async://", 1)
+    # If user supplies `postgresql://...`, upgrade it to psycopg (psycopg3).
+    # Note: SQLAlchemy's psycopg dialect supports async with create_async_engine.
     if url.startswith("postgresql://"):
-        url = url.replace("postgresql://", "postgresql+psycopg_async://", 1)
+        url = url.replace("postgresql://", "postgresql+psycopg://", 1)
 
     return create_async_engine(url, pool_pre_ping=True)
 
