@@ -6,7 +6,6 @@ from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, StateGraph
 from langgraph.types import StreamWriter
 
-from apps.agent.agent import stream_chat_reply
 from apps.agent.models import OutputEnvelope, Session
 
 
@@ -53,10 +52,9 @@ async def assistant_node(state: GraphState, writer: StreamWriter) -> GraphState:
     user_text = str(payload.get("message") or "")
     prior_messages.append(HumanMessage(content=user_text))
 
-    acc: list[str] = []
-    async for t in stream_chat_reply(messages=prior_messages, writer=writer):
-        acc.append(t)
-    final_text = "".join(acc).strip()
+    # Minimal, deployment-safe behavior: no external deps, no DB.
+    final_text = f"echo: {user_text}".strip()
+    writer({"delta": final_text})
 
     assistant_msg = AIMessage(content=final_text)
     next_messages = prior_messages + [assistant_msg]
