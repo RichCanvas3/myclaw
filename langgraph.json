@@ -1,0 +1,9 @@
+{
+  "$schema": "https://langgra.ph/schema.json",
+  "python_version": "3.12",
+  "dependencies": ["./"],
+  "graphs": {
+    "myclaw_agent": "apps.agent.graph:graph"
+  }
+}
+

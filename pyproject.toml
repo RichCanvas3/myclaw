@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "myclaw-agent-platform"
+version = "0.0.0"
+requires-python = ">=3.12"
+
+# LangSmith Deployments typically installs Python deps from requirements.txt.
+# This stanza exists to ensure `apps.*` is importable in that runtime.
+dependencies = []
+
+[tool.setuptools.packages.find]
+include = ["apps*"]
+

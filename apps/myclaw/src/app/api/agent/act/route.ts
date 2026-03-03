@@ -7,27 +7,147 @@ type ActRequest = {
   message: string;
 };
 
-function agentBaseUrl(): string {
-  return process.env.AGENT_BASE_URL ?? "http://localhost:8000";
+function langgraphDeploymentUrl(): string | null {
+  return process.env.LANGGRAPH_DEPLOYMENT_URL ?? null;
+}
+
+function langgraphApiKey(): string | null {
+  return process.env.LANGGRAPH_API_KEY ?? process.env.LANGSMITH_API_KEY ?? null;
+}
+
+function langgraphAssistantId(): string {
+  return process.env.LANGGRAPH_ASSISTANT_ID ?? "myclaw_agent";
+}
+
+function sse(event: string, data: unknown): string {
+  return `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+}
+
+function parseSseChunk(buffer: string): { events: Array<{ event: string; data: unknown }>; rest: string } {
+  const events: Array<{ event: string; data: unknown }> = [];
+  const parts = buffer.split("\n\n");
+  const rest = parts.pop() ?? "";
+
+  for (const part of parts) {
+    const lines = part.split("\n");
+    const eventLine = lines.find((l) => l.startsWith("event: "));
+    const dataLine = lines.find((l) => l.startsWith("data: "));
+    if (!eventLine || !dataLine) continue;
+
+    const event = eventLine.slice("event: ".length).trim();
+    const raw = dataLine.slice("data: ".length).trim();
+    try {
+      events.push({ event, data: JSON.parse(raw) as unknown });
+    } catch {
+      // ignore
+    }
+  }
+
+  return { events, rest };
 }
 
 export async function POST(req: Request): Promise<Response> {
   const body = (await req.json()) as ActRequest;
 
-  const upstream = await fetch(`${agentBaseUrl()}/agent/act`, {
+  const deploymentUrl = langgraphDeploymentUrl();
+  if (!deploymentUrl) {
+    return new Response("Missing LANGGRAPH_DEPLOYMENT_URL", { status: 500 });
+  }
+
+  const apiKey = langgraphApiKey();
+  const headers: Record<string, string> = { "content-type": "application/json" };
+  if (apiKey) headers["x-api-key"] = apiKey;
+
+  // Ensure thread exists in LangGraph Agent Server.
+  let threadId = body.thread_id ?? null;
+  if (!threadId) {
+    const tRes = await fetch(`${deploymentUrl}/threads`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({}),
+    });
+    if (!tRes.ok) {
+      return new Response(await tRes.text(), { status: tRes.status });
+    }
+    const tJson = (await tRes.json()) as { thread_id?: string };
+    threadId = tJson.thread_id ?? null;
+  }
+  if (!threadId) return new Response("Failed to create thread", { status: 500 });
+
+  const upstream = await fetch(`${deploymentUrl}/threads/${threadId}/runs/stream`, {
     method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(body),
+    headers,
+    body: JSON.stringify({
+      assistant_id: langgraphAssistantId(),
+      input: {
+        skill: "chat",
+        message: body.message,
+        args: null,
+        session: {
+          org_id: body.org_id ?? "default",
+          user_id: body.user_id ?? "default",
+          thread_id: threadId,
+        },
+      },
+      stream_mode: ["custom", "updates"],
+    }),
   });
 
-  // Pass-through SSE stream.
-  const headers = new Headers(upstream.headers);
-  headers.set("cache-control", "no-cache");
-  headers.set("connection", "keep-alive");
+  if (!upstream.ok || !upstream.body) {
+    return new Response(await upstream.text(), { status: upstream.status });
+  }
 
-  return new Response(upstream.body, {
-    status: upstream.status,
-    headers,
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+  let accumulated = "";
+  let buffer = "";
+
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      controller.enqueue(encoder.encode(sse("thread", { thread_id: threadId })));
+
+      const reader = upstream.body!.getReader();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const parsed = parseSseChunk(buffer);
+        buffer = parsed.rest;
+
+        for (const ev of parsed.events) {
+          if (ev.event !== "custom") continue;
+          const data = ev.data as unknown;
+          if (typeof data === "object" && data !== null && "delta" in data) {
+            const delta = (data as { delta?: unknown }).delta;
+            if (typeof delta === "string") {
+              accumulated += delta;
+              controller.enqueue(encoder.encode(sse("delta", { text: delta })));
+            }
+          }
+        }
+      }
+
+      controller.enqueue(
+        encoder.encode(
+          sse("final", {
+            thread_id: threadId,
+            message: accumulated.trim(),
+            entities: [],
+            suggestedActions: [],
+          }),
+        ),
+      );
+      controller.close();
+    },
+  });
+
+  return new Response(stream, {
+    status: 200,
+    headers: {
+      "content-type": "text/event-stream",
+      "cache-control": "no-cache",
+      connection: "keep-alive",
+    },
   });
 }
 
