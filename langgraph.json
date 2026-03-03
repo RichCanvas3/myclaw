@@ -1,7 +1,10 @@
 {
   "$schema": "https://langgra.ph/schema.json",
   "python_version": "3.12",
-  "dependencies": ["./"],
+  "dependencies": [
+    "./",
+    "SQLAlchemy>=2.0,<3"
+  ],
   "graphs": {
     "myclaw_agent": "apps.agent.graph:graph"
   }
