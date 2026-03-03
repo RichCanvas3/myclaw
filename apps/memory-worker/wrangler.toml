@@ -1,0 +1,13 @@
+name = "myclaw-memory"
+main = "src/index.ts"
+compatibility_date = "2026-03-03"
+
+[vars]
+# Set in Cloudflare dashboard / wrangler secret:
+# MEMORY_API_KEY = "..."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "myclaw-memory"
+database_id = "REPLACE_ME"
+

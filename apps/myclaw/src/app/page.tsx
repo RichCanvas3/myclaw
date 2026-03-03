@@ -7,6 +7,13 @@ type ChatMessage = {
   content: string;
 };
 
+type ThreadSummary = {
+  thread_id: string;
+  created_at?: string;
+  updated_at?: string;
+  metadata?: unknown;
+};
+
 type SseEvent =
   | { event: "thread"; data: { thread_id: string } }
   | { event: "delta"; data: { text: string } }
@@ -115,6 +122,11 @@ export default function Home() {
   const [churchId, setChurchId] = useState("calvarybible");
   const [userId, setUserId] = useState("demo_user_noah");
   const [personId, setPersonId] = useState("p_seeker_2");
+
+  const [threads, setThreads] = useState<ThreadSummary[]>([]);
+  const [memoryProfile, setMemoryProfile] = useState<string>("(not loaded)");
+  const [lastActions, setLastActions] = useState<string>("[]");
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
@@ -125,10 +137,51 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
 
+  async function loadThreads() {
+    const res = await fetch("/api/langgraph/threads?limit=100");
+    if (!res.ok) throw new Error(await res.text());
+    const data = (await res.json()) as unknown;
+    if (!Array.isArray(data)) return;
+    const items: ThreadSummary[] = [];
+    for (const it of data) {
+      if (!isRecord(it) || typeof it.thread_id !== "string") continue;
+      items.push({
+        thread_id: it.thread_id,
+        created_at: typeof it.created_at === "string" ? it.created_at : undefined,
+        updated_at: typeof it.updated_at === "string" ? it.updated_at : undefined,
+        metadata: it.metadata,
+      });
+    }
+    setThreads(items);
+  }
+
+  async function createThread() {
+    const res = await fetch("/api/langgraph/threads", { method: "POST" });
+    if (!res.ok) throw new Error(await res.text());
+    const data = (await res.json()) as unknown;
+    const tid = isRecord(data) && typeof data.thread_id === "string" ? data.thread_id : null;
+    if (!tid) throw new Error("Failed to create thread");
+    setThreadId(tid);
+    setMessages([{ role: "assistant", content: "New topic started. What do you want to do?" }]);
+    void loadThreads();
+  }
+
+  async function loadMemory() {
+    const qs = new URLSearchParams({ churchId, userId, personId });
+    const res = await fetch(`/api/memory/profile?${qs.toString()}`);
+    if (!res.ok) throw new Error(await res.text());
+    const text = await res.text();
+    setMemoryProfile(text);
+  }
+
   const scrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ block: "end" });
   }, [messages, isStreaming]);
+
+  useEffect(() => {
+    void loadThreads().catch(() => {});
+  }, []);
 
   const assistantIndex = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i--) {
@@ -162,6 +215,7 @@ export default function Home() {
         }
         if (ev.event === "final") {
           setThreadId(ev.data.thread_id);
+          setLastActions(JSON.stringify(ev.data.suggestedActions ?? [], null, 2));
           if (ev.data.message) {
             setMessages((m) => {
               const idx = (() => {
@@ -197,96 +251,143 @@ export default function Home() {
 
   function onNewThread() {
     if (isStreaming) return;
-    setThreadId(null);
-    setMessages([
-      {
-        role: "assistant",
-        content: "New thread started. What do you want to do?",
-      },
-    ]);
+    void createThread().catch((e) => {
+      setMessages([{ role: "assistant", content: `Error: ${(e as Error).message}` }]);
+    });
   }
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-black dark:text-zinc-50">
-      <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 py-6">
-        <header className="flex items-center justify-between gap-4">
-          <div className="flex flex-col">
-            <div className="text-lg font-semibold tracking-tight">myclaw</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">
-              thread: {threadId ?? "new"}
-            </div>
+      <div className="mx-auto grid min-h-screen w-full max-w-6xl grid-cols-1 gap-4 px-4 py-6 lg:grid-cols-[280px_1fr_320px]">
+        <aside className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-semibold">Topics</div>
+            <button
+              onClick={onNewThread}
+              className="rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+              disabled={isStreaming}
+            >
+              New
+            </button>
           </div>
-          <button
-            onClick={onNewThread}
-            className="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
-            disabled={isStreaming}
-          >
-            New thread
-          </button>
-        </header>
-
-        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
-          <input
-            value={churchId}
-            onChange={(e) => setChurchId(e.target.value)}
-            placeholder="churchId"
-            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
-            disabled={isStreaming}
-          />
-          <input
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            placeholder="userId"
-            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
-            disabled={isStreaming}
-          />
-          <input
-            value={personId}
-            onChange={(e) => setPersonId(e.target.value)}
-            placeholder="personId"
-            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
-            disabled={isStreaming}
-          />
-        </div>
-
-        <main className="mt-6 flex-1 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-          <div className="flex h-[65vh] flex-col gap-3 overflow-y-auto pr-1">
-            {messages.map((m, idx) => (
-              <div
-                key={idx}
+          <div className="mt-2 flex max-h-[70vh] flex-col gap-1 overflow-y-auto pr-1">
+            {threads.map((t) => (
+              <button
+                key={t.thread_id}
+                onClick={() => {
+                  if (isStreaming) return;
+                  setThreadId(t.thread_id);
+                  setMessages([{ role: "assistant", content: "Loaded topic. Ask something." }]);
+                }}
                 className={[
-                  "max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-6",
-                  m.role === "user"
-                    ? "ml-auto bg-zinc-900 text-white dark:bg-zinc-100 dark:text-black"
-                    : "mr-auto bg-zinc-100 text-zinc-950 dark:bg-zinc-900 dark:text-zinc-50",
+                  "w-full rounded-lg border px-2 py-2 text-left text-xs",
+                  t.thread_id === threadId
+                    ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-black"
+                    : "border-zinc-200 bg-white hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900",
                 ].join(" ")}
               >
-                {m.content || (isStreaming && idx === assistantIndex ? "…" : "")}
-              </div>
+                <div className="truncate font-medium">{t.thread_id}</div>
+                <div className="truncate text-[10px] opacity-70">{t.updated_at ?? t.created_at ?? ""}</div>
+              </button>
             ))}
-            <div ref={scrollRef} />
+            {!threads.length ? (
+              <div className="text-xs text-zinc-500 dark:text-zinc-400">No topics yet.</div>
+            ) : null}
           </div>
-        </main>
+        </aside>
 
-        <footer className="mt-4 flex gap-2">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) void onSend();
-            }}
-            placeholder="Type a message… (Ctrl/Cmd+Enter to send)"
-            className="flex-1 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-zinc-900/10 dark:border-zinc-800 dark:bg-zinc-950 dark:focus:ring-zinc-50/10"
-            disabled={isStreaming}
-          />
-          <button
-            onClick={() => void onSend()}
-            className="rounded-xl bg-zinc-900 px-4 py-3 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-black dark:hover:bg-white"
-            disabled={isStreaming || !input.trim()}
-          >
-            Send
-          </button>
-        </footer>
+        <section className="flex flex-col">
+          <header className="flex items-center justify-between gap-4">
+            <div className="flex flex-col">
+              <div className="text-lg font-semibold tracking-tight">myclaw</div>
+              <div className="text-xs text-zinc-500 dark:text-zinc-400">thread: {threadId ?? "new"}</div>
+            </div>
+          </header>
+
+          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <input
+              value={churchId}
+              onChange={(e) => setChurchId(e.target.value)}
+              placeholder="churchId"
+              className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
+              disabled={isStreaming}
+            />
+            <input
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+              placeholder="userId"
+              className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
+              disabled={isStreaming}
+            />
+            <input
+              value={personId}
+              onChange={(e) => setPersonId(e.target.value)}
+              placeholder="personId"
+              className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
+              disabled={isStreaming}
+            />
+          </div>
+
+          <main className="mt-4 flex-1 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+            <div className="flex h-[60vh] flex-col gap-3 overflow-y-auto pr-1">
+              {messages.map((m, idx) => (
+                <div
+                  key={idx}
+                  className={[
+                    "max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-6",
+                    m.role === "user"
+                      ? "ml-auto bg-zinc-900 text-white dark:bg-zinc-100 dark:text-black"
+                      : "mr-auto bg-zinc-100 text-zinc-950 dark:bg-zinc-900 dark:text-zinc-50",
+                  ].join(" ")}
+                >
+                  {m.content || (isStreaming && idx === assistantIndex ? "…" : "")}
+                </div>
+              ))}
+              <div ref={scrollRef} />
+            </div>
+          </main>
+
+          <footer className="mt-3 flex gap-2">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) void onSend();
+              }}
+              placeholder="Type a message… (Ctrl/Cmd+Enter to send)"
+              className="flex-1 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-zinc-900/10 dark:border-zinc-800 dark:bg-zinc-950 dark:focus:ring-zinc-50/10"
+              disabled={isStreaming}
+            />
+            <button
+              onClick={() => void onSend()}
+              className="rounded-xl bg-zinc-900 px-4 py-3 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-black dark:hover:bg-white"
+              disabled={isStreaming || !input.trim()}
+            >
+              Send
+            </button>
+          </footer>
+        </section>
+
+        <aside className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-semibold">Memory</div>
+            <button
+              onClick={() => void loadMemory().catch(() => {})}
+              className="rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+              disabled={isStreaming}
+            >
+              Refresh
+            </button>
+          </div>
+          <pre className="mt-2 max-h-[30vh] overflow-auto rounded-lg bg-zinc-50 p-2 text-[11px] text-zinc-900 dark:bg-black dark:text-zinc-50">
+            {memoryProfile}
+          </pre>
+
+          <div className="mt-4 text-sm font-semibold">Last actions</div>
+          <pre className="mt-2 max-h-[30vh] overflow-auto rounded-lg bg-zinc-50 p-2 text-[11px] text-zinc-900 dark:bg-black dark:text-zinc-50">
+            {lastActions}
+          </pre>
+        </aside>
       </div>
     </div>
   );

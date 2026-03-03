@@ -1,3 +1,7 @@
+import { getA2aAgent } from "@/lib/agents/registry";
+import type { SuggestedAction } from "@/lib/agents/types";
+import { memoryAppendEvent, memoryGet, memoryGetProfile, memoryQuery, memoryUpsert } from "@/lib/memory/client";
+
 export const runtime = "nodejs";
 
 type ActRequest = {
@@ -10,11 +14,6 @@ type ActRequest = {
   message: string;
 };
 
-type SuggestedAction = {
-  type: string;
-  input?: Record<string, unknown>;
-};
-
 function langgraphDeploymentUrl(): string | null {
   return process.env.LANGGRAPH_DEPLOYMENT_URL ?? null;
 }
@@ -25,16 +24,6 @@ function langgraphApiKey(): string | null {
 
 function langgraphAssistantId(): string {
   return process.env.LANGGRAPH_ASSISTANT_ID ?? "myclaw_agent";
-}
-
-function a2aBaseUrl(): string {
-  return (process.env.CHURCHCORE_A2A_BASE_URL ?? "https://a2a-gateway-worker.richardpedersen3.workers.dev/a2a/")
-    .replace(/\/+$/, "")
-    .concat("/");
-}
-
-function a2aApiKey(): string | null {
-  return process.env.CHURCHCORE_A2A_API_KEY ?? null;
 }
 
 function sse(event: string, data: unknown): string {
@@ -125,20 +114,45 @@ function parseSseChunk(buffer: string): { events: Array<{ event: string; data: u
   return { events, rest };
 }
 
+function extractDeltaLike(obj: unknown): string | null {
+  // Common shapes:
+  // - {"delta":"..."} / {"text":"..."} / {"message":"..."}
+  // - {"data":{"delta":"..."}} etc.
+  const stack: unknown[] = [obj];
+  let steps = 0;
+  while (stack.length && steps < 2000) {
+    steps++;
+    const cur = stack.pop();
+    if (!cur) continue;
+    if (typeof cur === "string" && cur.trim()) return cur;
+    if (Array.isArray(cur)) {
+      for (const it of cur) stack.push(it);
+      continue;
+    }
+    if (!isRecord(cur)) continue;
+    for (const k of ["delta", "text", "message", "content"]) {
+      const v = cur[k];
+      if (typeof v === "string" && v.trim()) return v;
+    }
+    for (const v of Object.values(cur)) stack.push(v);
+  }
+  return null;
+}
+
 async function a2aChatStream(params: {
+  agent: string | undefined;
   endpoint: string;
   payload: Record<string, unknown>;
   onDelta: (text: string) => void;
 }): Promise<void> {
-  const key = a2aApiKey();
-  if (!key) throw new Error("Missing CHURCHCORE_A2A_API_KEY");
+  const agent = getA2aAgent(params.agent);
 
-  const res = await fetch(`${a2aBaseUrl()}${params.endpoint}`, {
+  const res = await fetch(`${agent.baseUrl}${params.endpoint}`, {
     method: "POST",
     headers: {
       "content-type": "application/json",
       accept: "text/event-stream, application/json",
-      "x-api-key": key,
+      [agent.apiKeyHeader]: agent.apiKey,
     },
     body: JSON.stringify(params.payload),
   });
@@ -168,33 +182,32 @@ async function a2aChatStream(params: {
         continue;
       }
       if (isRecord(obj)) {
-        const delta = obj.delta;
-        const text = obj.text;
-        const message = obj.message;
-        if (typeof delta === "string" && delta) params.onDelta(delta);
-        else if (typeof text === "string" && text) params.onDelta(text);
-        else if (typeof message === "string" && message) params.onDelta(message);
+        const t = extractDeltaLike(obj);
+        if (t) params.onDelta(t);
       }
     }
   }
 }
 
-async function a2aCallJson(endpoint: string, payload: Record<string, unknown>): Promise<unknown> {
-  const key = a2aApiKey();
-  if (!key) throw new Error("Missing CHURCHCORE_A2A_API_KEY");
+async function a2aCallJson(params: {
+  agent: string | undefined;
+  endpoint: string;
+  payload: Record<string, unknown>;
+}): Promise<unknown> {
+  const agent = getA2aAgent(params.agent);
 
-  const res = await fetch(`${a2aBaseUrl()}${endpoint}`, {
+  const res = await fetch(`${agent.baseUrl}${params.endpoint}`, {
     method: "POST",
     headers: {
       "content-type": "application/json",
       accept: "application/json",
-      "x-api-key": key,
+      [agent.apiKeyHeader]: agent.apiKey,
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(params.payload),
   });
 
   const text = await res.text();
-  if (!res.ok) throw new Error(`A2A ${endpoint} failed: ${res.status} - ${text}`);
+  if (!res.ok) throw new Error(`A2A ${params.endpoint} failed: ${res.status} - ${text}`);
   try {
     return JSON.parse(text) as unknown;
   } catch {
@@ -202,15 +215,54 @@ async function a2aCallJson(endpoint: string, payload: Record<string, unknown>): 
   }
 }
 
-function normalizeAction(action: SuggestedAction): { kind: "a2a.call"; endpoint: string; stream: boolean; payload: Record<string, unknown> } | null {
+function normalizeAction(action: SuggestedAction): { kind: "a2a.call"; agent?: string; endpoint: string; stream: boolean; payload: Record<string, unknown> } | null {
   if (action.type !== "a2a.call") return null;
-  const input = action.input ?? {};
-  const endpoint = typeof input.endpoint === "string" ? input.endpoint : null;
-  const payload = isRecord(input.payload) ? input.payload : null;
-  const streamFlag = input.stream;
+  const input = action.input;
+  const endpoint = typeof input?.endpoint === "string" ? input.endpoint : null;
+  const payload = isRecord(input?.payload) ? input.payload : null;
+  const streamFlag = input?.stream;
+  const agent = typeof input?.agent === "string" ? input.agent : undefined;
   if (!endpoint || !payload) return null;
-  const stream = (typeof streamFlag === "boolean" ? streamFlag : endpoint.endsWith(".stream")) || endpoint.endsWith(".stream");
-  return { kind: "a2a.call", endpoint, stream, payload };
+  const stream =
+    (typeof streamFlag === "boolean" ? streamFlag : endpoint.endsWith(".stream")) ||
+    endpoint.endsWith(".stream");
+  return { kind: "a2a.call", agent, endpoint, stream, payload };
+}
+
+async function ensureA2aThread(params: {
+  agent: string | undefined;
+  session: { churchId: string; userId: string; personId: string; householdId?: string | null };
+  ctx: { churchId: string; userId: string; personId: string; householdId?: string | null; threadId: string };
+}): Promise<string> {
+  const agentId = params.agent ?? "churchcore";
+  const mapKey = `a2a:${agentId}:${params.ctx.threadId}`;
+
+  const existing = await memoryGet({ ctx: params.ctx, namespace: "threads", key: mapKey });
+  if (isRecord(existing) && isRecord(existing.value) && typeof existing.value.thread_id === "string") {
+    return existing.value.thread_id;
+  }
+
+  // Create A2A thread (best-effort). If memory isn’t configured, this will still work
+  // for the current request but won’t persist across server restarts.
+  const identity = {
+    tenant_id: params.session.churchId,
+    user_id: params.session.userId,
+    person_id: params.session.personId,
+    household_id: params.session.householdId ?? null,
+  };
+  const payload = { identity, title: `myclaw:${agentId}` };
+
+  const resp = await a2aCallJson({ agent: agentId, endpoint: "thread.create", payload });
+  const tid = isRecord(resp) && typeof resp.thread_id === "string" ? resp.thread_id : null;
+  if (!tid) throw new Error("Failed to create A2A thread");
+
+  try {
+    await memoryUpsert({ ctx: params.ctx, namespace: "threads", key: mapKey, value: { thread_id: tid } });
+  } catch {
+    // ignore (memory not configured or transient error)
+  }
+
+  return tid;
 }
 
 export async function POST(req: Request): Promise<Response> {
@@ -241,6 +293,21 @@ export async function POST(req: Request): Promise<Response> {
   }
   if (!threadId) return new Response("Failed to create thread", { status: 500 });
 
+  const session = {
+    churchId: body.church_id ?? body.org_id ?? "calvarybible",
+    userId: body.user_id ?? "demo_user_noah",
+    personId: body.person_id ?? "p_seeker_2",
+    householdId: body.household_id ?? null,
+  };
+
+  // Load durable memory profile (if configured). This is *not* stored in LangSmith.
+  let memoryProfile: unknown = null;
+  try {
+    memoryProfile = await memoryGetProfile({ ...session, threadId });
+  } catch {
+    memoryProfile = null;
+  }
+
   const upstream = await fetch(`${deploymentUrl}/threads/${threadId}/runs/stream`, {
     method: "POST",
     headers,
@@ -249,12 +316,9 @@ export async function POST(req: Request): Promise<Response> {
       input: {
         skill: "chat",
         message: body.message,
-        args: null,
+        args: { memory_profile: memoryProfile },
         session: {
-          churchId: body.church_id ?? body.org_id ?? "calvarybible",
-          userId: body.user_id ?? "demo_user_noah",
-          personId: body.person_id ?? "p_seeker_2",
-          householdId: body.household_id ?? null,
+          ...session,
           thread_id: threadId,
         },
       },
@@ -271,6 +335,7 @@ export async function POST(req: Request): Promise<Response> {
   let accumulated = "";
   let fallbackMessage: string | null = null;
   let suggestedActions: SuggestedAction[] | null = null;
+  const executedActions: SuggestedAction[] = [];
   let buffer = "";
 
   const stream = new ReadableStream<Uint8Array>({
@@ -318,25 +383,66 @@ export async function POST(req: Request): Promise<Response> {
 
       // Orchestrate: execute agent-suggested actions via Next.js (not from LangSmith runtime).
       // Default: if no actions were produced, fall back to whatever message we got.
-      const session = {
-        churchId: body.church_id ?? body.org_id ?? "calvarybible",
-        userId: body.user_id ?? "demo_user_noah",
-        personId: body.person_id ?? "p_seeker_2",
-        householdId: body.household_id ?? null,
-      };
+      const ctx = { ...session, threadId };
 
       if (suggestedActions && suggestedActions.length) {
         for (const action of suggestedActions) {
+          executedActions.push(action);
+          // Durable memory actions (executed by Next.js).
+          if (action.type === "memory.upsert" && isRecord(action.input)) {
+            try {
+              const ns = typeof action.input.namespace === "string" ? action.input.namespace : null;
+              const key = typeof action.input.key === "string" ? action.input.key : null;
+              if (ns && key) {
+                await memoryUpsert({ ctx, namespace: ns, key, value: action.input.value });
+                controller.enqueue(encoder.encode(sse("delta", { text: `Saved to memory: ${ns}.${key}` })));
+              }
+            } catch (e) {
+              controller.enqueue(encoder.encode(sse("delta", { text: `Memory error: ${(e as Error).message}` })));
+            }
+            continue;
+          }
+          if (action.type === "memory.query" && isRecord(action.input)) {
+            try {
+              const ns = typeof action.input.namespace === "string" ? action.input.namespace : undefined;
+              const q = typeof action.input.q === "string" ? action.input.q : undefined;
+              const resp = await memoryQuery({ ctx, namespace: ns, q, limit: 25 });
+              const rendered = JSON.stringify(resp, null, 2);
+              accumulated ||= rendered;
+              controller.enqueue(encoder.encode(sse("delta", { text: rendered })));
+            } catch (e) {
+              controller.enqueue(encoder.encode(sse("delta", { text: `Memory error: ${(e as Error).message}` })));
+            }
+            continue;
+          }
+
           const norm = normalizeAction(action);
           if (!norm) continue;
 
           // Ensure session is always present for gateway calls.
           const payload: Record<string, unknown> = { ...norm.payload };
           payload.session = isRecord(payload.session) ? { ...session, ...payload.session } : session;
+          // Churchcore gateway expects these top-level fields for many skills.
+          // A2A thread_id is *not* the LangSmith thread id; we map and persist it in memory.
+          let a2aThreadId: string | null = null;
+          try {
+            a2aThreadId = await ensureA2aThread({ agent: norm.agent, session, ctx: { ...ctx, threadId } });
+          } catch {
+            a2aThreadId = null;
+          }
+          if (a2aThreadId) payload.thread_id ??= a2aThreadId;
+          payload.identity ??= {
+            tenant_id: session.churchId,
+            user_id: session.userId,
+            person_id: session.personId,
+            household_id: session.householdId,
+          };
 
           try {
             if (norm.stream) {
+              const before = accumulated.length;
               await a2aChatStream({
+                agent: norm.agent,
                 endpoint: norm.endpoint,
                 payload,
                 onDelta: (t) => {
@@ -344,8 +450,20 @@ export async function POST(req: Request): Promise<Response> {
                   controller.enqueue(encoder.encode(sse("delta", { text: t })));
                 },
               });
+              // If streaming produced nothing, fall back to non-stream endpoint.
+              if (accumulated.length === before && norm.endpoint.endsWith(".stream")) {
+                const fallbackEndpoint = norm.endpoint.replace(/\.stream$/, "");
+                const resp = await a2aCallJson({ agent: norm.agent, endpoint: fallbackEndpoint, payload });
+                const rendered = typeof resp === "string" ? resp : JSON.stringify(resp, null, 2);
+                accumulated ||= rendered;
+                controller.enqueue(encoder.encode(sse("delta", { text: rendered })));
+              }
             } else {
-              const resp = await a2aCallJson(norm.endpoint, payload);
+              const resp = await a2aCallJson({
+                agent: norm.agent,
+                endpoint: norm.endpoint,
+                payload,
+              });
               const rendered = typeof resp === "string" ? resp : JSON.stringify(resp, null, 2);
               accumulated ||= rendered;
               controller.enqueue(encoder.encode(sse("delta", { text: rendered })));
@@ -362,6 +480,7 @@ export async function POST(req: Request): Promise<Response> {
         accumulated = "";
         try {
           await a2aChatStream({
+            agent: "churchcore",
             endpoint: "chat.stream",
             payload: { skill: "chat", message: body.message, args: null, session },
             onDelta: (t) => {
@@ -385,11 +504,27 @@ export async function POST(req: Request): Promise<Response> {
             thread_id: threadId,
             message: accumulated.trim(),
             entities: [],
-            suggestedActions: [],
+            suggestedActions: executedActions,
           }),
         ),
       );
       controller.close();
+
+      // Audit trail (best-effort).
+      try {
+        await memoryAppendEvent({
+          ctx,
+          type: "orchestrator.run",
+          payload: {
+            threadId,
+            input: { message: body.message },
+            suggestedActions: suggestedActions ?? [],
+            output: { message: accumulated.trim() },
+          },
+        });
+      } catch {
+        // ignore
+      }
     },
   });
 

@@ -17,11 +17,11 @@ You deploy the **LangGraph** named `myclaw_agent`.
 
 ### Required env vars (deployment: myclaw agent)
 
-- `CHURCHCORE_A2A_API_KEY` (send as `x-api-key` to the gateway)
+- None required for network integrations (the graph is a director that emits action packs).
 
 Optional:
 
-- `CHURCHCORE_A2A_BASE_URL` (defaults to `https://a2a-gateway-worker.richardpedersen3.workers.dev/a2a/`)
+- None
 
 Optional (LangSmith tracing):
 
@@ -44,6 +44,33 @@ pnpm dev
 ```
 
 Web runs on `http://localhost:3000` and calls your LangSmith Deployment via `LANGGRAPH_DEPLOYMENT_URL`.
+
+### Web app env vars (Vercel / local)
+
+Required:
+
+- `LANGGRAPH_DEPLOYMENT_URL`
+- `LANGGRAPH_API_KEY`
+- `LANGGRAPH_ASSISTANT_ID=myclaw_agent`
+- `CHURCHCORE_A2A_API_KEY`
+
+Optional:
+
+- `CHURCHCORE_A2A_BASE_URL` (defaults to Churchcore gateway)
+- `MEMORY_API_URL` + `MEMORY_API_KEY` (for durable identity/household/BDI/goals memory)
+
+## Memory worker (Cloudflare D1)
+
+This repo includes a minimal Cloudflare Worker + D1 schema at `apps/memory-worker`.
+
+- D1 schema: `apps/memory-worker/schema.sql`
+- Worker implementation: `apps/memory-worker/src/index.ts`
+
+Run locally (in a separate terminal):
+
+```bash
+pnpm --filter @myclaw/memory-worker worker:dev
+```
 
 ## Agent features (current)
 
