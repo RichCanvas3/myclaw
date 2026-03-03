@@ -84,3 +84,4 @@ pnpm --filter @myclaw/memory-worker worker:dev
   - List tools: `/mcp-tools gym-weather` or `/mcp-tools gym-sendgrid`
   - Call tool: `/mcp gym-weather weather_current {"lat":40.0,"lon":-105.2,"units":"imperial"}`
   - Call tool: `/mcp gym-sendgrid sendEmail {"to":"you@example.com","subject":"Hi","text":"Hello"}`
+  - Calendar tools: `/mcp-tools gym-googlecalendar` (then use orchestrated `calendar.range` actions)

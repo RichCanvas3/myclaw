@@ -27,6 +27,15 @@ export type SuggestedAction =
       };
     }
   | {
+      type: "calendar.range";
+      input: {
+        accountAddress?: string; // if omitted, orchestrator tries to use memoryProfile.identity.email
+        timeMinISO: string; // inclusive
+        timeMaxISO: string; // exclusive
+        query?: string;
+      };
+    }
+  | {
       type: "mcp.tool";
       input: {
         server: string; // e.g. gym-weather, gym-sendgrid

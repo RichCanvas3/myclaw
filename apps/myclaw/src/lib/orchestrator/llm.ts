@@ -84,10 +84,12 @@ export async function orchestratorPlan(params: {
     "",
     "You may output actions in this form:",
     '- {"type":"mcp.tool","input":{"server":"gym-weather"|"gym-sendgrid","tool":"...","args":{...}}}',
+    '- {"type":"calendar.range","input":{"accountAddress":"optional","timeMinISO":"...","timeMaxISO":"...","query":"optional"}}',
     "",
     "Rules:",
     "- Only plan sendEmail/scheduleEmail when the user explicitly asks to send an email and provides the address.",
-    "- For weather, use gym-weather tools. If lat/lon are unknown, ask a follow-up question by returning no actions and include a reply in compose stage.",
+    "- For weather, use gym-weather tools. If lat/lon are unknown, ask a follow-up question by returning no actions.",
+    "- For calendar, prefer calendar.range for multi-week/month windows. Use ISO strings.",
     "- Keep actions minimal (1-2).",
   ].join("\n");
 
@@ -105,6 +107,12 @@ export async function orchestratorPlan(params: {
           "weather_alerts",
         ],
         "gym-sendgrid": ["sendEmail", "scheduleEmail", "sendEmailWithTemplate"],
+        "gym-googlecalendar": [
+          "googlecalendar_get_connection_status",
+          "googlecalendar_freebusy",
+          "googlecalendar_list_events",
+          "googlecalendar_create_event",
+        ],
       },
     },
     null,
@@ -137,6 +145,7 @@ export async function orchestratorCompose(params: {
     "You are the response writer for a personal assistant.",
     "Use the tool results to answer the user. Be concise and helpful.",
     "If tool results include weather JSON, summarize it nicely (current + next few hours).",
+    "If tool results include calendar events for a large range, summarize by month and highlight busy days and key events.",
     "If tool results include SendGrid email sent, confirm success.",
     "Return ONLY JSON: {\"text\": \"...\"}.",
   ].join("\n");

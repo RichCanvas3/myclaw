@@ -36,6 +36,62 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null;
 }
 
+function tryParseJson(text: string): unknown {
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return text;
+  }
+}
+
+function firstString(v: unknown): string | null {
+  const stack: unknown[] = [v];
+  let steps = 0;
+  while (stack.length && steps < 2000) {
+    steps++;
+    const cur = stack.pop();
+    if (!cur) continue;
+    if (typeof cur === "string" && cur.trim()) return cur;
+    if (Array.isArray(cur)) {
+      for (const it of cur) stack.push(it);
+      continue;
+    }
+    if (!isRecord(cur)) continue;
+    for (const val of Object.values(cur)) stack.push(val);
+  }
+  return null;
+}
+
+async function executeCalendarRange(params: {
+  accountAddress: string;
+  timeMinISO: string;
+  timeMaxISO: string;
+  query?: string;
+}): Promise<unknown> {
+  // Chunk into 7-day windows to avoid googlecalendar_list_events maxResults=50.
+  const start = Date.parse(params.timeMinISO);
+  const end = Date.parse(params.timeMaxISO);
+  if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) {
+    throw new Error("Invalid calendar time range");
+  }
+
+  const results: unknown[] = [];
+  const weekMs = 7 * 24 * 60 * 60 * 1000;
+  for (let t = start; t < end; t += weekMs) {
+    const t2 = Math.min(end, t + weekMs);
+    const resp = await mcpToolsCall("gym-googlecalendar", "googlecalendar_list_events", {
+      accountAddress: params.accountAddress,
+      timeMinISO: new Date(t).toISOString(),
+      timeMaxISO: new Date(t2).toISOString(),
+      ...(params.query ? { q: params.query } : {}),
+      maxResults: 50,
+    });
+    const text = typeof resp === "string" ? resp : JSON.stringify(resp, null, 2);
+    results.push(tryParseJson(text));
+  }
+  return { accountAddress: params.accountAddress, timeMinISO: params.timeMinISO, timeMaxISO: params.timeMaxISO, windows: results };
+}
+
 function extractOutputMessage(v: unknown): string | null {
   // We look for any nested shape like { output: { message: string } }.
   const stack: unknown[] = [v];
@@ -401,6 +457,27 @@ export async function POST(req: Request): Promise<Response> {
         let accumulated = "";
 
         for (const action of planned.actions) {
+          if (action.type === "calendar.range" && isRecord(action.input)) {
+            try {
+              const timeMinISO = typeof action.input.timeMinISO === "string" ? action.input.timeMinISO : null;
+              const timeMaxISO = typeof action.input.timeMaxISO === "string" ? action.input.timeMaxISO : null;
+              const query = typeof action.input.query === "string" ? action.input.query : undefined;
+              const addr =
+                (typeof action.input.accountAddress === "string" && action.input.accountAddress) ||
+                firstString(
+                  isRecord(memoryProfile) && isRecord(memoryProfile.profile) && isRecord(memoryProfile.profile.identity)
+                    ? (memoryProfile.profile.identity as Record<string, unknown>).email
+                    : null,
+                );
+              if (!addr) throw new Error("Missing accountAddress for Google Calendar (set identity.email in memory or include accountAddress)");
+              if (!timeMinISO || !timeMaxISO) throw new Error("Missing timeMinISO/timeMaxISO");
+              const res = await executeCalendarRange({ accountAddress: addr, timeMinISO, timeMaxISO, query });
+              toolResults.push({ action, result: res });
+            } catch (e) {
+              toolResults.push({ action, result: { error: (e as Error).message } });
+            }
+            continue;
+          }
           if (action.type === "mcp.tool" && isRecord(action.input)) {
             const server = typeof action.input.server === "string" ? action.input.server : "";
             const tool = typeof action.input.tool === "string" ? action.input.tool : "";
@@ -553,6 +630,36 @@ export async function POST(req: Request): Promise<Response> {
               controller.enqueue(encoder.encode(sse("delta", { text: rendered })));
             } catch (e) {
               const msg = `MCP error: ${(e as Error).message}`;
+              accumulated ||= msg;
+              controller.enqueue(encoder.encode(sse("delta", { text: msg })));
+            }
+            continue;
+          }
+
+          if (action.type === "calendar.range" && isRecord(action.input)) {
+            try {
+              const timeMinISO = typeof action.input.timeMinISO === "string" ? action.input.timeMinISO : null;
+              const timeMaxISO = typeof action.input.timeMaxISO === "string" ? action.input.timeMaxISO : null;
+              const query = typeof action.input.query === "string" ? action.input.query : undefined;
+
+              // Get accountAddress from action input or memoryProfile.identity.email.
+              const addr =
+                (typeof action.input.accountAddress === "string" && action.input.accountAddress) ||
+                firstString(
+                  isRecord(memoryProfile) && isRecord(memoryProfile.profile) && isRecord(memoryProfile.profile.identity)
+                    ? (memoryProfile.profile.identity as Record<string, unknown>).email
+                    : null,
+                );
+
+              if (!addr) throw new Error("Missing accountAddress for Google Calendar (set identity.email in memory or include accountAddress)");
+              if (!timeMinISO || !timeMaxISO) throw new Error("Missing timeMinISO/timeMaxISO");
+
+              const resp = await executeCalendarRange({ accountAddress: addr, timeMinISO, timeMaxISO, query });
+              const rendered = JSON.stringify(resp, null, 2);
+              accumulated ||= rendered;
+              controller.enqueue(encoder.encode(sse("delta", { text: rendered })));
+            } catch (e) {
+              const msg = `Calendar error: ${(e as Error).message}`;
               accumulated ||= msg;
               controller.enqueue(encoder.encode(sse("delta", { text: msg })));
             }
