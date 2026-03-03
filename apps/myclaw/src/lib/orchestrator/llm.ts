@@ -83,15 +83,19 @@ export async function orchestratorPlan(params: {
     "Return ONLY valid JSON.",
     "",
     "You may output actions in this form:",
+    '- {"type":"a2a.call","input":{"agent":"churchcore","endpoint":"...","stream":true|false,"payload":{...}}}',
     '- {"type":"mcp.tool","input":{"server":"gym-weather"|"gym-sendgrid","tool":"...","args":{...}}}',
     '- {"type":"calendar.range","input":{"accountAddress":"optional","timeMinISO":"...","timeMaxISO":"...","query":"optional"}}',
+    '- {"type":"memory.upsert","input":{"namespace":"identity|household|community|bdi|goals|threads","key":"...","value":{...}}}',
+    '- {"type":"memory.query","input":{"namespace":"...","q":"..."}}',
     "",
     "Rules:",
     "- Only plan sendEmail/scheduleEmail when the user explicitly asks to send an email and provides the address.",
     "- For weather, use gym-weather tools. If lat/lon are unknown, ask a follow-up question by returning no actions.",
     "- For calendar, prefer calendar.range for multi-week/month windows. Use ISO strings.",
     "- calendar.range requires an accountAddress like acct_... (NOT an email). If missing, return no actions.",
-    "- Keep actions minimal (1-2).",
+    "- For Churchcore household sync: plan a2a.call household.get (or household.identify then household.get) AND a memory.upsert into namespace=household.",
+    "- Keep actions minimal (1-4).",
   ].join("\n");
 
   const user = JSON.stringify(

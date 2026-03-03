@@ -44,24 +44,6 @@ function tryParseJson(text: string): unknown {
   }
 }
 
-function firstString(v: unknown): string | null {
-  const stack: unknown[] = [v];
-  let steps = 0;
-  while (stack.length && steps < 2000) {
-    steps++;
-    const cur = stack.pop();
-    if (!cur) continue;
-    if (typeof cur === "string" && cur.trim()) return cur;
-    if (Array.isArray(cur)) {
-      for (const it of cur) stack.push(it);
-      continue;
-    }
-    if (!isRecord(cur)) continue;
-    for (const val of Object.values(cur)) stack.push(val);
-  }
-  return null;
-}
-
 function defaultCalendarAccountAddress(): string | null {
   const v = process.env.MYCLAW_DEFAULT_GCAL_ACCOUNT_ADDRESS ?? "";
   return v.trim() ? v.trim() : null;
@@ -298,7 +280,9 @@ async function ensureA2aThread(params: {
   ctx: { churchId: string; userId: string; personId: string; householdId?: string | null; threadId: string };
 }): Promise<string> {
   const agentId = params.agent ?? "churchcore";
-  const mapKey = `a2a:${agentId}:${params.ctx.threadId}`;
+  // Use a sticky per-user mapping (not per myclaw thread/topic) so Churchcore stays in a single
+  // conversational thread for the connected user by default.
+  const mapKey = `a2a:${agentId}:user:${params.session.churchId}:${params.session.userId}:${params.session.personId}`;
 
   const existing = await memoryGet({ ctx: params.ctx, namespace: "threads", key: mapKey });
   if (isRecord(existing) && isRecord(existing.value) && typeof existing.value.thread_id === "string") {
@@ -460,6 +444,7 @@ export async function POST(req: Request): Promise<Response> {
 
         const toolResults: Array<{ action: SuggestedAction; result: unknown }> = [];
         let accumulated = "";
+        const ctx = { ...session, threadId };
 
         for (const action of planned.actions) {
           if (action.type === "calendar.range" && isRecord(action.input)) {
@@ -467,16 +452,46 @@ export async function POST(req: Request): Promise<Response> {
               const timeMinISO = typeof action.input.timeMinISO === "string" ? action.input.timeMinISO : null;
               const timeMaxISO = typeof action.input.timeMaxISO === "string" ? action.input.timeMaxISO : null;
               const query = typeof action.input.query === "string" ? action.input.query : undefined;
+              const identity =
+                isRecord(memoryProfile) && isRecord(memoryProfile.profile) && isRecord(memoryProfile.profile.identity)
+                  ? (memoryProfile.profile.identity as Record<string, unknown>)
+                  : null;
               const addr =
                 (typeof action.input.accountAddress === "string" && action.input.accountAddress) ||
-                firstString(
-                  isRecord(memoryProfile) && isRecord(memoryProfile.profile) && isRecord(memoryProfile.profile.identity)
-                    ? (memoryProfile.profile.identity as Record<string, unknown>).email
-                    : null,
+                (identity && typeof identity.googlecalendar_accountAddress === "string"
+                  ? identity.googlecalendar_accountAddress
+                  : null) ||
+                (identity && typeof identity.calendar_accountAddress === "string" ? identity.calendar_accountAddress : null) ||
+                defaultCalendarAccountAddress();
+              if (!addr)
+                throw new Error(
+                  "Missing Google Calendar accountAddress (e.g. acct_cust_casey). Set identity.googlecalendar_accountAddress in memory or include accountAddress in the action.",
                 );
-              if (!addr) throw new Error("Missing accountAddress for Google Calendar (set identity.email in memory or include accountAddress)");
               if (!timeMinISO || !timeMaxISO) throw new Error("Missing timeMinISO/timeMaxISO");
               const res = await executeCalendarRange({ accountAddress: addr, timeMinISO, timeMaxISO, query });
+              toolResults.push({ action, result: res });
+            } catch (e) {
+              toolResults.push({ action, result: { error: (e as Error).message } });
+            }
+            continue;
+          }
+          if (action.type === "memory.upsert" && isRecord(action.input)) {
+            try {
+              const ns = typeof action.input.namespace === "string" ? action.input.namespace : null;
+              const key = typeof action.input.key === "string" ? action.input.key : null;
+              if (!ns || !key) throw new Error("Invalid memory.upsert action");
+              const res = await memoryUpsert({ ctx, namespace: ns, key, value: action.input.value });
+              toolResults.push({ action, result: res });
+            } catch (e) {
+              toolResults.push({ action, result: { error: (e as Error).message } });
+            }
+            continue;
+          }
+          if (action.type === "memory.query" && isRecord(action.input)) {
+            try {
+              const ns = typeof action.input.namespace === "string" ? action.input.namespace : undefined;
+              const q = typeof action.input.q === "string" ? action.input.q : undefined;
+              const res = await memoryQuery({ ctx, namespace: ns, q, limit: 50 });
               toolResults.push({ action, result: res });
             } catch (e) {
               toolResults.push({ action, result: { error: (e as Error).message } });
@@ -496,13 +511,52 @@ export async function POST(req: Request): Promise<Response> {
             continue;
           }
           if (action.type === "a2a.call") {
-            // Let existing A2A executor handle these by reusing the normal flow below.
-            toolResults.push({ action, result: { skipped: true, reason: "a2a.call not supported in llm-orchestrator path yet" } });
-            continue;
-          }
-          if (action.type === "memory.upsert" || action.type === "memory.query") {
-            // Reuse existing handlers by pushing into results; compose step can still mention.
-            toolResults.push({ action, result: { skipped: true, reason: "memory.* not supported in llm-orchestrator path yet" } });
+            const norm = normalizeAction(action);
+            if (!norm) {
+              toolResults.push({ action, result: { error: "Invalid a2a.call action" } });
+              continue;
+            }
+
+            const payload: Record<string, unknown> = { ...norm.payload };
+            payload.session = isRecord(payload.session) ? { ...session, ...payload.session } : session;
+            payload.identity ??= {
+              tenant_id: session.churchId,
+              user_id: session.userId,
+              person_id: session.personId,
+              household_id: session.householdId,
+            };
+
+            // Ensure the per-user sticky Churchcore thread exists for endpoints that use it.
+            const needsThread = norm.endpoint.startsWith("chat") || norm.endpoint.startsWith("thread");
+            if (needsThread && !("thread_id" in payload)) {
+              try {
+                const tid = await ensureA2aThread({ agent: norm.agent, session, ctx: { ...ctx, threadId } });
+                payload.thread_id = tid;
+              } catch {
+                // ignore
+              }
+            }
+
+            try {
+              if (norm.stream) {
+                let text = "";
+                await a2aChatStream({
+                  agent: norm.agent,
+                  endpoint: norm.endpoint,
+                  payload,
+                  onDelta: (t) => {
+                    text += t;
+                    controller.enqueue(encoder.encode(sse("delta", { text: t })));
+                  },
+                });
+                toolResults.push({ action, result: { text } });
+              } else {
+                const res = await a2aCallJson({ agent: norm.agent, endpoint: norm.endpoint, payload });
+                toolResults.push({ action, result: res });
+              }
+            } catch (e) {
+              toolResults.push({ action, result: { error: (e as Error).message } });
+            }
             continue;
           }
         }

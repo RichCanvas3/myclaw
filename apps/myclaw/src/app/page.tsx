@@ -262,7 +262,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-black dark:text-zinc-50">
+    <div className="h-screen bg-zinc-50 text-zinc-950 dark:bg-black dark:text-zinc-50">
       <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
         <div className="flex w-full items-center justify-between px-4 py-3">
           <div className="flex items-baseline gap-3">
@@ -322,8 +322,9 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="grid min-h-screen w-full grid-cols-1 gap-4 px-4 py-6 lg:grid-cols-[280px_1fr_320px]">
-        <aside className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="flex min-h-0 flex-1 flex-col px-4 py-4">
+        <div className="grid min-h-0 w-full flex-1 grid-cols-1 gap-4 lg:grid-cols-[280px_1fr_320px]">
+          <aside className="flex min-h-0 flex-col rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
           <div className="flex items-center justify-between">
             <div className="text-sm font-semibold">Topics</div>
             <button
@@ -334,7 +335,7 @@ export default function Home() {
               New
             </button>
           </div>
-          <div className="mt-2 flex max-h-[70vh] flex-col gap-1 overflow-y-auto pr-1">
+          <div className="mt-2 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto pr-1">
             {threads.map((t) => (
               <button
                 key={t.thread_id}
@@ -360,7 +361,7 @@ export default function Home() {
           </div>
         </aside>
 
-        <section className="flex flex-col">
+        <section className="flex min-h-0 flex-col">
           <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
             <input
               value={churchId}
@@ -385,8 +386,8 @@ export default function Home() {
             />
           </div>
 
-          <main className="mt-4 flex-1 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-            <div className="flex h-[60vh] flex-col gap-3 overflow-y-auto pr-1">
+          <main className="mt-4 flex min-h-0 flex-1 flex-col rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+            <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1">
               {messages.map((m, idx) => (
                 <div
                   key={idx}
@@ -425,7 +426,7 @@ export default function Home() {
           </footer>
         </section>
 
-        <aside className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+        <aside className="flex min-h-0 flex-col rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
           <div className="flex items-center justify-between">
             <div className="text-sm font-semibold">Memory</div>
             <button
@@ -436,15 +437,16 @@ export default function Home() {
               Refresh
             </button>
           </div>
-          <pre className="mt-2 max-h-[30vh] overflow-auto rounded-lg bg-zinc-50 p-2 text-[11px] text-zinc-900 dark:bg-black dark:text-zinc-50">
+          <pre className="mt-2 min-h-0 flex-1 overflow-auto rounded-lg bg-zinc-50 p-2 text-[11px] text-zinc-900 dark:bg-black dark:text-zinc-50">
             {memoryProfile}
           </pre>
 
           <div className="mt-4 text-sm font-semibold">Last actions</div>
-          <pre className="mt-2 max-h-[30vh] overflow-auto rounded-lg bg-zinc-50 p-2 text-[11px] text-zinc-900 dark:bg-black dark:text-zinc-50">
+          <pre className="mt-2 min-h-0 flex-1 overflow-auto rounded-lg bg-zinc-50 p-2 text-[11px] text-zinc-900 dark:bg-black dark:text-zinc-50">
             {lastActions}
           </pre>
         </aside>
+        </div>
       </div>
     </div>
   );
