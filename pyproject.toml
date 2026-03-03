@@ -9,11 +9,7 @@ requires-python = ">=3.12"
 
 # LangSmith Deployments typically installs Python deps from requirements.txt.
 # This stanza exists to ensure `apps.*` is importable in that runtime.
-dependencies = [
-  "langgraph>=0.6.5,<2",
-  "langchain-core>=0.3.66,<1",
-  "pydantic>=2.8,<3",
-]
+dependencies = []
 
 [tool.setuptools.packages.find]
 include = ["apps*"]

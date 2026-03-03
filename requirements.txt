@@ -1,4 +1,3 @@
-langgraph>=0.6.5,<2
-langchain-core>=0.3.66,<1
-pydantic>=2.8,<3
+## Intentionally empty for LangSmith Deployments.
+## The LangSmith Agent Server image provides LangGraph + deps.
 
