@@ -27,6 +27,14 @@ export type SuggestedAction =
       };
     }
   | {
+      type: "mcp.tool";
+      input: {
+        server: string; // e.g. gym-weather, gym-sendgrid
+        tool: string; // e.g. weather_current, sendEmail
+        args: Record<string, unknown>;
+      };
+    }
+  | {
       type: "memory.upsert" | "memory.query" | "memory.profile.get";
       input: Record<string, unknown>;
     }

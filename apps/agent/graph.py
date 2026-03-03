@@ -155,6 +155,34 @@ def _make_action_pack(user_text: str, *, session: Session, memory: dict[str, Any
             }
         ]
 
+    if user_text.startswith("/mcp "):
+        # /mcp <server> <tool> [<json_args>]
+        # Example:
+        #   /mcp gym-weather weather_current {"lat":40.0,"lon":-105.2,"units":"imperial"}
+        rest = user_text.removeprefix("/mcp ").strip()
+        parts = rest.split(" ", 2)
+        if len(parts) < 2:
+            return [
+                {
+                    "type": "mcp.tool",
+                    "input": {
+                        "server": "gym-weather",
+                        "tool": "weather_current",
+                        "args": {"lat": 40.0, "lon": -105.2, "units": "imperial"},
+                    },
+                }
+            ]
+        server_id = parts[0].strip()
+        tool = parts[1].strip()
+        args_text = parts[2].strip() if len(parts) >= 3 else "{}"
+        try:
+            args = json.loads(args_text)
+            if not isinstance(args, dict):
+                args = {}
+        except Exception:
+            args = {}
+        return [{"type": "mcp.tool", "input": {"server": server_id, "tool": tool, "args": args}}]
+
     return [
         {
             "type": "a2a.call",

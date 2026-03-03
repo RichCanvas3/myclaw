@@ -1,5 +1,6 @@
 import { getA2aAgent } from "@/lib/agents/registry";
 import type { SuggestedAction } from "@/lib/agents/types";
+import { mcpToolsCall, mcpToolsList } from "@/lib/mcp/client";
 import { memoryAppendEvent, memoryGet, memoryGetProfile, memoryQuery, memoryUpsert } from "@/lib/memory/client";
 
 export const runtime = "nodejs";
@@ -293,6 +294,78 @@ export async function POST(req: Request): Promise<Response> {
   }
   if (!threadId) return new Response("Failed to create thread", { status: 500 });
 
+  // Shortcut: allow direct MCP calls from the UI without needing a redeploy of the LangSmith director.
+  // Format:
+  // - /mcp <server> <tool> [<json_args>]
+  // - /mcp-tools <server>
+  const direct = body.message?.trim?.() ?? "";
+  if (direct.startsWith("/mcp-tools ")) {
+    const server = direct.replace("/mcp-tools ", "").trim();
+    const encoder = new TextEncoder();
+    const out = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        controller.enqueue(encoder.encode(sse("thread", { thread_id: threadId })));
+        try {
+          const res = await mcpToolsList(server);
+          const rendered = typeof res === "string" ? res : JSON.stringify(res, null, 2);
+          controller.enqueue(encoder.encode(sse("delta", { text: rendered })));
+          controller.enqueue(
+            encoder.encode(sse("final", { thread_id: threadId, message: rendered, entities: [], suggestedActions: [] })),
+          );
+        } catch (e) {
+          const msg = `MCP error: ${(e as Error).message}`;
+          controller.enqueue(encoder.encode(sse("delta", { text: msg })));
+          controller.enqueue(
+            encoder.encode(sse("final", { thread_id: threadId, message: msg, entities: [], suggestedActions: [] })),
+          );
+        }
+        controller.close();
+      },
+    });
+    return new Response(out, {
+      status: 200,
+      headers: { "content-type": "text/event-stream", "cache-control": "no-cache", connection: "keep-alive" },
+    });
+  }
+
+  if (direct.startsWith("/mcp ")) {
+    const rest = direct.replace("/mcp ", "").trim();
+    const [server, tool, ...argsParts] = rest.split(" ");
+    const argsText = argsParts.join(" ").trim() || "{}";
+    let args: Record<string, unknown> = {};
+    try {
+      const parsed = JSON.parse(argsText) as unknown;
+      if (isRecord(parsed)) args = parsed;
+    } catch {
+      // ignore
+    }
+    const encoder = new TextEncoder();
+    const out = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        controller.enqueue(encoder.encode(sse("thread", { thread_id: threadId })));
+        try {
+          const res = await mcpToolsCall(server ?? "", tool ?? "", args);
+          const rendered = typeof res === "string" ? res : JSON.stringify(res, null, 2);
+          controller.enqueue(encoder.encode(sse("delta", { text: rendered })));
+          controller.enqueue(
+            encoder.encode(sse("final", { thread_id: threadId, message: rendered, entities: [], suggestedActions: [] })),
+          );
+        } catch (e) {
+          const msg = `MCP error: ${(e as Error).message}`;
+          controller.enqueue(encoder.encode(sse("delta", { text: msg })));
+          controller.enqueue(
+            encoder.encode(sse("final", { thread_id: threadId, message: msg, entities: [], suggestedActions: [] })),
+          );
+        }
+        controller.close();
+      },
+    });
+    return new Response(out, {
+      status: 200,
+      headers: { "content-type": "text/event-stream", "cache-control": "no-cache", connection: "keep-alive" },
+    });
+  }
+
   const session = {
     churchId: body.church_id ?? body.org_id ?? "calvarybible",
     userId: body.user_id ?? "demo_user_noah",
@@ -388,6 +461,25 @@ export async function POST(req: Request): Promise<Response> {
       if (suggestedActions && suggestedActions.length) {
         for (const action of suggestedActions) {
           executedActions.push(action);
+
+          if (action.type === "mcp.tool" && isRecord(action.input)) {
+            try {
+              const server = typeof action.input.server === "string" ? action.input.server : null;
+              const tool = typeof action.input.tool === "string" ? action.input.tool : null;
+              const args = isRecord(action.input.args) ? action.input.args : null;
+              if (!server || !tool || !args) throw new Error("Invalid mcp.tool action");
+              const resp = await mcpToolsCall(server, tool, args);
+              const rendered = typeof resp === "string" ? resp : JSON.stringify(resp, null, 2);
+              accumulated ||= rendered;
+              controller.enqueue(encoder.encode(sse("delta", { text: rendered })));
+            } catch (e) {
+              const msg = `MCP error: ${(e as Error).message}`;
+              accumulated ||= msg;
+              controller.enqueue(encoder.encode(sse("delta", { text: msg })));
+            }
+            continue;
+          }
+
           // Durable memory actions (executed by Next.js).
           if (action.type === "memory.upsert" && isRecord(action.input)) {
             try {

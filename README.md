@@ -58,6 +58,7 @@ Optional:
 
 - `CHURCHCORE_A2A_BASE_URL` (defaults to Churchcore gateway)
 - `MEMORY_API_URL` + `MEMORY_API_KEY` (for durable identity/household/BDI/goals memory)
+- `GYM_MCP_API_KEY` + `GYM_WEATHER_MCP_URL` + `GYM_SENDGRID_MCP_URL` (for MCP tools like weather + email)
 
 ## Memory worker (Cloudflare D1)
 
@@ -79,3 +80,7 @@ pnpm --filter @myclaw/memory-worker worker:dev
 - **Churchcore orchestration**: the agent returns `suggestedActions`; Next.js executes A2A calls server-side
   - Default action: `a2a.call` → `chat.stream`
   - Manual action: `/a2a <endpoint> [<json_payload>]` (example: `/a2a thread.list {"limit":20}`)
+- **MCP tools (Next.js)**:
+  - List tools: `/mcp-tools gym-weather` or `/mcp-tools gym-sendgrid`
+  - Call tool: `/mcp gym-weather weather_current {"lat":40.0,"lon":-105.2,"units":"imperial"}`
+  - Call tool: `/mcp gym-sendgrid sendEmail {"to":"you@example.com","subject":"Hi","text":"Hello"}`
