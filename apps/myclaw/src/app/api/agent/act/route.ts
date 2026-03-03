@@ -62,6 +62,11 @@ function firstString(v: unknown): string | null {
   return null;
 }
 
+function defaultCalendarAccountAddress(): string | null {
+  const v = process.env.MYCLAW_DEFAULT_GCAL_ACCOUNT_ADDRESS ?? "";
+  return v.trim() ? v.trim() : null;
+}
+
 async function executeCalendarRange(params: {
   accountAddress: string;
   timeMinISO: string;
@@ -642,16 +647,25 @@ export async function POST(req: Request): Promise<Response> {
               const timeMaxISO = typeof action.input.timeMaxISO === "string" ? action.input.timeMaxISO : null;
               const query = typeof action.input.query === "string" ? action.input.query : undefined;
 
-              // Get accountAddress from action input or memoryProfile.identity.email.
+              // IMPORTANT: gym-googlecalendar-mcp expects an accountAddress like "acct_cust_casey",
+              // not an email address.
+              const identity =
+                isRecord(memoryProfile) && isRecord(memoryProfile.profile) && isRecord(memoryProfile.profile.identity)
+                  ? (memoryProfile.profile.identity as Record<string, unknown>)
+                  : null;
+
               const addr =
                 (typeof action.input.accountAddress === "string" && action.input.accountAddress) ||
-                firstString(
-                  isRecord(memoryProfile) && isRecord(memoryProfile.profile) && isRecord(memoryProfile.profile.identity)
-                    ? (memoryProfile.profile.identity as Record<string, unknown>).email
-                    : null,
-                );
+                (identity && typeof identity.googlecalendar_accountAddress === "string"
+                  ? identity.googlecalendar_accountAddress
+                  : null) ||
+                (identity && typeof identity.calendar_accountAddress === "string" ? identity.calendar_accountAddress : null) ||
+                defaultCalendarAccountAddress();
 
-              if (!addr) throw new Error("Missing accountAddress for Google Calendar (set identity.email in memory or include accountAddress)");
+              if (!addr)
+                throw new Error(
+                  "Missing Google Calendar accountAddress (e.g. acct_cust_casey). Set identity.googlecalendar_accountAddress in memory or include accountAddress in the action.",
+                );
               if (!timeMinISO || !timeMaxISO) throw new Error("Missing timeMinISO/timeMaxISO");
 
               const resp = await executeCalendarRange({ accountAddress: addr, timeMinISO, timeMaxISO, query });

@@ -90,6 +90,7 @@ export async function orchestratorPlan(params: {
     "- Only plan sendEmail/scheduleEmail when the user explicitly asks to send an email and provides the address.",
     "- For weather, use gym-weather tools. If lat/lon are unknown, ask a follow-up question by returning no actions.",
     "- For calendar, prefer calendar.range for multi-week/month windows. Use ISO strings.",
+    "- calendar.range requires an accountAddress like acct_... (NOT an email). If missing, return no actions.",
     "- Keep actions minimal (1-2).",
   ].join("\n");
 
