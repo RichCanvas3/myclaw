@@ -436,6 +436,29 @@ export async function POST(req: Request): Promise<Response> {
     memoryProfile,
   });
 
+  // Helpful error when user requests email but orchestrator LLM isn't configured.
+  if (!planned && /\bsend\s+email\b/i.test(body.message)) {
+    const encoder = new TextEncoder();
+    const out = new ReadableStream<Uint8Array>({
+      start(controller) {
+        const msg =
+          "Email sending requires the Next.js orchestrator LLM.\n\n" +
+          "Set ORCH_OPENAI_API_KEY (and optionally ORCH_OPENAI_MODEL) in the web app env vars, then try again.\n" +
+          "Also ensure the gym-sendgrid-mcp worker has SENDGRID_API_KEY and SENDGRID_FROM_EMAIL configured.";
+        controller.enqueue(encoder.encode(sse("thread", { thread_id: threadId })));
+        controller.enqueue(encoder.encode(sse("delta", { text: msg })));
+        controller.enqueue(
+          encoder.encode(sse("final", { thread_id: threadId, message: msg, entities: [], suggestedActions: [] })),
+        );
+        controller.close();
+      },
+    });
+    return new Response(out, {
+      status: 200,
+      headers: { "content-type": "text/event-stream", "cache-control": "no-cache", connection: "keep-alive" },
+    });
+  }
+
   if (planned) {
     const encoder = new TextEncoder();
     const stream = new ReadableStream<Uint8Array>({

@@ -262,8 +262,8 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen bg-zinc-50 text-zinc-950 dark:bg-black dark:text-zinc-50">
-      <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
+    <div className="flex h-screen flex-col overflow-hidden bg-zinc-50 text-zinc-950 dark:bg-black dark:text-zinc-50">
+      <header className="sticky top-0 z-10 shrink-0 border-b border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
         <div className="flex w-full items-center justify-between px-4 py-3">
           <div className="flex items-baseline gap-3">
             <div className="text-lg font-semibold tracking-tight">myclaw</div>
@@ -322,7 +322,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col px-4 py-4">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 py-4">
         <div className="grid min-h-0 w-full flex-1 grid-cols-1 gap-4 lg:grid-cols-[280px_1fr_320px]">
           <aside className="flex min-h-0 flex-col rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
           <div className="flex items-center justify-between">
@@ -426,7 +426,7 @@ export default function Home() {
           </footer>
         </section>
 
-        <aside className="flex min-h-0 flex-col rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+        <aside className="flex min-h-0 flex-col overflow-y-auto rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
           <div className="flex items-center justify-between">
             <div className="text-sm font-semibold">Memory</div>
             <button
@@ -437,12 +437,12 @@ export default function Home() {
               Refresh
             </button>
           </div>
-          <pre className="mt-2 min-h-0 flex-1 overflow-auto rounded-lg bg-zinc-50 p-2 text-[11px] text-zinc-900 dark:bg-black dark:text-zinc-50">
+          <pre className="mt-2 overflow-x-auto rounded-lg bg-zinc-50 p-2 text-[11px] text-zinc-900 dark:bg-black dark:text-zinc-50">
             {memoryProfile}
           </pre>
 
           <div className="mt-4 text-sm font-semibold">Last actions</div>
-          <pre className="mt-2 min-h-0 flex-1 overflow-auto rounded-lg bg-zinc-50 p-2 text-[11px] text-zinc-900 dark:bg-black dark:text-zinc-50">
+          <pre className="mt-2 overflow-x-auto rounded-lg bg-zinc-50 p-2 text-[11px] text-zinc-900 dark:bg-black dark:text-zinc-50">
             {lastActions}
           </pre>
         </aside>
