@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import Any, TypedDict
 
-from langchain_core.messages import AIMessage, BaseMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, StateGraph
 from langgraph.types import StreamWriter
 
-from apps.agent.agent import run_myclaw_agent
-from apps.agent.models import Input, OutputEnvelope, Session
+from apps.agent.agent import stream_chat_reply
+from apps.agent.models import OutputEnvelope, Session
 
 
 class GraphState(TypedDict, total=False):
@@ -43,21 +43,28 @@ async def assistant_node(state: GraphState, writer: StreamWriter) -> GraphState:
 
     try:
         session = Session(**session_dict)
-        inp = Input(
-            skill=str(payload.get("skill") or "chat"),
-            message=payload.get("message"),
-            args=payload.get("args"),
-            session=session,
-        )
     except Exception as e:
         out = OutputEnvelope(thread_id="unknown", message=f"Invalid input: {e}").model_dump(
             by_alias=True
         )
         return {"output": out, "messages": [AIMessage(content=out["message"])]}
 
-    result = await run_myclaw_agent(inp, writer=writer)
-    out = result.model_dump(by_alias=True)
-    return {"output": out, "messages": [AIMessage(content=str(out.get("message", "")))]}
+    prior_messages = list(state.get("messages") or [])
+    user_text = str(payload.get("message") or "")
+    prior_messages.append(HumanMessage(content=user_text))
+
+    acc: list[str] = []
+    async for t in stream_chat_reply(messages=prior_messages, writer=writer):
+        acc.append(t)
+    final_text = "".join(acc).strip()
+
+    assistant_msg = AIMessage(content=final_text)
+    next_messages = prior_messages + [assistant_msg]
+
+    out = OutputEnvelope(thread_id=session.thread_id or "unknown", message=final_text).model_dump(
+        by_alias=True
+    )
+    return {"output": out, "messages": next_messages}
 
 
 builder: StateGraph = StateGraph(GraphState)
