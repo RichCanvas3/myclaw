@@ -1,6 +1,7 @@
 import { getA2aAgent } from "@/lib/agents/registry";
 import type { SuggestedAction } from "@/lib/agents/types";
 import { mcpToolsCall, mcpToolsList } from "@/lib/mcp/client";
+import { orchestratorCompose, orchestratorPlan } from "@/lib/orchestrator/llm";
 import { memoryAppendEvent, memoryGet, memoryGetProfile, memoryQuery, memoryUpsert } from "@/lib/memory/client";
 
 export const runtime = "nodejs";
@@ -379,6 +380,84 @@ export async function POST(req: Request): Promise<Response> {
     memoryProfile = await memoryGetProfile({ ...session, threadId });
   } catch {
     memoryProfile = null;
+  }
+
+  // If configured, use an orchestrator LLM to produce action packs (no phrase triggers).
+  // Otherwise we fall back to the LangSmith director behavior below.
+  const planned = await orchestratorPlan({
+    userMessage: body.message,
+    session,
+    threadId,
+    memoryProfile,
+  });
+
+  if (planned) {
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        controller.enqueue(encoder.encode(sse("thread", { thread_id: threadId })));
+
+        const toolResults: Array<{ action: SuggestedAction; result: unknown }> = [];
+        let accumulated = "";
+
+        for (const action of planned.actions) {
+          if (action.type === "mcp.tool" && isRecord(action.input)) {
+            const server = typeof action.input.server === "string" ? action.input.server : "";
+            const tool = typeof action.input.tool === "string" ? action.input.tool : "";
+            const args = isRecord(action.input.args) ? action.input.args : {};
+            try {
+              const res = await mcpToolsCall(server, tool, args);
+              toolResults.push({ action, result: res });
+            } catch (e) {
+              toolResults.push({ action, result: { error: (e as Error).message } });
+            }
+            continue;
+          }
+          if (action.type === "a2a.call") {
+            // Let existing A2A executor handle these by reusing the normal flow below.
+            toolResults.push({ action, result: { skipped: true, reason: "a2a.call not supported in llm-orchestrator path yet" } });
+            continue;
+          }
+          if (action.type === "memory.upsert" || action.type === "memory.query") {
+            // Reuse existing handlers by pushing into results; compose step can still mention.
+            toolResults.push({ action, result: { skipped: true, reason: "memory.* not supported in llm-orchestrator path yet" } });
+            continue;
+          }
+        }
+
+        try {
+          const finalText = await orchestratorCompose({
+            userMessage: body.message,
+            session,
+            threadId,
+            toolResults,
+          });
+          accumulated = finalText;
+          controller.enqueue(encoder.encode(sse("delta", { text: finalText })));
+        } catch (e) {
+          const msg = `Orchestrator error: ${(e as Error).message}`;
+          accumulated = msg;
+          controller.enqueue(encoder.encode(sse("delta", { text: msg })));
+        }
+
+        controller.enqueue(
+          encoder.encode(
+            sse("final", {
+              thread_id: threadId,
+              message: accumulated.trim(),
+              entities: [],
+              suggestedActions: planned.actions,
+            }),
+          ),
+        );
+        controller.close();
+      },
+    });
+
+    return new Response(stream, {
+      status: 200,
+      headers: { "content-type": "text/event-stream", "cache-control": "no-cache", connection: "keep-alive" },
+    });
   }
 
   const upstream = await fetch(`${deploymentUrl}/threads/${threadId}/runs/stream`, {
