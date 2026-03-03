@@ -21,7 +21,11 @@ def a2a_api_key() -> str | None:
 
 def _post_json(url: str, payload: dict[str, Any], *, api_key: str | None) -> Any:
     data = json.dumps(payload).encode("utf-8")
-    headers = {"content-type": "application/json"}
+    headers = {
+        "content-type": "application/json",
+        "accept": "application/json",
+        "user-agent": "myclaw-agent/0.1",
+    }
     if api_key:
         headers["x-api-key"] = api_key
     req = urllib.request.Request(url, data=data, headers=headers, method="POST")
@@ -46,7 +50,11 @@ def chat_stream_sse_lines(payload: dict[str, Any]) -> Generator[str, None, None]
     """
     url = a2a_base_url() + "chat.stream"
     data = json.dumps(payload).encode("utf-8")
-    headers = {"content-type": "application/json"}
+    headers = {
+        "content-type": "application/json",
+        "accept": "text/event-stream, application/json",
+        "user-agent": "myclaw-agent/0.1",
+    }
     key = a2a_api_key()
     if key:
         headers["x-api-key"] = key

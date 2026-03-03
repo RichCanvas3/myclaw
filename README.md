@@ -49,4 +49,6 @@ Web runs on `http://localhost:3000` and calls your LangSmith Deployment via `LAN
 
 - **Stored memory**: persisted in LangSmith thread state (use `/mem show` and `/mem set key=value`)
 - **Indexed KB**: a simple per-thread index (use `/kb add <text>` and `/kb search <query>`)
-- **Household/chat**: proxied to Churchcore via the A2A gateway
+- **Churchcore orchestration**: the agent returns `suggestedActions`; Next.js executes A2A calls server-side
+  - Default action: `a2a.call` → `chat.stream`
+  - Manual action: `/a2a <endpoint> [<json_payload>]` (example: `/a2a thread.list {"limit":20}`)

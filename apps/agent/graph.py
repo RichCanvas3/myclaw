@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import json
 import re
 from typing import Any, TypedDict
@@ -9,7 +8,6 @@ from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, StateGraph
 from langgraph.types import StreamWriter
 
-from apps.agent.a2a import chat, chat_stream_sse_lines
 from apps.agent.models import OutputEnvelope, Session
 
 
@@ -45,6 +43,74 @@ def _kb_search(kb: list[dict[str, Any]], query: str, *, k: int = 5) -> list[dict
 
 def json_dumps(v: Any) -> str:
     return json.dumps(v, ensure_ascii=False, indent=2, sort_keys=True)
+
+def _default_session(session: Session, memory: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "churchId": memory.get("churchId") or session.church_id or "calvarybible",
+        "userId": memory.get("userId") or session.user_id or "demo_user_noah",
+        "personId": memory.get("personId") or session.person_id or "p_seeker_2",
+        "householdId": memory.get("householdId") or session.household_id,
+    }
+
+
+def _make_action_pack(user_text: str, *, session: Session, memory: dict[str, Any]) -> list[dict[str, Any]]:
+    """
+    Return a list of suggested actions for the web orchestrator to execute.
+
+    For now we keep it simple and delegate natural-language execution to the
+    Churchcore agent via A2A chat. This avoids outbound calls from LangSmith.
+    """
+    if user_text.startswith("/a2a "):
+        # /a2a <endpoint> [<json_payload>]
+        # Example:
+        #   /a2a thread.list {"limit":20}
+        # If no payload is provided, we'll send only the session.
+        rest = user_text.removeprefix("/a2a ").strip()
+        if not rest:
+            return [
+                {
+                    "type": "a2a.call",
+                    "input": {
+                        "endpoint": "chat.stream",
+                        "stream": True,
+                        "payload": {
+                            "skill": "chat",
+                            "message": "usage: /a2a <endpoint> [<json_payload>]",
+                            "args": None,
+                            "session": _default_session(session, memory),
+                        },
+                    },
+                }
+            ]
+        parts = rest.split(" ", 1)
+        endpoint = parts[0].strip()
+        payload_text = parts[1].strip() if len(parts) > 1 else ""
+        payload: dict[str, Any] = {}
+        if payload_text:
+            try:
+                v = json.loads(payload_text)
+                if isinstance(v, dict):
+                    payload = v
+            except Exception:
+                payload = {"message": payload_text}
+        payload.setdefault("session", _default_session(session, memory))
+        return [{"type": "a2a.call", "input": {"endpoint": endpoint, "stream": endpoint.endswith(".stream"), "payload": payload}}]
+
+    return [
+        {
+            "type": "a2a.call",
+            "input": {
+                "endpoint": "chat.stream",
+                "stream": True,
+                "payload": {
+                    "skill": "chat",
+                    "message": user_text,
+                    "args": None,
+                    "session": _default_session(session, memory),
+                },
+            },
+        }
+    ]
 
 
 async def assistant_node(state: GraphState, writer: StreamWriter) -> GraphState:
@@ -133,46 +199,17 @@ async def assistant_node(state: GraphState, writer: StreamWriter) -> GraphState:
             final_text = "usage: /kb add <text> | /kb search <query>"
             writer({"delta": final_text})
     else:
-        # Default: proxy to Churchcore A2A chat (stream if possible).
-        a2a_payload = {
-            "skill": "chat",
-            "message": user_text,
-            "args": None,
-            "session": {
-                "churchId": memory.get("churchId") or session.church_id,
-                "userId": memory.get("userId") or session.user_id,
-                "personId": memory.get("personId") or session.person_id,
-                "householdId": memory.get("householdId") or session.household_id,
-            },
-        }
-
-        # Try streaming first; if it errors, fall back to non-stream chat.
-        acc: list[str] = []
-
-        def run_stream_sync() -> None:
-            for t in chat_stream_sse_lines(a2a_payload):
-                acc.append(t)
-                writer({"delta": t})
-
-        try:
-            await asyncio.to_thread(run_stream_sync)
-            final_text = "".join(acc).strip()
-            if not final_text:
-                # If stream produced nothing, try non-stream.
-                resp = await asyncio.to_thread(chat, a2a_payload)
-                final_text = str(resp) if resp is not None else ""
-                writer({"delta": final_text})
-        except Exception:
-            resp = await asyncio.to_thread(chat, a2a_payload)
-            final_text = str(resp) if resp is not None else ""
-            writer({"delta": final_text})
+        actions = _make_action_pack(user_text, session=session, memory=memory)
+        final_text = ""
 
     assistant_msg = AIMessage(content=final_text)
     next_messages = prior_messages + [assistant_msg]
 
-    out = OutputEnvelope(thread_id=session.thread_id or "unknown", message=final_text).model_dump(
-        by_alias=True
-    )
+    out = OutputEnvelope(
+        thread_id=session.thread_id or "unknown",
+        message=final_text,
+        suggested_actions=actions if not user_text.startswith(("/mem ", "/kb ")) else [],
+    ).model_dump(by_alias=True)
     return {"output": out, "messages": next_messages, "memory": memory, "kb": kb}
 
 

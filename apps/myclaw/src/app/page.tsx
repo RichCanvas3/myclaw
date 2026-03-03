@@ -26,11 +26,11 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 
 function parseSseChunk(buffer: string): { events: SseEvent[]; rest: string } {
   const events: SseEvent[] = [];
-  const parts = buffer.split("\n\n");
+  const parts = buffer.split(/\r?\n\r?\n/);
   const rest = parts.pop() ?? "";
 
   for (const part of parts) {
-    const lines = part.split("\n");
+    const lines = part.split(/\r?\n/);
     const eventLine = lines.find((l) => l.startsWith("event: "));
     const dataLine = lines.find((l) => l.startsWith("data: "));
     if (!eventLine || !dataLine) continue;
@@ -92,7 +92,8 @@ async function* streamAgentAct(params: {
   });
 
   if (!res.ok || !res.body) {
-    throw new Error(`agent error: ${res.status}`);
+    const detail = await res.text().catch(() => "");
+    throw new Error(`agent error: ${res.status}${detail ? ` - ${detail}` : ""}`);
   }
 
   const reader = res.body.getReader();
@@ -161,13 +162,34 @@ export default function Home() {
         }
         if (ev.event === "final") {
           setThreadId(ev.data.thread_id);
+          if (ev.data.message) {
+            setMessages((m) => {
+              const idx = (() => {
+                for (let i = m.length - 1; i >= 0; i--) if (m[i]?.role === "assistant") return i;
+                return -1;
+              })();
+              if (idx === -1) return m;
+              const next = m.slice();
+              if (!(next[idx]?.content ?? "").trim()) {
+                next[idx] = { role: "assistant", content: ev.data.message };
+              }
+              return next;
+            });
+          }
         }
       }
     } catch (e) {
-      setMessages((m) => [
-        ...m,
-        { role: "assistant", content: `Error: ${(e as Error).message}` },
-      ]);
+      const msg = `Error: ${(e as Error).message}`;
+      setMessages((m) => {
+        const next = m.slice();
+        for (let i = next.length - 1; i >= 0; i--) {
+          if (next[i]?.role === "assistant") {
+            next[i] = { role: "assistant", content: msg };
+            return next;
+          }
+        }
+        return [...next, { role: "assistant", content: msg }];
+      });
     } finally {
       setIsStreaming(false);
     }
