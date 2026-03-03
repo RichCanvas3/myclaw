@@ -74,6 +74,9 @@ function parseSseChunk(buffer: string): { events: SseEvent[]; rest: string } {
 async function* streamAgentAct(params: {
   threadId: string | null;
   message: string;
+  churchId: string;
+  userId: string;
+  personId: string;
 }): AsyncGenerator<SseEvent> {
   const res = await fetch("/api/agent/act", {
     method: "POST",
@@ -81,8 +84,10 @@ async function* streamAgentAct(params: {
     body: JSON.stringify({
       thread_id: params.threadId,
       message: params.message,
-      user_id: "default",
-      org_id: "default",
+      user_id: params.userId,
+      org_id: params.churchId,
+      church_id: params.churchId,
+      person_id: params.personId,
     }),
   });
 
@@ -106,11 +111,14 @@ async function* streamAgentAct(params: {
 
 export default function Home() {
   const [threadId, setThreadId] = useState<string | null>(null);
+  const [churchId, setChurchId] = useState("calvarybible");
+  const [userId, setUserId] = useState("demo_user_noah");
+  const [personId, setPersonId] = useState("p_seeker_2");
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
       content:
-        "myclaw is up. Ask something, or ingest KB via the agent API and then query it.",
+        "myclaw is up.\n\nTry: “Find my family by phone …” or “Get my household”.\n\nLocal commands: /mem show | /mem set key=value | /kb add <text> | /kb search <query>",
     },
   ]);
   const [input, setInput] = useState("");
@@ -137,7 +145,7 @@ export default function Home() {
     setMessages((m) => [...m, { role: "user", content: text }, { role: "assistant", content: "" }]);
 
     try {
-      for await (const ev of streamAgentAct({ threadId, message: text })) {
+      for await (const ev of streamAgentAct({ threadId, message: text, churchId, userId, personId })) {
         if (ev.event === "thread") setThreadId(ev.data.thread_id);
         if (ev.event === "delta") {
           setMessages((m) => {
@@ -194,6 +202,30 @@ export default function Home() {
             New thread
           </button>
         </header>
+
+        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <input
+            value={churchId}
+            onChange={(e) => setChurchId(e.target.value)}
+            placeholder="churchId"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
+            disabled={isStreaming}
+          />
+          <input
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+            placeholder="userId"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
+            disabled={isStreaming}
+          />
+          <input
+            value={personId}
+            onChange={(e) => setPersonId(e.target.value)}
+            placeholder="personId"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
+            disabled={isStreaming}
+          />
+        </div>
 
         <main className="mt-6 flex-1 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
           <div className="flex h-[65vh] flex-col gap-3 overflow-y-auto pr-1">

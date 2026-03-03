@@ -10,15 +10,18 @@
 This repo follows the same pattern as `churchcore`:
 
 - `langgraph.json` points at `apps.agent.graph:graph`
-- `requirements.txt` contains Python deps for the deployment runtime
+- `requirements.txt` / `pyproject.toml` are intentionally minimal to avoid dependency constraint conflicts in hosted builds
 - `pyproject.toml` makes `apps.*` importable
 
 You deploy the **LangGraph** named `myclaw_agent`.
 
-### Required env vars (deployment)
+### Required env vars (deployment: myclaw agent)
 
-- `DATABASE_URL` (remote Postgres, not localhost; usually `?sslmode=require`)
-- `OPENAI_API_KEY` (or swap the LLM implementation)
+- `CHURCHCORE_A2A_API_KEY` (send as `x-api-key` to the gateway)
+
+Optional:
+
+- `CHURCHCORE_A2A_BASE_URL` (defaults to `https://a2a-gateway-worker.richardpedersen3.workers.dev/a2a/`)
 
 Optional (LangSmith tracing):
 
@@ -41,3 +44,9 @@ pnpm dev
 ```
 
 Web runs on `http://localhost:3000` and calls your LangSmith Deployment via `LANGGRAPH_DEPLOYMENT_URL`.
+
+## Agent features (current)
+
+- **Stored memory**: persisted in LangSmith thread state (use `/mem show` and `/mem set key=value`)
+- **Indexed KB**: a simple per-thread index (use `/kb add <text>` and `/kb search <query>`)
+- **Household/chat**: proxied to Churchcore via the A2A gateway

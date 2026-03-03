@@ -4,6 +4,9 @@ type ActRequest = {
   thread_id?: string | null;
   user_id?: string;
   org_id?: string;
+  church_id?: string;
+  person_id?: string;
+  household_id?: string;
   message: string;
 };
 
@@ -84,8 +87,10 @@ export async function POST(req: Request): Promise<Response> {
         message: body.message,
         args: null,
         session: {
-          org_id: body.org_id ?? "default",
-          user_id: body.user_id ?? "default",
+          churchId: body.church_id ?? body.org_id ?? "calvarybible",
+          userId: body.user_id ?? "demo_user_noah",
+          personId: body.person_id ?? "p_seeker_2",
+          householdId: body.household_id ?? null,
           thread_id: threadId,
         },
       },
