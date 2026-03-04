@@ -27,6 +27,16 @@ export type SuggestedAction =
       };
     }
   | {
+      type: "email.send";
+      input: {
+        to: string[]; // one action can target multiple recipients; server will send 1 email per recipient
+        subject?: string;
+        text?: string;
+        html?: string;
+        includeHousehold?: boolean;
+      };
+    }
+  | {
       type: "calendar.range";
       input: {
         accountAddress?: string; // if omitted, orchestrator tries to use memoryProfile.identity.email

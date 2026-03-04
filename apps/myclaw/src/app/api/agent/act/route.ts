@@ -1,7 +1,7 @@
 import { getA2aAgent } from "@/lib/agents/registry";
 import type { SuggestedAction } from "@/lib/agents/types";
 import { mcpToolsCall, mcpToolsList } from "@/lib/mcp/client";
-import { orchestratorCompose, orchestratorPlan } from "@/lib/orchestrator/llm";
+import { orchestratorCompose, orchestratorComposeEmail, orchestratorPlan } from "@/lib/orchestrator/llm";
 import { memoryAppendEvent, memoryGet, memoryGetProfile, memoryQuery, memoryUpsert } from "@/lib/memory/client";
 
 export const runtime = "nodejs";
@@ -36,6 +36,27 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null;
 }
 
+function isA2aCallActionWithEndpoint(action: SuggestedAction, endpoint: string): boolean {
+  if (action.type !== "a2a.call") return false;
+  const input = action.input as unknown;
+  return isRecord(input) && input.endpoint === endpoint;
+}
+
+function householdMemberNames(v: unknown): string[] {
+  if (!isRecord(v)) return [];
+  const members = v.members;
+  if (!Array.isArray(members)) return [];
+  const names: string[] = [];
+  for (const m of members) {
+    if (!isRecord(m)) continue;
+    const first = typeof m.first_name === "string" ? m.first_name : typeof m.firstName === "string" ? m.firstName : "";
+    const last = typeof m.last_name === "string" ? m.last_name : typeof m.lastName === "string" ? m.lastName : "";
+    const full = `${first} ${last}`.trim();
+    if (full) names.push(full);
+  }
+  return names;
+}
+
 function tryParseJson(text: string): unknown {
   try {
     return JSON.parse(text) as unknown;
@@ -47,6 +68,16 @@ function tryParseJson(text: string): unknown {
 function defaultCalendarAccountAddress(): string | null {
   const v = process.env.MYCLAW_DEFAULT_GCAL_ACCOUNT_ADDRESS ?? "";
   return v.trim() ? v.trim() : null;
+}
+
+function defaultWeatherLatLon(): { lat: number; lon: number } | null {
+  const latRaw = (process.env.MYCLAW_DEFAULT_WEATHER_LAT ?? "").trim();
+  const lonRaw = (process.env.MYCLAW_DEFAULT_WEATHER_LON ?? "").trim();
+  if (!latRaw || !lonRaw) return null;
+  const lat = Number(latRaw);
+  const lon = Number(lonRaw);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  return { lat, lon };
 }
 
 async function executeCalendarRange(params: {
@@ -434,6 +465,7 @@ export async function POST(req: Request): Promise<Response> {
     session,
     threadId,
     memoryProfile,
+    nowISO: new Date().toISOString(),
   });
 
   // Helpful error when user requests email but orchestrator LLM isn't configured.
@@ -469,7 +501,27 @@ export async function POST(req: Request): Promise<Response> {
         let accumulated = "";
         const ctx = { ...session, threadId };
 
+        const pendingEmails: Array<{
+          action: SuggestedAction;
+          to: string[];
+          subjectHint?: string;
+          textHint?: string;
+          includeHousehold?: boolean;
+        }> = [];
+
         for (const action of planned.actions) {
+          if (action.type === "email.send" && isRecord(action.input)) {
+            const to = Array.isArray(action.input.to) ? action.input.to.filter((x) => typeof x === "string") : [];
+            pendingEmails.push({
+              action,
+              to,
+              subjectHint: typeof action.input.subject === "string" ? action.input.subject : undefined,
+              textHint: typeof action.input.text === "string" ? action.input.text : undefined,
+              includeHousehold: Boolean(action.input.includeHousehold),
+            });
+            continue;
+          }
+
           if (action.type === "calendar.range" && isRecord(action.input)) {
             try {
               const timeMinISO = typeof action.input.timeMinISO === "string" ? action.input.timeMinISO : null;
@@ -524,8 +576,47 @@ export async function POST(req: Request): Promise<Response> {
           if (action.type === "mcp.tool" && isRecord(action.input)) {
             const server = typeof action.input.server === "string" ? action.input.server : "";
             const tool = typeof action.input.tool === "string" ? action.input.tool : "";
-            const args = isRecord(action.input.args) ? action.input.args : {};
+            const args = isRecord(action.input.args) ? { ...action.input.args } : {};
             try {
+              // Safety: if the planner accidentally emits a malformed Google Calendar MCP call,
+              // rewrite it into a calendar.range default (next 30 days).
+              if (
+                server === "gym-googlecalendar" &&
+                tool === "googlecalendar_list_events" &&
+                (!("accountAddress" in args) || !("timeMinISO" in args) || !("timeMaxISO" in args))
+              ) {
+                const now = new Date();
+                const later = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+                const res = await executeCalendarRange({
+                  accountAddress: defaultCalendarAccountAddress() ?? "acct_cust_casey",
+                  timeMinISO: now.toISOString(),
+                  timeMaxISO: later.toISOString(),
+                });
+                toolResults.push({
+                  action: {
+                    type: "calendar.range",
+                    input: { timeMinISO: now.toISOString(), timeMaxISO: later.toISOString() },
+                  },
+                  result: res,
+                });
+                continue;
+              }
+
+              // Default weather location (Erie, CO) when missing lat/lon.
+              if (server === "gym-weather" && tool.startsWith("weather_")) {
+                const hasLat = typeof args.lat === "number" && Number.isFinite(args.lat);
+                const hasLon = typeof args.lon === "number" && Number.isFinite(args.lon);
+                if (!hasLat || !hasLon) {
+                  const def = defaultWeatherLatLon();
+                  if (def) {
+                    args.lat = def.lat;
+                    args.lon = def.lon;
+                    args.units ??= "imperial";
+                    args.label ??= "Erie, CO";
+                  }
+                }
+              }
+
               const res = await mcpToolsCall(server, tool, args);
               toolResults.push({ action, result: res });
             } catch (e) {
@@ -581,6 +672,80 @@ export async function POST(req: Request): Promise<Response> {
               toolResults.push({ action, result: { error: (e as Error).message } });
             }
             continue;
+          }
+        }
+
+        // Execute pending emails last, so they can include household/tool context.
+        if (pendingEmails.length) {
+          // Ensure we have household info if requested.
+          const needsHousehold = pendingEmails.some((e) => e.includeHousehold);
+          if (needsHousehold && !toolResults.some((tr) => isA2aCallActionWithEndpoint(tr.action, "household.get"))) {
+            try {
+              const payload: Record<string, unknown> = {
+                identity: {
+                  tenant_id: session.churchId,
+                  user_id: session.userId,
+                  person_id: session.personId,
+                  household_id: session.householdId,
+                },
+              };
+              const res = await a2aCallJson({ agent: "churchcore", endpoint: "household.get", payload });
+              toolResults.push({ action: { type: "a2a.call", input: { agent: "churchcore", endpoint: "household.get", stream: false, payload } } as SuggestedAction, result: res });
+              // Best-effort persist to local memory.
+              try {
+                await memoryUpsert({ ctx, namespace: "household", key: "latest", value: res });
+              } catch {
+                // ignore
+              }
+            } catch (e) {
+              toolResults.push({ action: { type: "a2a.call", input: { agent: "churchcore", endpoint: "household.get", stream: false, payload: {} } } as SuggestedAction, result: { error: (e as Error).message } });
+            }
+          }
+
+          for (const pe of pendingEmails) {
+            const recipients = pe.to
+              .flatMap((s) => s.split(/[, ]+/g))
+              .map((s) => s.trim())
+              .filter(Boolean);
+            if (!recipients.length) {
+              toolResults.push({ action: pe.action, result: { error: "No recipients" } });
+              continue;
+            }
+
+            const draft = await orchestratorComposeEmail({
+              userMessage: body.message,
+              session,
+              threadId,
+              to: recipients,
+              subjectHint: pe.subjectHint,
+              textHint: pe.textHint,
+              includeHousehold: pe.includeHousehold,
+              toolResults,
+            });
+
+            // Emit a small preview so the user can verify inclusion.
+            const hhResult = toolResults.find((tr) => isA2aCallActionWithEndpoint(tr.action, "household.get"))?.result;
+            const hhNames = householdMemberNames(hhResult);
+            const preview =
+              `Email draft:\nSubject: ${draft.subject}\nTo: ${recipients.join(", ")}\n` +
+              (pe.includeHousehold ? `Household members: ${hhNames.length ? hhNames.join(", ") : "(none found)"}\n` : "") +
+              `\n${draft.text.slice(0, 600)}${draft.text.length > 600 ? "\n…(truncated)" : ""}`;
+            controller.enqueue(encoder.encode(sse("delta", { text: preview })));
+            toolResults.push({ action: pe.action, result: { draft, recipients } });
+
+            for (const to of recipients) {
+              try {
+                const res = await mcpToolsCall("gym-sendgrid", "sendEmail", {
+                  to,
+                  subject: draft.subject,
+                  text: draft.text,
+                  ...(draft.html ? { html: draft.html } : {}),
+                });
+                toolResults.push({ action: pe.action, result: { to, ok: true, response: res } });
+              } catch (e) {
+                toolResults.push({ action: pe.action, result: { to, ok: false, error: (e as Error).message } });
+              }
+            }
           }
         }
 
