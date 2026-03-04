@@ -80,6 +80,41 @@ function defaultWeatherLatLon(): { lat: number; lon: number } | null {
   return { lat, lon };
 }
 
+function normStr(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const t = v.trim();
+  return t ? t : null;
+}
+
+function parseTelegramChats(v: unknown): Array<{ chatId: string; title?: string | null; username?: string | null }> {
+  const parsed = typeof v === "string" ? tryParseJson(v) : v;
+  if (!isRecord(parsed)) return [];
+  const chats = parsed.chats;
+  if (!Array.isArray(chats)) return [];
+  const out: Array<{ chatId: string; title?: string | null; username?: string | null }> = [];
+  for (const c of chats) {
+    if (!isRecord(c)) continue;
+    const chatId = normStr(c.chatId);
+    if (!chatId) continue;
+    out.push({ chatId, title: normStr(c.title), username: normStr(c.username) });
+  }
+  return out;
+}
+
+async function resolveTelegramChatIdByTitle(title: string): Promise<string | null> {
+  const resp = await mcpToolsCall("gym-telegram", "telegram_list_chats", {});
+  const chats = parseTelegramChats(resp);
+  const want = title.trim().toLowerCase();
+  if (!want) return null;
+  // Prefer exact title match; then exact @username match; then contains.
+  const exactTitle = chats.find((c) => (c.title ?? "").trim().toLowerCase() === want);
+  if (exactTitle) return exactTitle.chatId;
+  const exactUser = chats.find((c) => (c.username ?? "").trim().toLowerCase() === want.replace(/^@/, ""));
+  if (exactUser) return exactUser.chatId;
+  const contains = chats.find((c) => (c.title ?? "").trim().toLowerCase().includes(want));
+  return contains ? contains.chatId : null;
+}
+
 async function executeCalendarRange(params: {
   accountAddress: string;
   timeMinISO: string;
@@ -613,6 +648,30 @@ export async function POST(req: Request): Promise<Response> {
                     args.lon = def.lon;
                     args.units ??= "imperial";
                     args.label ??= "Erie, CO";
+                  }
+                }
+              }
+
+              // Telegram convenience: allow referencing chats by title/username (server resolves to chatId).
+              if (server === "gym-telegram") {
+                const hasChatId =
+                  typeof args.chatId === "string" ||
+                  (typeof args.chatId === "number" && Number.isFinite(args.chatId));
+                const chatTitle =
+                  normStr((args as Record<string, unknown>).chatTitle) ??
+                  normStr((args as Record<string, unknown>).title) ??
+                  normStr((args as Record<string, unknown>).chatName);
+                if (!hasChatId && chatTitle && tool !== "telegram_list_chats") {
+                  const resolved = await resolveTelegramChatIdByTitle(chatTitle);
+                  if (resolved) {
+                    args.chatId = resolved;
+                    delete (args as Record<string, unknown>).chatTitle;
+                    delete (args as Record<string, unknown>).title;
+                    delete (args as Record<string, unknown>).chatName;
+                  } else {
+                    throw new Error(
+                      `Unknown Telegram chat: "${chatTitle}". Try telegram_list_chats first to see available titles/chatIds.`,
+                    );
                   }
                 }
               }
