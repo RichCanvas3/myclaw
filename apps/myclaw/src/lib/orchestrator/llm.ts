@@ -49,6 +49,7 @@ async function chatJson(system: string, user: string): Promise<unknown> {
     body: JSON.stringify({
       model: model(),
       temperature: 0.2,
+      response_format: { type: "json_object" },
       messages: [
         { role: "system", content: system },
         { role: "user", content: user },
@@ -103,7 +104,13 @@ export async function orchestratorPlan(params: {
     "- If multiple recipients are provided, include all in email.send.input.to.",
     "- If the user asks to include household info, set email.send.input.includeHousehold=true AND include an a2a.call to churchcore endpoint 'household.get' before the email.send action.",
     "- For weather, use gym-weather tools. If no location is provided, omit lat/lon and the server will use the default location.",
-    "- For Telegram, use gym-telegram tools. If chatId is unknown, first call telegram_list_chats or ask for it.",
+    "- For Telegram, ALWAYS use gym-telegram tools when the user asks anything Telegram-related.",
+    "- If the user asks to list messages and provides chatId, call telegram_list_messages with {chatId, limit} (default limit=20).",
+    "- If the user asks to list chats, call telegram_list_chats.",
+    "- If the user asks to search messages, call telegram_search_messages with {q, chatId?: optional, limit?: optional}.",
+    "- If the user asks to send a message, call telegram_send_message with {chatId, text}.",
+    "- If the user asks to edit/delete/pin, call telegram_edit_message_text / telegram_delete_message / telegram_pin_message (requires messageId and permissions).",
+    "- If chatId is missing, first call telegram_list_chats OR ask the user for chatId.",
     "- For calendar: ALWAYS use calendar.range (do NOT call googlecalendar_* tools directly).",
     "- Use nowISO as the current time anchor.",
     "- If the user asks for 'my calendar' without dates, default to [nowISO, nowISO+30d).",
@@ -179,6 +186,7 @@ export async function orchestratorCompose(params: {
   const system = [
     "You are the response writer for a personal assistant.",
     "Use the tool results to answer the user. Be concise and helpful.",
+    "Never claim a tool action happened unless it appears in toolResults.",
     "If tool results include weather JSON, summarize it nicely (current + next few hours).",
     "If tool results include calendar events for a large range, summarize by month and highlight busy days and key events.",
     "If tool results include SendGrid email sent, confirm success.",
