@@ -15,6 +15,8 @@ export function getMcpRegistry(): Record<McpServerId, McpServerConfig> {
   const sendgridUrl = process.env.GYM_SENDGRID_MCP_URL ?? "https://gym-sendgrid-mcp.richardpedersen3.workers.dev/mcp";
   const googleCalUrl =
     process.env.GYM_GOOGLECALENDAR_MCP_URL ?? "https://gym-googlecalendar-mcp.richardpedersen3.workers.dev/mcp";
+  const telegramUrl =
+    process.env.GYM_TELEGRAM_MCP_URL ?? "https://gym-telegram-mcp.richardpedersen3.workers.dev/mcp";
 
   return {
     "gym-weather": {
@@ -35,6 +37,13 @@ export function getMcpRegistry(): Record<McpServerId, McpServerConfig> {
       id: "gym-googlecalendar",
       name: "Gym Google Calendar MCP",
       url: googleCalUrl,
+      apiKeyHeader: "x-api-key",
+      apiKey,
+    },
+    "gym-telegram": {
+      id: "gym-telegram",
+      name: "Gym Telegram MCP",
+      url: telegramUrl,
       apiKeyHeader: "x-api-key",
       apiKey,
     },
