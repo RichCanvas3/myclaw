@@ -1,4 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is the `myclaw` Next.js web app (UI + server-side orchestrator).
+
+## Telegram autonomous actions
+
+If `gym-telegram-mcp` is configured, `myclaw` can **detect new Telegram messages and auto-act** server-side via:
+
+- `POST /api/telegram/pump`: checks chats for new messages (cursor-based) and (optionally) runs the orchestrator to auto-reply using `telegram_send_message` only.
+- `POST /api/telegram/watch-email`: keeps a stable `mcp-session-id`, subscribes to a chat resource, and sends an email when `telegram-mcp` delivers a `notifications/resources/updated` event (deduped by messageId).
+
+Environment variables (see `.env.example`):
+
+- `GYM_TELEGRAM_MCP_URL`, `GYM_MCP_API_KEY`
+- `MYCLAW_TELEGRAM_AUTOPOLL`, `MYCLAW_TELEGRAM_AUTOREPLY`
+- `MYCLAW_TELEGRAM_BOT_USER_ID` (strongly recommended to avoid loops)
+- `MYCLAW_TELEGRAM_NOTIFY_EMAIL_TO`, `MYCLAW_TELEGRAM_WATCH_CHAT_TITLE` (for watch-email)
+
+Example:
+
+```bash
+curl -sS -X POST "http://localhost:3001/api/telegram/pump" \
+  -H "content-type: application/json" \
+  --data '{"subscribeTitles":["Smart Agent"]}'
+```
+
+Email-on-telegram tick:
+
+```bash
+curl -sS -X POST "http://localhost:3001/api/telegram/watch-email" \
+  -H "content-type: application/json" \
+  --data '{"chatTitle":"Smart Agent"}'
+```
 
 ## Getting Started
 

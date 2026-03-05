@@ -54,7 +54,17 @@ function unwrapMcpResult(v: unknown): unknown {
   return v;
 }
 
-async function mcpRequest(serverId: string, req: JsonRpcRequest): Promise<unknown> {
+export type McpRawResponse = {
+  sessionId: string | null;
+  events: unknown[];
+  result: unknown;
+};
+
+async function mcpRequestRaw(
+  serverId: string,
+  req: JsonRpcRequest,
+  opts?: { sessionId?: string | null },
+): Promise<McpRawResponse> {
   const server = getMcpServer(serverId);
   const res = await fetch(server.url, {
     method: "POST",
@@ -62,14 +72,21 @@ async function mcpRequest(serverId: string, req: JsonRpcRequest): Promise<unknow
       "content-type": "application/json",
       accept: "application/json, text/event-stream",
       [server.apiKeyHeader]: server.apiKey,
+      ...(opts?.sessionId ? { "mcp-session-id": opts.sessionId } : {}),
     },
     body: JSON.stringify(req),
   });
 
   const text = await res.text();
   if (!res.ok) throw new Error(`MCP ${serverId} HTTP ${res.status}: ${text}`);
+  const sessionId = res.headers.get("mcp-session-id");
   const events = parseMcpSse(text);
   const result = extractJsonRpcResult(events);
+  return { sessionId, events, result };
+}
+
+async function mcpRequest(serverId: string, req: JsonRpcRequest): Promise<unknown> {
+  const { result } = await mcpRequestRaw(serverId, req);
   return result;
 }
 
@@ -84,5 +101,25 @@ export async function mcpToolsCall(serverId: string, tool: string, args: Record<
     method: "tools/call",
     params: { name: tool, arguments: args },
   });
+}
+
+export async function mcpResourcesList(serverId: string, opts?: { sessionId?: string | null }): Promise<McpRawResponse> {
+  return mcpRequestRaw(serverId, { jsonrpc: "2.0", id: 1, method: "resources/list", params: {} }, opts);
+}
+
+export async function mcpResourcesSubscribe(
+  serverId: string,
+  uri: string,
+  opts?: { sessionId?: string | null },
+): Promise<McpRawResponse> {
+  return mcpRequestRaw(serverId, { jsonrpc: "2.0", id: 1, method: "resources/subscribe", params: { uri } }, opts);
+}
+
+export async function mcpResourcesRead(
+  serverId: string,
+  uri: string,
+  opts?: { sessionId?: string | null },
+): Promise<McpRawResponse> {
+  return mcpRequestRaw(serverId, { jsonrpc: "2.0", id: 1, method: "resources/read", params: { uri } }, opts);
 }
 
