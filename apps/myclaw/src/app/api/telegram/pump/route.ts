@@ -195,17 +195,18 @@ export async function POST(req: Request): Promise<Response> {
       if (!body.includeBacklog) continue;
     }
 
+    const lastSeenForCompare = lastSeen ?? 0;
     const newMessages = list.messages
-      .filter((m) => m.messageId > lastSeen)
+      .filter((m) => m.messageId > lastSeenForCompare)
       .filter((m) => (botUserId ? m.fromUserId !== botUserId : true))
       .filter((m) => (m.text ?? "").trim().length > 0);
 
     if (!newMessages.length) {
-      if (newest && newest > lastSeen) await setLastSeen(ctx, chat.chatId, newest);
+      if (newest && newest > lastSeenForCompare) await setLastSeen(ctx, chat.chatId, newest);
       continue;
     }
 
-    if (newest && newest > lastSeen) await setLastSeen(ctx, chat.chatId, newest);
+    if (newest && newest > lastSeenForCompare) await setLastSeen(ctx, chat.chatId, newest);
 
     const replies: unknown[] = [];
     if (autoReply) {
