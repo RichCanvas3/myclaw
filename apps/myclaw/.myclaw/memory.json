@@ -60,14 +60,43 @@
         "active": {
           "value": {
             "created_at": 1773923313,
-            "last_result": "Ticked off the goal for this week and planned next steps.",
-            "plan": [],
+            "last_result": "Ticked off the goal for this week and planned next steps. Next focus: increase weekly running distance and incorporate strength training.",
+            "plan": [
+              {
+                "activity": "5 miles easy run",
+                "day": "Monday"
+              },
+              {
+                "activity": "Strength training",
+                "day": "Tuesday"
+              },
+              {
+                "activity": "6 miles tempo run",
+                "day": "Wednesday"
+              },
+              {
+                "activity": "Rest or cross-training",
+                "day": "Thursday"
+              },
+              {
+                "activity": "5 miles easy run",
+                "day": "Friday"
+              },
+              {
+                "activity": "Long run: 10 miles",
+                "day": "Saturday"
+              },
+              {
+                "activity": "Rest and recovery",
+                "day": "Sunday"
+              }
+            ],
             "status": "active",
-            "step_index": 2,
+            "step_index": 3,
             "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
           },
           "tags": [],
-          "updated_at": 1773923647022
+          "updated_at": 1773924557610
         }
       },
       "threads": {
@@ -299,6 +328,178 @@
           }
         },
         "ts": 1773923647024
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "1abb525c-7dbd-483f-9787-9bee763ab13a",
+          "input": {
+            "message": "/goal tick"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Ticked off the goal for this week and planned next steps. Next focus: increase weekly running distance and incorporate strength training.",
+                  "plan": [],
+                  "status": "active",
+                  "step_index": 3,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2023-06-01T09:00:00Z",
+                  "startISO": "2023-06-01T08:00:00Z",
+                  "summary": "Weekly Running and Strength Training Sessions"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2023-06-02T09:00:00Z",
+                  "startISO": "2023-06-02T08:00:00Z",
+                  "summary": "Weekly Running and Strength Training Sessions"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            }
+          ],
+          "output": {
+            "message": "Next, let's focus on increasing your weekly running distance and incorporating strength training. I will update your goal state and suggest a reminder for your training sessions."
+          }
+        },
+        "ts": 1773924157208
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "1abb525c-7dbd-483f-9787-9bee763ab13a",
+          "input": {
+            "message": "/goal tick add workouts for upcoming dates"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Ticked off the goal for this week and planned next steps. Next focus: increase weekly running distance and incorporate strength training.",
+                  "plan": [
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Monday"
+                    },
+                    {
+                      "activity": "Strength training",
+                      "day": "Tuesday"
+                    },
+                    {
+                      "activity": "6 miles tempo run",
+                      "day": "Wednesday"
+                    },
+                    {
+                      "activity": "Rest or cross-training",
+                      "day": "Thursday"
+                    },
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Friday"
+                    },
+                    {
+                      "activity": "Long run: 10 miles",
+                      "day": "Saturday"
+                    },
+                    {
+                      "activity": "Rest and recovery",
+                      "day": "Sunday"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 3,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Let's add the upcoming workouts to your training plan for the Heavy Half Leadville race. I will update your training plan with the next week's workouts and ensure you have a structured approach to increase your running distance and incorporate strength training."
+          }
+        },
+        "ts": 1773924518717
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "1abb525c-7dbd-483f-9787-9bee763ab13a",
+          "input": {
+            "message": "/goal tick add to calendar google"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Ticked off the goal for this week and planned next steps. Next focus: increase weekly running distance and incorporate strength training.",
+                  "plan": [
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Monday"
+                    },
+                    {
+                      "activity": "Strength training",
+                      "day": "Tuesday"
+                    },
+                    {
+                      "activity": "6 miles tempo run",
+                      "day": "Wednesday"
+                    },
+                    {
+                      "activity": "Rest or cross-training",
+                      "day": "Thursday"
+                    },
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Friday"
+                    },
+                    {
+                      "activity": "Long run: 10 miles",
+                      "day": "Saturday"
+                    },
+                    {
+                      "activity": "Rest and recovery",
+                      "day": "Sunday"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 3,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Let's schedule your next training session. Please provide the date and time for the event you want to add to your calendar."
+          }
+        },
+        "ts": 1773924557614
       }
     ]
   }

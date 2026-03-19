@@ -121,6 +121,22 @@ function normalizeGoogleCalendarArgs(tool: string, args: Record<string, unknown>
       args.endISO = new Date(startMs + durationRaw * 60 * 1000).toISOString();
     }
   }
+
+  // Never schedule in the past: shift forward in whole weeks (preserves weekday/time).
+  const startMs = Date.parse(String(args.startISO ?? ""));
+  const endMs = Date.parse(String(args.endISO ?? ""));
+  if (Number.isFinite(startMs)) {
+    const nowMs = Date.now();
+    const thresholdMs = nowMs - 5 * 60 * 1000; // tolerate slight clock skew
+    if (startMs < thresholdMs) {
+      const weekMs = 7 * 24 * 60 * 60 * 1000;
+      const addWeeks = Math.min(520, Math.max(1, Math.ceil((nowMs - startMs) / weekMs)));
+      const durMs = Number.isFinite(endMs) && endMs > startMs ? endMs - startMs : 60 * 60 * 1000;
+      const newStart = startMs + addWeeks * weekMs;
+      args.startISO = new Date(newStart).toISOString();
+      args.endISO = new Date(newStart + durMs).toISOString();
+    }
+  }
 }
 
 function validateGoogleCalendarArgs(tool: string, args: Record<string, unknown>) {

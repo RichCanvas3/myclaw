@@ -146,6 +146,7 @@ export default function Home() {
   const [goalDialogOpen, setGoalDialogOpen] = useState(false);
   const [goalActionContext, setGoalActionContext] = useState("");
   const [goalTickHint, setGoalTickHint] = useState("");
+  const [telegramGoalLast, setTelegramGoalLast] = useState("");
 
   async function loadThreads() {
     const res = await fetch("/api/langgraph/threads?limit=100");
@@ -292,6 +293,26 @@ export default function Home() {
     } catch (e) {
       const msg = `Error: ${(e as Error).message}`;
       setGoalLastOutput(msg);
+    } finally {
+      setIsStreaming(false);
+    }
+  }
+
+  async function runTelegramGoalWatch() {
+    if (isStreaming || !isConnected) return;
+    setIsStreaming(true);
+    setTelegramGoalLast("");
+    try {
+      const res = await fetch("/api/telegram/watch-goal", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ chatTitle: "Smart Agent" }),
+      });
+      const txt = await res.text();
+      setTelegramGoalLast(txt);
+      setGoalLastOutput((v) => (v ? `${v}\n\n[telegram/watch-goal]\n${txt}` : `[telegram/watch-goal]\n${txt}`));
+    } catch (e) {
+      setTelegramGoalLast(`Error: ${(e as Error).message}`);
     } finally {
       setIsStreaming(false);
     }
@@ -475,6 +496,14 @@ export default function Home() {
               <div className="text-sm font-semibold">Autonomy</div>
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => void runTelegramGoalWatch()}
+                  className="rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+                  disabled={isStreaming || !isConnected}
+                  title='Poll "Smart Agent" and run goal tick'
+                >
+                  Telegram
+                </button>
+                <button
                   onClick={() => setGoalDialogOpen(true)}
                   className="rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
                   disabled={isStreaming || !isConnected}
@@ -532,6 +561,12 @@ export default function Home() {
             {goalLastOutput ? (
               <pre className="mt-2 max-h-40 overflow-y-auto whitespace-pre-wrap rounded-lg bg-white p-2 text-[11px] text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
                 {goalLastOutput}
+              </pre>
+            ) : null}
+
+            {telegramGoalLast ? (
+              <pre className="mt-2 max-h-40 overflow-y-auto whitespace-pre-wrap rounded-lg bg-white p-2 text-[11px] text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+                {telegramGoalLast}
               </pre>
             ) : null}
           </div>

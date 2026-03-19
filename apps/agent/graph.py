@@ -201,6 +201,8 @@ def _goal_tick_action_pack(
             "- Prefer information gathering first if blocked.",
             "- Never claim you executed tools; only propose actions.",
             "- ALWAYS include a goals.active memory.upsert with updated state.",
+            "- Treat now_unix/now_iso as the authoritative current time.",
+            "- Never schedule calendar events in the past. If asked to schedule, use the upcoming 7 days relative to now.",
             "- If the user asks to schedule/add to calendar, prefer `gym-googlecalendar` `googlecalendar_create_event` actions.",
             "- For `gym-googlecalendar` `googlecalendar_create_event`, args MUST include: summary (string), startISO (string ISO datetime), endISO (string ISO datetime).",
             "- Do NOT emit googlecalendar_create_event unless you have those fields; if missing, ask the user for the missing info in `message`.",
@@ -213,6 +215,7 @@ def _goal_tick_action_pack(
     user = json.dumps(
         {
             "now_unix": int(time.time()),
+            "now_iso": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "goal": active,
             "memory_profile_summary": _memory_summary(memory_profile),
             "session": _default_session(session, memory),
