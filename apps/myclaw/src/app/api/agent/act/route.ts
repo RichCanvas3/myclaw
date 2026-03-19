@@ -71,6 +71,18 @@ function defaultCalendarAccountAddress(): string | null {
   return v.trim() ? v.trim() : null;
 }
 
+function resolveCalendarAccountAddressFromProfile(memoryProfile: unknown): string | null {
+  const identity =
+    isRecord(memoryProfile) && isRecord(memoryProfile.profile) && isRecord(memoryProfile.profile.identity)
+      ? (memoryProfile.profile.identity as Record<string, unknown>)
+      : null;
+  const addr =
+    (identity && typeof identity.googlecalendar_accountAddress === "string" ? identity.googlecalendar_accountAddress : null) ||
+    (identity && typeof identity.calendar_accountAddress === "string" ? identity.calendar_accountAddress : null) ||
+    defaultCalendarAccountAddress();
+  return addr && addr.trim() ? addr.trim() : null;
+}
+
 function defaultWeatherLatLon(): { lat: number; lon: number } | null {
   const latRaw = (process.env.MYCLAW_DEFAULT_WEATHER_LAT ?? "").trim();
   const lonRaw = (process.env.MYCLAW_DEFAULT_WEATHER_LON ?? "").trim();
@@ -346,13 +358,55 @@ async function ensureA2aThread(params: {
 
 export async function POST(req: Request): Promise<Response> {
   const body = (await req.json()) as ActRequest;
+  const direct = body.message?.trim?.() ?? "";
+  const directGoal = direct.startsWith("/goal ");
 
   const deploymentUrl = langgraphDeploymentUrl();
   if (!deploymentUrl) {
+    if (directGoal) {
+      const msg =
+        "Goal autonomy requires LangGraph (LangSmith/LangServe) to be configured.\n\n" +
+        "Set these in the myclaw web app env:\n" +
+        "- LANGGRAPH_DEPLOYMENT_URL\n" +
+        "- LANGGRAPH_API_KEY\n\n" +
+        "And set these on the LangGraph deployment env (so /goal tick can plan):\n" +
+        "- ORCH_OPENAI_API_KEY (and optionally ORCH_OPENAI_MODEL / ORCH_OPENAI_BASE_URL)\n";
+      const encoder = new TextEncoder();
+      const out = new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(encoder.encode(sse("thread", { thread_id: body.thread_id ?? "new" })));
+          controller.enqueue(encoder.encode(sse("delta", { text: msg })));
+          controller.enqueue(encoder.encode(sse("final", { thread_id: body.thread_id ?? "new", message: msg, entities: [], suggestedActions: [] })));
+          controller.close();
+        },
+      });
+      return new Response(out, {
+        status: 200,
+        headers: { "content-type": "text/event-stream", "cache-control": "no-cache", connection: "keep-alive" },
+      });
+    }
     return new Response("Missing LANGGRAPH_DEPLOYMENT_URL", { status: 500 });
   }
 
   const apiKey = langgraphApiKey();
+  if (directGoal && !apiKey) {
+    const msg =
+      "Goal autonomy requires LangGraph API auth.\n\n" +
+      "Set LANGGRAPH_API_KEY in the myclaw web app env, then retry.";
+    const encoder = new TextEncoder();
+    const out = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(encoder.encode(sse("thread", { thread_id: body.thread_id ?? "new" })));
+        controller.enqueue(encoder.encode(sse("delta", { text: msg })));
+        controller.enqueue(encoder.encode(sse("final", { thread_id: body.thread_id ?? "new", message: msg, entities: [], suggestedActions: [] })));
+        controller.close();
+      },
+    });
+    return new Response(out, {
+      status: 200,
+      headers: { "content-type": "text/event-stream", "cache-control": "no-cache", connection: "keep-alive" },
+    });
+  }
   const headers: Record<string, string> = { "content-type": "application/json" };
   if (apiKey) headers["x-api-key"] = apiKey;
 
@@ -376,7 +430,6 @@ export async function POST(req: Request): Promise<Response> {
   // Format:
   // - /mcp <server> <tool> [<json_args>]
   // - /mcp-tools <server>
-  const direct = body.message?.trim?.() ?? "";
   if (direct.startsWith("/mcp-tools ")) {
     const server = direct.replace("/mcp-tools ", "").trim();
     const encoder = new TextEncoder();
@@ -461,13 +514,15 @@ export async function POST(req: Request): Promise<Response> {
 
   // If configured, use an orchestrator LLM to produce action packs (no phrase triggers).
   // Otherwise we fall back to the LangSmith director behavior below.
-  const planned = await orchestratorPlan({
-    userMessage: body.message,
-    session,
-    threadId,
-    memoryProfile,
-    nowISO: new Date().toISOString(),
-  });
+  const planned = directGoal
+    ? null
+    : await orchestratorPlan({
+        userMessage: body.message,
+        session,
+        threadId,
+        memoryProfile,
+        nowISO: new Date().toISOString(),
+      });
 
   // Helpful error when user requests email but orchestrator LLM isn't configured.
   if (!planned && /\bsend\s+email\b/i.test(body.message)) {
@@ -615,6 +670,15 @@ export async function POST(req: Request): Promise<Response> {
                     args.units ??= "imperial";
                     args.label ??= "Erie, CO";
                   }
+                }
+              }
+
+              // Default Google Calendar accountAddress when missing.
+              if (server === "gym-googlecalendar" && tool.startsWith("googlecalendar_")) {
+                const hasAddr = typeof (args as Record<string, unknown>).accountAddress === "string";
+                if (!hasAddr) {
+                  const addr = resolveCalendarAccountAddressFromProfile(memoryProfile);
+                  if (addr) (args as Record<string, unknown>).accountAddress = addr;
                 }
               }
 
@@ -894,8 +958,18 @@ export async function POST(req: Request): Promise<Response> {
             try {
               const server = typeof action.input.server === "string" ? action.input.server : null;
               const tool = typeof action.input.tool === "string" ? action.input.tool : null;
-              const args = isRecord(action.input.args) ? action.input.args : null;
+              const args = isRecord(action.input.args) ? { ...action.input.args } : null;
               if (!server || !tool || !args) throw new Error("Invalid mcp.tool action");
+
+              // Default Google Calendar accountAddress when missing.
+              if (server === "gym-googlecalendar" && tool.startsWith("googlecalendar_")) {
+                const hasAddr = typeof (args as Record<string, unknown>).accountAddress === "string";
+                if (!hasAddr) {
+                  const addr = resolveCalendarAccountAddressFromProfile(memoryProfile);
+                  if (addr) (args as Record<string, unknown>).accountAddress = addr;
+                }
+              }
+
               const resp = await mcpToolsCall(server, tool, args);
               const rendered = typeof resp === "string" ? resp : JSON.stringify(resp, null, 2);
               accumulated ||= rendered;

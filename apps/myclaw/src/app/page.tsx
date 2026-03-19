@@ -141,6 +141,10 @@ export default function Home() {
   ]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
+  const [goalText, setGoalText] = useState("");
+  const [goalLastOutput, setGoalLastOutput] = useState<string>("");
+  const [goalDialogOpen, setGoalDialogOpen] = useState(false);
+  const [goalActionContext, setGoalActionContext] = useState("");
 
   async function loadThreads() {
     const res = await fetch("/api/langgraph/threads?limit=100");
@@ -249,6 +253,44 @@ export default function Home() {
         }
         return [...next, { role: "assistant", content: msg }];
       });
+    } finally {
+      setIsStreaming(false);
+    }
+  }
+
+  async function runGoalCommand(cmd: string) {
+    const text = cmd.trim();
+    if (!text || isStreaming || !isConnected) return;
+
+    setIsStreaming(true);
+    setGoalLastOutput("");
+    setMessages((m) => [...m, { role: "user", content: text }, { role: "assistant", content: "" }]);
+
+    try {
+      for await (const ev of streamAgentAct({ threadId, message: text, churchId, userId, personId })) {
+        if (ev.event === "thread") setThreadId(ev.data.thread_id);
+        if (ev.event === "delta") {
+          setMessages((m) => {
+            const idx = (() => {
+              for (let i = m.length - 1; i >= 0; i--) if (m[i]?.role === "assistant") return i;
+              return -1;
+            })();
+            if (idx === -1) return m;
+            const next = m.slice();
+            next[idx] = { role: "assistant", content: (next[idx]?.content ?? "") + ev.data.text };
+            return next;
+          });
+          setGoalLastOutput((t) => t + ev.data.text);
+        }
+        if (ev.event === "final") {
+          setThreadId(ev.data.thread_id);
+          setLastActions(JSON.stringify(ev.data.suggestedActions ?? [], null, 2));
+          if (ev.data.message) setGoalLastOutput(ev.data.message);
+        }
+      }
+    } catch (e) {
+      const msg = `Error: ${(e as Error).message}`;
+      setGoalLastOutput(msg);
     } finally {
       setIsStreaming(false);
     }
@@ -427,6 +469,146 @@ export default function Home() {
         </section>
 
         <aside className="flex min-h-0 flex-col overflow-y-auto rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+          <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-black">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold">Autonomy</div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setGoalDialogOpen(true)}
+                  className="rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+                  disabled={isStreaming || !isConnected}
+                  title="Open goal actions dialog"
+                >
+                  Actions
+                </button>
+                <button
+                  onClick={() => void runGoalCommand("/goal status")}
+                  className="rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+                  disabled={isStreaming || !isConnected}
+                  title="Show active goal"
+                >
+                  Status
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-2 flex gap-2">
+              <input
+                value={goalText}
+                onChange={(e) => setGoalText(e.target.value)}
+                placeholder="Set an active goal…"
+                className="min-w-0 flex-1 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
+                disabled={isStreaming || !isConnected}
+              />
+              <button
+                onClick={() => void runGoalCommand(`/goal set ${goalText}`)}
+                className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-black dark:hover:bg-white"
+                disabled={isStreaming || !goalText.trim() || !isConnected}
+                title="Set active goal"
+              >
+                Set
+              </button>
+            </div>
+
+            <div className="mt-2 flex items-center gap-2">
+              <button
+                onClick={() => void runGoalCommand("/goal tick")}
+                className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+                disabled={isStreaming || !isConnected}
+                title="Advance the goal (propose next actions)"
+              >
+                Tick
+              </button>
+              <div className="text-xs text-zinc-500 dark:text-zinc-400">
+                Proposes next actions + updates `goals.active`.
+              </div>
+            </div>
+
+            {goalLastOutput ? (
+              <pre className="mt-2 max-h-40 overflow-y-auto whitespace-pre-wrap rounded-lg bg-white p-2 text-[11px] text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+                {goalLastOutput}
+              </pre>
+            ) : null}
+          </div>
+
+          {goalDialogOpen ? (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+              <div className="w-full max-w-2xl rounded-2xl border border-zinc-200 bg-white p-4 shadow-xl dark:border-zinc-800 dark:bg-zinc-950">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-semibold">Goal actions</div>
+                  <button
+                    onClick={() => setGoalDialogOpen(false)}
+                    className="rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+                  >
+                    Close
+                  </button>
+                </div>
+
+                <div className="mt-3">
+                  <div className="text-xs font-semibold text-zinc-600 dark:text-zinc-300">Context (optional)</div>
+                  <textarea
+                    value={goalActionContext}
+                    onChange={(e) => setGoalActionContext(e.target.value)}
+                    placeholder="Constraints, availability, preferences, contacts to coordinate with, etc."
+                    className="mt-1 h-24 w-full resize-none rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
+                    disabled={isStreaming || !isConnected}
+                  />
+                </div>
+
+                <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <button
+                    onClick={() =>
+                      void runGoalCommand(
+                        `/goal tick Plan the next 7 days into concrete tasks. If relevant, propose a weekly plan with dates.\n\nContext:\n${goalActionContext}`,
+                      )
+                    }
+                    className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+                    disabled={isStreaming || !isConnected}
+                    title="Generate a concrete weekly plan"
+                  >
+                    Plan this week
+                  </button>
+                  <button
+                    onClick={() =>
+                      void runGoalCommand(
+                        `/goal tick Add the upcoming tasks for the next 7 days to my calendar (create events). Use reasonable default times if not provided.\n\nContext:\n${goalActionContext}`,
+                      )
+                    }
+                    className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+                    disabled={isStreaming || !isConnected}
+                    title="Create calendar events from the plan"
+                  >
+                    Add to calendar
+                  </button>
+                  <button
+                    onClick={() =>
+                      void runGoalCommand(
+                        `/goal tick Coordinate with my trainer/coach (draft a message, ask for missing contact details, and propose the outreach action).\n\nContext:\n${goalActionContext}`,
+                      )
+                    }
+                    className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+                    disabled={isStreaming || !isConnected}
+                    title="Coordinate with another agent/person"
+                  >
+                    Coordinate
+                  </button>
+                  <button
+                    onClick={() =>
+                      void runGoalCommand(
+                        `/goal tick What is the single most important next action I should take today to advance the goal? Keep it concrete.\n\nContext:\n${goalActionContext}`,
+                      )
+                    }
+                    className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+                    disabled={isStreaming || !isConnected}
+                    title="Get one high-impact next step"
+                  >
+                    Next action today
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
           <div className="flex items-center justify-between">
             <div className="text-sm font-semibold">Memory</div>
             <button

@@ -1,0 +1,144 @@
+{
+  "records": {
+    "calvarybible:demo_user_noah:p_seeker_2:": {
+      "goals": {
+        "run_heavy_half_leadville_2026": {
+          "value": {
+            "goal": "Run the Heavy Half Leadville race",
+            "eventDate": "2026-06-27"
+          },
+          "tags": [],
+          "updated_at": 1773920813762
+        },
+        "weekly_goals": {
+          "value": {
+            "goals": [
+              "Increase weekly running distance to prepare for the Heavy Half Leadville race.",
+              "Incorporate strength training twice a week.",
+              "Focus on nutrition and hydration strategies for long runs."
+            ]
+          },
+          "tags": [],
+          "updated_at": 1773921555176
+        },
+        "training_plan": {
+          "value": {
+            "plan": [
+              {
+                "day": "Monday",
+                "activity": "5 miles easy run"
+              },
+              {
+                "day": "Tuesday",
+                "activity": "Strength training"
+              },
+              {
+                "day": "Wednesday",
+                "activity": "6 miles tempo run"
+              },
+              {
+                "day": "Thursday",
+                "activity": "Rest or cross-training"
+              },
+              {
+                "day": "Friday",
+                "activity": "5 miles easy run"
+              },
+              {
+                "day": "Saturday",
+                "activity": "Long run: 10 miles"
+              },
+              {
+                "day": "Sunday",
+                "activity": "Rest and recovery"
+              }
+            ]
+          },
+          "tags": [],
+          "updated_at": 1773921555177
+        }
+      },
+      "threads": {
+        "a2a:churchcore:user:calvarybible:demo_user_noah:p_seeker_2": {
+          "value": {
+            "thread_id": "17fe982c-594d-4da4-a632-409e32159339"
+          },
+          "tags": [],
+          "updated_at": 1773921499223
+        }
+      }
+    }
+  },
+  "events": {
+    "calvarybible:demo_user_noah:p_seeker_2:": [
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "ef8a20cb-10b0-4ba4-ad53-f378de9a716e",
+          "input": {
+            "message": "/goal set I attempted to set your goal to run the Heavy Half Leadville race in Colorado  on Saturday, June 27, 2026"
+          },
+          "suggestedActions": [
+            {
+              "type": "a2a.call",
+              "input": {
+                "agent": "churchcore",
+                "endpoint": "chat.stream",
+                "payload": {
+                  "args": null,
+                  "message": "/goal set I attempted to set your goal to run the Heavy Half Leadville race in Colorado  on Saturday, June 27, 2026",
+                  "session": {
+                    "churchId": "calvarybible",
+                    "householdId": null,
+                    "personId": "p_seeker_2",
+                    "userId": "demo_user_noah"
+                  },
+                  "skill": "chat"
+                },
+                "stream": true
+              }
+            }
+          ],
+          "output": {
+            "message": "Thanks, Noah—your goal is set: run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026. If you’d like, tell me your current weekly mileage and any time goal so I can help map a training plan."
+          }
+        },
+        "ts": 1773921506071
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "ef8a20cb-10b0-4ba4-ad53-f378de9a716e",
+          "input": {
+            "message": "/goal tick"
+          },
+          "suggestedActions": [
+            {
+              "type": "a2a.call",
+              "input": {
+                "agent": "churchcore",
+                "endpoint": "chat.stream",
+                "payload": {
+                  "args": null,
+                  "message": "/goal tick",
+                  "session": {
+                    "churchId": "calvarybible",
+                    "householdId": null,
+                    "personId": "p_seeker_2",
+                    "userId": "demo_user_noah"
+                  },
+                  "skill": "chat"
+                },
+                "stream": true
+              }
+            }
+          ],
+          "output": {
+            "message": "Noah, I can help—but “/goal tick” looks like a command. What goal are you trying to mark as completed, and what’s the goal name or ID?"
+          }
+        },
+        "ts": 1773921656944
+      }
+    ]
+  }
+}
