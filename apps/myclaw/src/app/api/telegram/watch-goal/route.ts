@@ -64,6 +64,12 @@ function scopeKey(ctx: OrchestratorContext): string {
   return `${ctx.churchId}:${ctx.userId}:${ctx.personId}:${ctx.householdId ?? ""}`;
 }
 
+function goalThreadFallbackStore(): { threadByScopeAndChat: Map<string, string> } {
+  const g = globalThis as unknown as { __myclawTelegramGoalThreadByScopeAndChat?: Map<string, string> };
+  if (!g.__myclawTelegramGoalThreadByScopeAndChat) g.__myclawTelegramGoalThreadByScopeAndChat = new Map<string, string>();
+  return { threadByScopeAndChat: g.__myclawTelegramGoalThreadByScopeAndChat };
+}
+
 async function getStoredSessionId(ctx: OrchestratorContext): Promise<string | null> {
   const key = "telegram:mcp_session_id";
   const resp = await memoryGet({ ctx, namespace: "threads", key }).catch(() => null);
@@ -77,6 +83,24 @@ async function storeSessionId(ctx: OrchestratorContext, sessionId: string): Prom
   await memoryUpsert({ ctx, namespace: "threads", key, value: { sessionId, updatedAtISO: new Date().toISOString() } }).catch(
     () => {},
   );
+}
+
+async function getStoredGoalThreadId(ctx: OrchestratorContext, chatId: string): Promise<string | null> {
+  const key = `telegram:goal_langgraph_thread_id:${chatId}`;
+  const resp = await memoryGet({ ctx, namespace: "threads", key }).catch(() => null);
+  if (!isRecord(resp) || !isRecord(resp.value)) return null;
+  const v = resp.value as Record<string, unknown>;
+  return typeof v.threadId === "string" && v.threadId.trim() ? v.threadId.trim() : null;
+}
+
+async function storeGoalThreadId(ctx: OrchestratorContext, chatId: string, threadId: string): Promise<void> {
+  const key = `telegram:goal_langgraph_thread_id:${chatId}`;
+  await memoryUpsert({
+    ctx,
+    namespace: "threads",
+    key,
+    value: { threadId, updatedAtISO: new Date().toISOString() },
+  }).catch(() => {});
 }
 
 function extractReadMessages(result: unknown): { chatId: string; messages: TelegramMsg[] } | null {
@@ -150,13 +174,50 @@ async function drainResponseBody(body: ReadableStream<Uint8Array> | null): Promi
   }
 }
 
+async function drainAndCaptureThreadId(body: ReadableStream<Uint8Array> | null): Promise<string | null> {
+  if (!body) return null;
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let captured: string | null = null;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+
+    // Parse SSE blocks separated by blank line.
+    const parts = buffer.split(/\r?\n\r?\n/);
+    buffer = parts.pop() ?? "";
+    for (const part of parts) {
+      const lines = part.split(/\r?\n/);
+      const eventLine = lines.find((l) => l.startsWith("event: "));
+      const dataLine = lines.find((l) => l.startsWith("data: "));
+      if (!eventLine || !dataLine) continue;
+      const event = eventLine.slice("event: ".length).trim();
+      if (event !== "thread") continue;
+      const dataRaw = dataLine.slice("data: ".length).trim();
+      try {
+        const data = JSON.parse(dataRaw) as unknown;
+        if (isRecord(data) && typeof data.thread_id === "string" && data.thread_id.trim()) {
+          captured = data.thread_id.trim();
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }
+  return captured;
+}
+
 async function runGoalTickFromTelegram(params: {
   reqUrl: string;
   ctx: OrchestratorContext;
   chatTitle: string;
   chatId: string;
   msg: TelegramMsg;
-}): Promise<{ ok: boolean; status: number; error?: string }> {
+  langgraphThreadId: string | null;
+}): Promise<{ ok: boolean; status: number; error?: string; threadId?: string | null }> {
   const url = new URL(params.reqUrl);
   const actUrl = new URL("/api/agent/act", url);
 
@@ -168,7 +229,7 @@ async function runGoalTickFromTelegram(params: {
     `Important: reply in the same Telegram chat using telegram_send_message with chatId=${params.chatId}.`;
 
   const payload = {
-    thread_id: `telegram:goal:${params.chatId}`,
+    thread_id: params.langgraphThreadId,
     user_id: params.ctx.userId,
     church_id: params.ctx.churchId,
     org_id: params.ctx.churchId,
@@ -185,12 +246,12 @@ async function runGoalTickFromTelegram(params: {
 
   if (!resp.ok) {
     const err = await resp.text().catch(() => "act_failed");
-    return { ok: false, status: resp.status ?? 500, error: err };
+    return { ok: false, status: resp.status ?? 500, error: err.slice(0, 4000) };
   }
 
   // IMPORTANT: consume the SSE so the act route executes all actions.
-  await drainResponseBody(resp.body ?? null);
-  return { ok: true, status: resp.status ?? 200 };
+  const tid = await drainAndCaptureThreadId(resp.body ?? null);
+  return { ok: true, status: resp.status ?? 200, threadId: tid ?? params.langgraphThreadId };
 }
 
 export async function POST(req: Request): Promise<Response> {
@@ -257,9 +318,26 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   const results: unknown[] = [];
+  const scopeAndChatKey = `${scopeKey(ctx)}:${msgList.chatId}`;
+  const threadFallback = goalThreadFallbackStore();
+  let goalThreadId =
+    (await getStoredGoalThreadId(ctx, msgList.chatId)) ?? threadFallback.threadByScopeAndChat.get(scopeAndChatKey) ?? null;
+
   for (const msg of newMsgs) {
-    const res = await runGoalTickFromTelegram({ reqUrl: req.url, ctx, chatTitle, chatId: msgList.chatId, msg });
-    results.push({ messageId: msg.messageId, ok: res.ok, status: res.status, error: res.error ?? null });
+    const res = await runGoalTickFromTelegram({
+      reqUrl: req.url,
+      ctx,
+      chatTitle,
+      chatId: msgList.chatId,
+      msg,
+      langgraphThreadId: goalThreadId,
+    });
+    if (res.ok && res.threadId && res.threadId !== goalThreadId) {
+      goalThreadId = res.threadId;
+      threadFallback.threadByScopeAndChat.set(scopeAndChatKey, goalThreadId);
+      await storeGoalThreadId(ctx, msgList.chatId, goalThreadId);
+    }
+    results.push({ messageId: msg.messageId, ok: res.ok, status: res.status, threadId: res.threadId ?? null, error: res.error ?? null });
   }
 
   const newCursor = newMsgs.reduce((mx, m) => Math.max(mx, m.messageId), since);
@@ -271,6 +349,18 @@ export async function POST(req: Request): Promise<Response> {
     payload: { chatTitle, uri, sessionId, chatId: msgList.chatId, notified, since, processed: newMsgs.length, results },
   }).catch(() => {});
 
-  return json({ ok: true, notified, sessionId, chatTitle, chatId: msgList.chatId, processed: newMsgs.length, since, cursor: newCursor, results });
+  return json({
+    ok: true,
+    notified,
+    sessionId,
+    chatTitle,
+    chatId: msgList.chatId,
+    messages: newMsgs,
+    processed: newMsgs.length,
+    since,
+    cursor: newCursor,
+    goalLanggraphThreadId: goalThreadId,
+    results,
+  });
 }
 

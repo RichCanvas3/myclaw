@@ -60,7 +60,7 @@
         "active": {
           "value": {
             "created_at": 1773923313,
-            "last_result": "Ticked off the goal for this week and planned next steps. Next focus: increase weekly running distance and incorporate strength training.",
+            "last_result": "Increased weekly running distance and incorporated strength training.",
             "plan": [
               {
                 "activity": "5 miles easy run",
@@ -92,11 +92,11 @@
               }
             ],
             "status": "active",
-            "step_index": 3,
+            "step_index": 4,
             "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
           },
           "tags": [],
-          "updated_at": 1773924557610
+          "updated_at": 1773926000255
         }
       },
       "threads": {
@@ -106,6 +106,34 @@
           },
           "tags": [],
           "updated_at": 1773921499223
+        }
+      }
+    },
+    "t_cust_casey:acct_cust_casey:p_casey:hh_casey": {
+      "threads": {
+        "telegram:mcp_session_id": {
+          "value": {
+            "sessionId": "5adb3d57-a251-4f44-af99-fb3378231b45",
+            "updatedAtISO": "2026-03-19T13:13:09.076Z"
+          },
+          "tags": [],
+          "updated_at": 1773925989077
+        },
+        "telegram:lastGoalProcessed:-1003743757503": {
+          "value": {
+            "messageId": 35,
+            "atISO": "2026-03-19T13:13:09.887Z"
+          },
+          "tags": [],
+          "updated_at": 1773925989890
+        },
+        "telegram:goal_langgraph_thread_id:-1003743757503": {
+          "value": {
+            "threadId": "07cb59c8-e772-4c5f-9c7b-abc8bc77a9f8",
+            "updatedAtISO": "2026-03-19T13:10:53.113Z"
+          },
+          "tags": [],
+          "updated_at": 1773925853116
         }
       }
     }
@@ -500,6 +528,337 @@
           }
         },
         "ts": 1773924557614
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "db1b2667-0e19-42dd-b6b8-66ce1f8a3aa0",
+          "input": {
+            "message": "/goal tick add to calendar next 7 days"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Ticked off the goal for this week and planned next steps. Next focus: increase weekly running distance and incorporate strength training.",
+                  "plan": [
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Monday"
+                    },
+                    {
+                      "activity": "Strength training",
+                      "day": "Tuesday"
+                    },
+                    {
+                      "activity": "6 miles tempo run",
+                      "day": "Wednesday"
+                    },
+                    {
+                      "activity": "Rest or cross-training",
+                      "day": "Thursday"
+                    },
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Friday"
+                    },
+                    {
+                      "activity": "Long run: 10 miles",
+                      "day": "Saturday"
+                    },
+                    {
+                      "activity": "Rest and recovery",
+                      "day": "Sunday"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 3,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Let's schedule your running and strength training activities for the next 7 days. Please provide the start and end times for each activity so I can create calendar events."
+          }
+        },
+        "ts": 1773924853270
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "d9dcff35-428a-4274-a55c-61f1abf41803",
+          "input": {
+            "message": "/goal tick"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Ticked off the goal for this week and planned next steps. Next focus: increase weekly running distance and incorporate strength training.",
+                  "plan": [
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Monday"
+                    },
+                    {
+                      "activity": "Strength training",
+                      "day": "Tuesday"
+                    },
+                    {
+                      "activity": "6 miles tempo run",
+                      "day": "Wednesday"
+                    },
+                    {
+                      "activity": "Rest or cross-training",
+                      "day": "Thursday"
+                    },
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Friday"
+                    },
+                    {
+                      "activity": "Long run: 10 miles",
+                      "day": "Saturday"
+                    },
+                    {
+                      "activity": "Rest and recovery",
+                      "day": "Sunday"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 3,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Next, let's focus on increasing your running distance and incorporating strength training. You have a 6 miles tempo run scheduled for Wednesday, so ensure you're prepared for that. Additionally, consider planning your strength training session for Tuesday. Would you like to set a reminder for your training sessions?"
+          }
+        },
+        "ts": 1773925887706
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "d9dcff35-428a-4274-a55c-61f1abf41803",
+          "input": {
+            "message": "/goal tick"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Ticked off the goal for this week and planned next steps. Next focus: increase weekly running distance and incorporate strength training.",
+                  "plan": [
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Monday"
+                    },
+                    {
+                      "activity": "Strength training",
+                      "day": "Tuesday"
+                    },
+                    {
+                      "activity": "6 miles tempo run",
+                      "day": "Wednesday"
+                    },
+                    {
+                      "activity": "Rest or cross-training",
+                      "day": "Thursday"
+                    },
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Friday"
+                    },
+                    {
+                      "activity": "Long run: 10 miles",
+                      "day": "Saturday"
+                    },
+                    {
+                      "activity": "Rest and recovery",
+                      "day": "Sunday"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 3,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Next, let's focus on increasing your weekly running distance and incorporating strength training. You have a 6 miles tempo run scheduled for Wednesday and strength training on Tuesday. Consider planning your long run for Saturday. Would you like to adjust any of these activities or add a specific strength training routine?"
+          }
+        },
+        "ts": 1773925952572
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "d9dcff35-428a-4274-a55c-61f1abf41803",
+          "input": {
+            "message": "/goal tick"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training.",
+                  "plan": [
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Monday"
+                    },
+                    {
+                      "activity": "Strength training",
+                      "day": "Tuesday"
+                    },
+                    {
+                      "activity": "6 miles tempo run",
+                      "day": "Wednesday"
+                    },
+                    {
+                      "activity": "Rest or cross-training",
+                      "day": "Thursday"
+                    },
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Friday"
+                    },
+                    {
+                      "activity": "Long run: 10 miles",
+                      "day": "Saturday"
+                    },
+                    {
+                      "activity": "Rest and recovery",
+                      "day": "Sunday"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Next, let's focus on increasing your running distance and incorporating strength training. You can plan your runs for the upcoming week and consider scheduling your strength training sessions."
+          }
+        },
+        "ts": 1773926000258
+      }
+    ],
+    "t_cust_casey:acct_cust_casey:p_casey:hh_casey": [
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "5adb3d57-a251-4f44-af99-fb3378231b45",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 32,
+          "processed": 1,
+          "results": [
+            {
+              "messageId": 33,
+              "ok": false,
+              "status": 500,
+              "error": "Internal Server Error"
+            }
+          ]
+        },
+        "ts": 1773924916046
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "07cb59c8-e772-4c5f-9c7b-abc8bc77a9f8",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=34 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow, try again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1773925853114
+      },
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "5adb3d57-a251-4f44-af99-fb3378231b45",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 33,
+          "processed": 1,
+          "results": [
+            {
+              "messageId": 34,
+              "ok": true,
+              "status": 200,
+              "threadId": "07cb59c8-e772-4c5f-9c7b-abc8bc77a9f8",
+              "error": null
+            }
+          ]
+        },
+        "ts": 1773925853120
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "07cb59c8-e772-4c5f-9c7b-abc8bc77a9f8",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=35 fromUserId=6105195555.\n\nUser message:\nI don't see any runs on my calendar in google\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1773925989888
+      },
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "5adb3d57-a251-4f44-af99-fb3378231b45",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 34,
+          "processed": 1,
+          "results": [
+            {
+              "messageId": 35,
+              "ok": true,
+              "status": 200,
+              "threadId": "07cb59c8-e772-4c5f-9c7b-abc8bc77a9f8",
+              "error": null
+            }
+          ]
+        },
+        "ts": 1773925989892
       }
     ]
   }

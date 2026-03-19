@@ -37,6 +37,35 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null;
 }
 
+function envBool(name: string, defaultValue: boolean): boolean {
+  const raw = (process.env[name] ?? "").trim().toLowerCase();
+  if (!raw) return defaultValue;
+  return raw === "1" || raw === "true" || raw === "yes" || raw === "on";
+}
+
+function goalTelegramChatTitle(): string {
+  const v = (process.env.MYCLAW_GOAL_TELEGRAM_CHAT_TITLE ?? process.env.MYCLAW_TELEGRAM_WATCH_CHAT_TITLE ?? "Smart Agent").trim();
+  return v || "Smart Agent";
+}
+
+async function postGoalUpdateToTelegram(text: string): Promise<void> {
+  const enabled = envBool("MYCLAW_GOAL_TELEGRAM_POST_RESULTS", true);
+  if (!enabled) return;
+  const chatTitle = goalTelegramChatTitle();
+  const chatId = await resolveTelegramChatIdByTitle(chatTitle).catch(() => null);
+  if (!chatId) return;
+  const trimmed = text.length > 3500 ? text.slice(0, 3500) + "…" : text;
+  await mcpToolsCall("gym-telegram", "telegram_send_message", { chatId, text: trimmed }).catch(() => {});
+}
+
+function extractCalendarLink(resp: unknown): string | null {
+  if (!isRecord(resp)) return null;
+  const ev = resp.event;
+  if (isRecord(ev) && typeof ev.htmlLink === "string" && ev.htmlLink.trim()) return ev.htmlLink.trim();
+  if (typeof resp.htmlLink === "string" && resp.htmlLink.trim()) return resp.htmlLink.trim();
+  return null;
+}
+
 function isA2aCallActionWithEndpoint(action: SuggestedAction, endpoint: string): boolean {
   if (action.type !== "a2a.call") return false;
   const input = action.input as unknown;
@@ -975,6 +1004,8 @@ export async function POST(req: Request): Promise<Response> {
   let fallbackMessage: string | null = null;
   let suggestedActions: SuggestedAction[] | null = null;
   const executedActions: SuggestedAction[] = [];
+  const calendarLinks: string[] = [];
+  const toolErrors: string[] = [];
   let buffer = "";
 
   const stream = new ReadableStream<Uint8Array>({
@@ -1047,11 +1078,16 @@ export async function POST(req: Request): Promise<Response> {
               }
 
               const resp = await mcpToolsCall(server, tool, args);
+              if (server === "gym-googlecalendar" && tool === "googlecalendar_create_event") {
+                const link = extractCalendarLink(resp);
+                if (link) calendarLinks.push(link);
+              }
               const rendered = typeof resp === "string" ? resp : JSON.stringify(resp, null, 2);
               accumulated ||= rendered;
               controller.enqueue(encoder.encode(sse("delta", { text: rendered })));
             } catch (e) {
               const msg = `MCP error: ${(e as Error).message}`;
+              toolErrors.push(msg);
               accumulated ||= msg;
               controller.enqueue(encoder.encode(sse("delta", { text: msg })));
             }
@@ -1218,6 +1254,24 @@ export async function POST(req: Request): Promise<Response> {
         ),
       );
       controller.close();
+
+      // Post goal-oriented output to Telegram (best-effort).
+      if (directGoal) {
+        const lines: string[] = [];
+        lines.push("myclaw: goal update");
+        lines.push(`cmd: ${body.message.trim().slice(0, 180)}`);
+        if (calendarLinks.length) {
+          lines.push("calendar:");
+          for (const l of calendarLinks.slice(0, 5)) lines.push(`- ${l}`);
+        }
+        if (toolErrors.length) {
+          lines.push("errors:");
+          for (const e of toolErrors.slice(0, 5)) lines.push(`- ${e}`);
+        }
+        const msgText = (fallbackMessage && fallbackMessage.trim()) || accumulated.trim();
+        if (msgText) lines.push(`note: ${msgText.slice(0, 600)}`);
+        await postGoalUpdateToTelegram(lines.join("\n"));
+      }
 
       // Audit trail (best-effort).
       try {

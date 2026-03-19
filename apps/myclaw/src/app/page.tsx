@@ -309,8 +309,26 @@ export default function Home() {
         body: JSON.stringify({ chatTitle: "Smart Agent" }),
       });
       const txt = await res.text();
-      setTelegramGoalLast(txt);
-      setGoalLastOutput((v) => (v ? `${v}\n\n[telegram/watch-goal]\n${txt}` : `[telegram/watch-goal]\n${txt}`));
+      let pretty = txt;
+      try {
+        const parsed = JSON.parse(txt) as unknown;
+        if (isRecord(parsed)) {
+          const msgs = Array.isArray((parsed as any).messages) ? ((parsed as any).messages as any[]) : [];
+          const lines: string[] = [];
+          lines.push(`[telegram/watch-goal] ok=${String((parsed as any).ok)} processed=${String((parsed as any).processed ?? 0)}`);
+          for (const m of msgs.slice(0, 5)) {
+            if (!isRecord(m)) continue;
+            const mid = typeof (m as any).messageId === "number" ? (m as any).messageId : "";
+            const text = typeof (m as any).text === "string" ? (m as any).text : "";
+            if (text) lines.push(`- msg#${mid}: ${text}`);
+          }
+          pretty = lines.join("\n") + (lines.length ? "\n\n(raw)\n" + txt : "");
+        }
+      } catch {
+        // keep raw text
+      }
+      setTelegramGoalLast(pretty);
+      setGoalLastOutput((v) => (v ? `${v}\n\n${pretty}` : pretty));
     } catch (e) {
       setTelegramGoalLast(`Error: ${(e as Error).message}`);
     } finally {
