@@ -83,6 +83,62 @@ function resolveCalendarAccountAddressFromProfile(memoryProfile: unknown): strin
   return addr && addr.trim() ? addr.trim() : null;
 }
 
+function requireStringArg(args: Record<string, unknown>, key: string): string {
+  const v = args[key];
+  if (typeof v !== "string" || !v.trim()) throw new Error(`Missing required argument: ${key}`);
+  return v;
+}
+
+function coerceString(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const s = v.trim();
+  return s ? s : null;
+}
+
+function normalizeGoogleCalendarArgs(tool: string, args: Record<string, unknown>) {
+  if (tool !== "googlecalendar_create_event") return;
+
+  // Common alternate field names emitted by planners.
+  args.summary ??= args.title ?? args.name ?? args.task ?? args.what;
+  args.startISO ??= args.start ?? args.startTime ?? args.start_time ?? args.startDateTime ?? args.whenStart;
+  args.endISO ??= args.end ?? args.endTime ?? args.end_time ?? args.endDateTime ?? args.whenEnd;
+
+  // Ensure they're strings (not objects like {dateTime: "..."}).
+  const summary = coerceString(args.summary);
+  if (summary) args.summary = summary;
+
+  const start = coerceString(args.startISO) ?? coerceString((args.startISO as any)?.dateTime) ?? coerceString((args.startISO as any)?.date);
+  if (start) args.startISO = start;
+
+  const end = coerceString(args.endISO) ?? coerceString((args.endISO as any)?.dateTime) ?? coerceString((args.endISO as any)?.date);
+  if (end) args.endISO = end;
+
+  // If durationMinutes is present, derive endISO from startISO.
+  const durationRaw = args.durationMinutes;
+  if (!coerceString(args.endISO) && typeof durationRaw === "number" && Number.isFinite(durationRaw)) {
+    const startMs = Date.parse(String(args.startISO ?? ""));
+    if (Number.isFinite(startMs)) {
+      args.endISO = new Date(startMs + durationRaw * 60 * 1000).toISOString();
+    }
+  }
+}
+
+function validateGoogleCalendarArgs(tool: string, args: Record<string, unknown>) {
+  if (tool === "googlecalendar_create_event") {
+    const missing: string[] = [];
+    for (const k of ["summary", "startISO", "endISO"] as const) {
+      const v = args[k];
+      if (typeof v !== "string" || !v.trim()) missing.push(k);
+    }
+    if (missing.length) {
+      throw new Error(
+        `Invalid googlecalendar_create_event args: missing ${missing.join(", ")}. ` +
+          `Provide summary/startISO/endISO (or use title/start/end/durationMinutes and the server will normalize).`,
+      );
+    }
+  }
+}
+
 function defaultWeatherLatLon(): { lat: number; lon: number } | null {
   const latRaw = (process.env.MYCLAW_DEFAULT_WEATHER_LAT ?? "").trim();
   const lonRaw = (process.env.MYCLAW_DEFAULT_WEATHER_LON ?? "").trim();
@@ -680,6 +736,8 @@ export async function POST(req: Request): Promise<Response> {
                   const addr = resolveCalendarAccountAddressFromProfile(memoryProfile);
                   if (addr) (args as Record<string, unknown>).accountAddress = addr;
                 }
+                normalizeGoogleCalendarArgs(tool, args as Record<string, unknown>);
+                validateGoogleCalendarArgs(tool, args as Record<string, unknown>);
               }
 
               // Telegram convenience: allow referencing chats by title/username (server resolves to chatId).
@@ -968,6 +1026,8 @@ export async function POST(req: Request): Promise<Response> {
                   const addr = resolveCalendarAccountAddressFromProfile(memoryProfile);
                   if (addr) (args as Record<string, unknown>).accountAddress = addr;
                 }
+                normalizeGoogleCalendarArgs(tool, args as Record<string, unknown>);
+                validateGoogleCalendarArgs(tool, args as Record<string, unknown>);
               }
 
               const resp = await mcpToolsCall(server, tool, args);

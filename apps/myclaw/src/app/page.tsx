@@ -145,6 +145,7 @@ export default function Home() {
   const [goalLastOutput, setGoalLastOutput] = useState<string>("");
   const [goalDialogOpen, setGoalDialogOpen] = useState(false);
   const [goalActionContext, setGoalActionContext] = useState("");
+  const [goalTickHint, setGoalTickHint] = useState("");
 
   async function loadThreads() {
     const res = await fetch("/api/langgraph/threads?limit=100");
@@ -511,17 +512,21 @@ export default function Home() {
             </div>
 
             <div className="mt-2 flex items-center gap-2">
+              <input
+                value={goalTickHint}
+                onChange={(e) => setGoalTickHint(e.target.value)}
+                placeholder="Tick hint (optional)… e.g. plan this week / add to calendar"
+                className="min-w-0 flex-1 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-950"
+                disabled={isStreaming || !isConnected}
+              />
               <button
-                onClick={() => void runGoalCommand("/goal tick")}
+                onClick={() => void runGoalCommand(goalTickHint.trim() ? `/goal tick ${goalTickHint.trim()}` : "/goal tick")}
                 className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
                 disabled={isStreaming || !isConnected}
                 title="Advance the goal (propose next actions)"
               >
                 Tick
               </button>
-              <div className="text-xs text-zinc-500 dark:text-zinc-400">
-                Proposes next actions + updates `goals.active`.
-              </div>
             </div>
 
             {goalLastOutput ? (

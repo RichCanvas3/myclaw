@@ -202,6 +202,8 @@ def _goal_tick_action_pack(
             "- Never claim you executed tools; only propose actions.",
             "- ALWAYS include a goals.active memory.upsert with updated state.",
             "- If the user asks to schedule/add to calendar, prefer `gym-googlecalendar` `googlecalendar_create_event` actions.",
+            "- For `gym-googlecalendar` `googlecalendar_create_event`, args MUST include: summary (string), startISO (string ISO datetime), endISO (string ISO datetime).",
+            "- Do NOT emit googlecalendar_create_event unless you have those fields; if missing, ask the user for the missing info in `message`.",
             "- If coordinating with a coach/trainer/another person, prefer drafting a short message and sending via `gym-telegram` or `gym-sendgrid` (if you have an address).",
             "- If contact/account details are missing, propose a `memory.query` for likely keys first; if still missing, ask the user for the missing detail in `message`.",
             "",

@@ -56,6 +56,18 @@
           },
           "tags": [],
           "updated_at": 1773921555177
+        },
+        "active": {
+          "value": {
+            "created_at": 1773923313,
+            "last_result": "Ticked off the goal for this week and planned next steps.",
+            "plan": [],
+            "status": "active",
+            "step_index": 2,
+            "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+          },
+          "tags": [],
+          "updated_at": 1773923647022
         }
       },
       "threads": {
@@ -138,6 +150,155 @@
           }
         },
         "ts": 1773921656944
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bce8ba20-8665-4754-a54a-fdaa34d100d2",
+          "input": {
+            "message": "/goal set goal to run the Heavy Half Leadville race in Colorado  on Saturday, June 27, 2026"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": null,
+                  "plan": [],
+                  "status": "active",
+                  "step_index": 0,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado  on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Goal set: goal to run the Heavy Half Leadville race in Colorado  on Saturday, June 27, 2026\n\nNext: run `/goal tick` (or `/goal tick plan this week`, `/goal tick add to calendar`, `/goal tick coordinate with trainer`) to get concrete next actions."
+          }
+        },
+        "ts": 1773923312947
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bce8ba20-8665-4754-a54a-fdaa34d100d2",
+          "input": {
+            "message": "/goal tick"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Ticked off the goal for this week.",
+                  "plan": [],
+                  "status": "active",
+                  "step_index": 1,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "event": {
+                    "description": "Prepare for the Heavy Half Leadville race.",
+                    "end": {
+                      "dateTime": "2023-06-10T10:00:00",
+                      "timeZone": "America/Denver"
+                    },
+                    "start": {
+                      "dateTime": "2023-06-10T08:00:00",
+                      "timeZone": "America/Denver"
+                    },
+                    "summary": "Long run: 10 miles"
+                  }
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            }
+          ],
+          "output": {
+            "message": "Next steps include updating your training plan to reflect your goal of running the Heavy Half Leadville race and ensuring you are on track with your weekly goals. Let's also set a reminder for your long run this week."
+          }
+        },
+        "ts": 1773923361314
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "1abb525c-7dbd-483f-9787-9bee763ab13a",
+          "input": {
+            "message": "/goal tick"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Ticked off the goal for this week and planned next steps.",
+                  "plan": [],
+                  "status": "active",
+                  "step_index": 2,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "event": {
+                    "description": "Incorporate strength training for running preparation.",
+                    "end": {
+                      "dateTime": "2023-10-23T11:00:00-07:00"
+                    },
+                    "start": {
+                      "dateTime": "2023-10-23T10:00:00-07:00"
+                    },
+                    "summary": "Strength Training Session"
+                  }
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "event": {
+                    "description": "Prepare for the Heavy Half Leadville race.",
+                    "end": {
+                      "dateTime": "2023-10-28T10:00:00-07:00"
+                    },
+                    "start": {
+                      "dateTime": "2023-10-28T08:00:00-07:00"
+                    },
+                    "summary": "Long Run: 10 miles"
+                  }
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            }
+          ],
+          "output": {
+            "message": "Next, let's focus on increasing your weekly running distance and incorporating strength training. You can start by planning your runs for the upcoming week and scheduling your strength training sessions."
+          }
+        },
+        "ts": 1773923647024
       }
     ]
   }
