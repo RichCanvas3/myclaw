@@ -60,7 +60,7 @@
         "active": {
           "value": {
             "created_at": 1773923313,
-            "last_result": "Increased weekly running distance and incorporated strength training.",
+            "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
             "plan": [
               {
                 "activity": "5 miles easy run",
@@ -96,7 +96,7 @@
             "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
           },
           "tags": [],
-          "updated_at": 1773926000255
+          "updated_at": 1773927295701
         }
       },
       "threads": {
@@ -114,10 +114,10 @@
         "telegram:mcp_session_id": {
           "value": {
             "sessionId": "5adb3d57-a251-4f44-af99-fb3378231b45",
-            "updatedAtISO": "2026-03-19T13:13:09.076Z"
+            "updatedAtISO": "2026-03-19T13:33:30.258Z"
           },
           "tags": [],
-          "updated_at": 1773925989077
+          "updated_at": 1773927210259
         },
         "telegram:lastGoalProcessed:-1003743757503": {
           "value": {
@@ -764,6 +764,197 @@
           }
         },
         "ts": 1773926000258
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "8c29654c-da80-4862-bc95-03a4b61d485e",
+          "input": {
+            "message": "/goal tick"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training.",
+                  "plan": [
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Monday"
+                    },
+                    {
+                      "activity": "Strength training",
+                      "day": "Tuesday"
+                    },
+                    {
+                      "activity": "6 miles tempo run",
+                      "day": "Wednesday"
+                    },
+                    {
+                      "activity": "Rest or cross-training",
+                      "day": "Thursday"
+                    },
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Friday"
+                    },
+                    {
+                      "activity": "Long run: 10 miles",
+                      "day": "Saturday"
+                    },
+                    {
+                      "activity": "Rest and recovery",
+                      "day": "Sunday"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Let's update your goal status to reflect your progress and plan the next training session. You have a 5 miles easy run scheduled for today. I'll update your goal state now."
+          }
+        },
+        "ts": 1773927222230
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "8c29654c-da80-4862-bc95-03a4b61d485e",
+          "input": {
+            "message": "/goal tick lots of uphill so make sure we have enough incline.  Look at average incline of hike and factor in"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.query",
+              "input": {
+                "namespace": "goals",
+                "q": "average incline Heavy Half Leadville race"
+              }
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Monday"
+                    },
+                    {
+                      "activity": "Strength training",
+                      "day": "Tuesday"
+                    },
+                    {
+                      "activity": "6 miles tempo run",
+                      "day": "Wednesday"
+                    },
+                    {
+                      "activity": "Rest or cross-training",
+                      "day": "Thursday"
+                    },
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Friday"
+                    },
+                    {
+                      "activity": "Long run: 10 miles",
+                      "day": "Saturday"
+                    },
+                    {
+                      "activity": "Rest and recovery",
+                      "day": "Sunday"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Let's check the average incline of the hike to ensure your training includes enough uphill work. I will gather information on the average incline for the Heavy Half Leadville race."
+          }
+        },
+        "ts": 1773927275328
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "8c29654c-da80-4862-bc95-03a4b61d485e",
+          "input": {
+            "message": "/goal tick lots of uphill so make sure we have enough incline.  Look at average incline of hike and factor in"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Monday"
+                    },
+                    {
+                      "activity": "Strength training",
+                      "day": "Tuesday"
+                    },
+                    {
+                      "activity": "6 miles tempo run",
+                      "day": "Wednesday"
+                    },
+                    {
+                      "activity": "Rest or cross-training",
+                      "day": "Thursday"
+                    },
+                    {
+                      "activity": "5 miles easy run",
+                      "day": "Friday"
+                    },
+                    {
+                      "activity": "Long run: 10 miles",
+                      "day": "Saturday"
+                    },
+                    {
+                      "activity": "Rest and recovery",
+                      "day": "Sunday"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            },
+            {
+              "type": "memory.query",
+              "input": {
+                "namespace": "race_data",
+                "q": "average incline for Heavy Half Leadville race"
+              }
+            }
+          ],
+          "output": {
+            "message": "Next, let's check the average incline for the Heavy Half Leadville race to factor it into your training plan. I'll gather information about the race's course profile."
+          }
+        },
+        "ts": 1773927296324
       }
     ],
     "t_cust_casey:acct_cust_casey:p_casey:hh_casey": [

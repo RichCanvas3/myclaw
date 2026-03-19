@@ -66,6 +66,119 @@ function extractCalendarLink(resp: unknown): string | null {
   return null;
 }
 
+function extractActiveGoalText(memoryProfile: unknown): string | null {
+  if (!isRecord(memoryProfile) || !isRecord(memoryProfile.profile)) return null;
+  const goals = (memoryProfile.profile as Record<string, unknown>).goals;
+  if (!isRecord(goals)) return null;
+  const active = goals.active;
+  if (!isRecord(active)) return null;
+  const text = active.text;
+  return typeof text === "string" && text.trim() ? text.trim() : null;
+}
+
+function safeJson(v: unknown): unknown {
+  if (typeof v !== "string") return v;
+  try {
+    return JSON.parse(v) as unknown;
+  } catch {
+    return v;
+  }
+}
+
+function summarizeCalendarEvents(resp: unknown): string {
+  const parsed = safeJson(resp);
+  if (!isRecord(parsed)) return "";
+  const items =
+    (Array.isArray((parsed as any).items) ? ((parsed as any).items as unknown[]) : null) ??
+    (Array.isArray((parsed as any).events) ? ((parsed as any).events as unknown[]) : null) ??
+    (Array.isArray((parsed as any).events?.items) ? ((parsed as any).events.items as unknown[]) : null);
+  if (!items || !items.length) return "";
+  const lines: string[] = [];
+  for (const it of items.slice(0, 10)) {
+    if (!isRecord(it)) continue;
+    const summary = typeof (it as any).summary === "string" ? (it as any).summary : "";
+    const start = (it as any).start;
+    const when =
+      (isRecord(start) && typeof (start as any).dateTime === "string" && (start as any).dateTime) ||
+      (isRecord(start) && typeof (start as any).date === "string" && (start as any).date) ||
+      (typeof (it as any).startISO === "string" ? (it as any).startISO : "") ||
+      "";
+    if (!summary && !when) continue;
+    lines.push(`- ${when} — ${summary}`.trim());
+  }
+  return lines.join("\n");
+}
+
+function summarizeTelegramMessages(resp: unknown): string {
+  const parsed = safeJson(resp);
+  if (!isRecord(parsed)) return "";
+  const messages = Array.isArray((parsed as any).messages) ? ((parsed as any).messages as unknown[]) : null;
+  if (!messages || !messages.length) return "";
+  const lines: string[] = [];
+  for (const m of messages.slice(0, 8)) {
+    if (!isRecord(m)) continue;
+    const messageId = typeof (m as any).messageId === "number" ? (m as any).messageId : null;
+    const text = typeof (m as any).text === "string" ? (m as any).text.trim() : "";
+    if (!text) continue;
+    lines.push(`- msg#${messageId ?? ""}: ${text}`.trim());
+  }
+  return lines.join("\n");
+}
+
+async function buildGoalContext(memoryProfile: unknown): Promise<string> {
+  const pieces: string[] = [];
+  const nowISO = new Date().toISOString();
+  pieces.push(`nowISO: ${nowISO}`);
+  const goalText = extractActiveGoalText(memoryProfile);
+  if (goalText) pieces.push(`activeGoal: ${goalText}`);
+
+  // Calendar "observe": next 7 days of events (best-effort).
+  try {
+    const addr = resolveCalendarAccountAddressFromProfile(memoryProfile);
+    if (addr) {
+      const t0 = new Date();
+      const t1 = new Date(t0.getTime() + 7 * 24 * 60 * 60 * 1000);
+      const cal = await mcpToolsCall("gym-googlecalendar", "googlecalendar_list_events", {
+        accountAddress: addr,
+        timeMinISO: t0.toISOString(),
+        timeMaxISO: t1.toISOString(),
+        maxResults: 25,
+      });
+      const s = summarizeCalendarEvents(cal);
+      if (s) pieces.push(`calendarNext7Days:\n${s}`);
+    }
+  } catch {
+    // ignore
+  }
+
+  // Telegram "observe": recent messages in Smart Agent (best-effort).
+  try {
+    const title = goalTelegramChatTitle();
+    const chatId = await resolveTelegramChatIdByTitle(title).catch(() => null);
+    if (chatId) {
+      const msgs = await mcpToolsCall("gym-telegram", "telegram_list_messages", { chatId, limit: 10 });
+      const s = summarizeTelegramMessages(msgs);
+      if (s) pieces.push(`telegramRecent("${title}"):\n${s}`);
+    }
+  } catch {
+    // ignore
+  }
+
+  return pieces.join("\n\n");
+}
+
+async function upsertGoalObservation(ctx: { churchId: string; userId: string; personId: string; householdId?: string | null; threadId: string }, obs: unknown) {
+  try {
+    const cur = await memoryGet({ ctx, namespace: "goals", key: "active" }).catch(() => null);
+    const curVal = isRecord(cur) && isRecord(cur.value) ? (cur.value as Record<string, unknown>) : null;
+    if (!curVal) return;
+    const next = { ...curVal, last_observation: obs };
+    await memoryUpsert({ ctx, namespace: "goals", key: "active", value: next }).catch(() => {});
+  } catch {
+    // ignore
+  }
+}
+
 function isA2aCallActionWithEndpoint(action: SuggestedAction, endpoint: string): boolean {
   if (action.type !== "a2a.call") return false;
   const input = action.input as unknown;
@@ -461,6 +574,7 @@ export async function POST(req: Request): Promise<Response> {
   const body = (await req.json()) as ActRequest;
   const direct = body.message?.trim?.() ?? "";
   const directGoal = direct.startsWith("/goal ");
+  const directGoalTickish = direct.startsWith("/goal tick") || direct.startsWith("/goal run");
 
   const deploymentUrl = langgraphDeploymentUrl();
   if (!deploymentUrl) {
@@ -611,6 +725,15 @@ export async function POST(req: Request): Promise<Response> {
     memoryProfile = await memoryGetProfile({ ...session, threadId });
   } catch {
     memoryProfile = null;
+  }
+
+  // For goal autonomy, enrich the message with lightweight observation context (calendar + telegram).
+  let messageToSend = body.message;
+  if (directGoalTickish) {
+    const ctxText = await buildGoalContext(memoryProfile).catch(() => "");
+    if (ctxText) {
+      messageToSend = `${body.message}\n\n[context]\n${ctxText}`;
+    }
   }
 
   // If configured, use an orchestrator LLM to produce action packs (no phrase triggers).
@@ -983,7 +1106,7 @@ export async function POST(req: Request): Promise<Response> {
       assistant_id: langgraphAssistantId(),
       input: {
         skill: "chat",
-        message: body.message,
+        message: messageToSend,
         args: { memory_profile: memoryProfile },
         session: {
           ...session,
@@ -1271,6 +1394,16 @@ export async function POST(req: Request): Promise<Response> {
         const msgText = (fallbackMessage && fallbackMessage.trim()) || accumulated.trim();
         if (msgText) lines.push(`note: ${msgText.slice(0, 600)}`);
         await postGoalUpdateToTelegram(lines.join("\n"));
+      }
+
+      // Observe: persist a small observation so the next tick can adapt.
+      if (directGoalTickish) {
+        await upsertGoalObservation(ctx, {
+          atISO: new Date().toISOString(),
+          calendarLinks: calendarLinks.slice(0, 10),
+          errors: toolErrors.slice(0, 10),
+          executedActions: executedActions.slice(0, 20),
+        });
       }
 
       // Audit trail (best-effort).

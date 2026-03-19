@@ -209,6 +209,13 @@ def _goal_tick_action_pack(
             "- If coordinating with a coach/trainer/another person, prefer drafting a short message and sending via `gym-telegram` or `gym-sendgrid` (if you have an address).",
             "- If contact/account details are missing, propose a `memory.query` for likely keys first; if still missing, ask the user for the missing detail in `message`.",
             "",
+            "Default behavior (IMPORTANT):",
+            "- If user_text is exactly '/goal tick' (no hint), assume they want a concrete 7-day plan AND that plan added to their calendar.",
+            "- Your goals.active update MUST include a non-empty `plan` array of steps for the next 7 days. Each step should be a dict like:",
+            '  {"id":"step-1","title":"...","whenISO":"<ISO datetime>","durationMinutes":60,"notes":"...","status":"pending"}',
+            "- If you create a plan step with whenISO/durationMinutes, also emit a matching `gym-googlecalendar` `googlecalendar_create_event` tool action.",
+            "- If you cannot plan because a key constraint is missing, ask ONE short question in `message` and still add at least one placeholder plan step (without a calendar action).",
+            "",
             'Return JSON: {"message":"...short next-step summary...","actions":[...]}',
         ]
     )

@@ -1,0 +1,36 @@
+---
+description: Goal autonomy loop (plan/execute/observe/iterate) conventions
+alwaysApply: true
+---
+
+# Goal autonomy (OpenClaw-style)
+
+## Core behavior
+
+- `/goal set <text>` sets `goals.active` with a generic schema (no goal-specific hardcoding).
+- `/goal tick` should default to **doing work**:
+  - Produce a concrete next-7-days plan in `goals.active.plan`
+  - Create calendar events when dates/times are known
+  - Coordinate via Telegram when needed
+- Prefer **Goal → Plan → Execute → Observe → Iterate**:
+  - **Plan**: minimal concrete actions; include timing
+  - **Execute**: emit tool actions (`mcp.tool`, `memory.*`, `a2a.call`)
+  - **Observe**: pull relevant state (calendar next 7 days, recent Smart Agent messages) and persist small observations into `goals.active.last_observation`
+  - **Iterate**: on the next tick, adapt plan based on observation, errors, and what’s already scheduled
+
+## Tooling expectations
+
+- Calendar:
+  - Use `gym-googlecalendar` `googlecalendar_list_events` to avoid scheduling duplicates.
+  - Use `googlecalendar_create_event` with `summary`, `startISO`, `endISO`.
+  - Never schedule events in the past; shift if necessary.
+- Telegram:
+  - Use `gym-telegram` to read/write the “Smart Agent” supergroup.
+  - When `/api/telegram/watch-goal` is used, treat incoming Telegram messages as goal updates.
+  - Post back short summaries + links/errors to Smart Agent when goal commands run.
+
+## Safety / generality
+
+- Do not bake in assumptions about a specific goal domain (running, sermons, etc.). Keep the system generic.
+- If required info is missing, ask **one** short question and still persist a partial plan step.
+
