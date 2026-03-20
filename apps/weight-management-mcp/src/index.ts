@@ -90,6 +90,40 @@ function normStr(v: unknown): string | null {
   return t ? t : null;
 }
 
+const MAX_MEAL_IMAGE_BYTES = 8 * 1024 * 1024;
+
+/** Optional https image reference — fetched server-side and converted to bytes (never passed to vision as http). */
+function isFetchableHttpsImageUrl(s: string): boolean {
+  const t = s.trim();
+  if (!t) return false;
+  try {
+    const u = new URL(t);
+    return u.protocol === "https:" || u.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
+function uint8ToBase64(bytes: Uint8Array): string {
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]!);
+  }
+  return btoa(binary);
+}
+
+async function fetchHttpUrlAsDataUrl(url: string): Promise<string> {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`fetch image HTTP ${r.status}`);
+  const buf = new Uint8Array(await r.arrayBuffer());
+  if (buf.length > MAX_MEAL_IMAGE_BYTES) {
+    throw new Error(`image too large (${buf.length} bytes; max ${MAX_MEAL_IMAGE_BYTES})`);
+  }
+  const ctRaw = (r.headers.get("content-type") ?? "image/jpeg").split(";")[0]!.trim();
+  const mime = ctRaw.startsWith("image/") ? ctRaw : "image/jpeg";
+  return `data:${mime};base64,${uint8ToBase64(buf)}`;
+}
+
 function parseScope(params: Record<string, unknown>): Scope {
   const s = isRecord(params.scope) ? (params.scope as Record<string, unknown>) : {};
   return {
@@ -146,16 +180,30 @@ async function telegramGetFileUrl(botToken: string, fileId: string): Promise<str
   return `https://api.telegram.org/file/bot${botToken}/${j.result.file_path}`;
 }
 
+async function telegramFetchFileAsDataUrl(botToken: string, fileId: string): Promise<string> {
+  const fileHttpUrl = await telegramGetFileUrl(botToken, fileId);
+  return fetchHttpUrlAsDataUrl(fileHttpUrl);
+}
+
 async function visionAnalyzeMealPhoto(
   env: Env,
-  imageUrl: string | null,
-  imageBase64DataUrl: string | null,
+  imageDataUrl: string,
   meal?: string | null,
   locale?: string | null,
 ): Promise<MealAnalysisJson> {
   const key = env.VISION_API_KEY?.trim();
   if (!key) throw new Error("VISION_API_KEY not configured on weight-management-mcp");
-  const base = (env.VISION_OPENAI_BASE_URL ?? "https://api.openai.com/v1").replace(/\/$/, "");
+  const baseRaw = (env.VISION_OPENAI_BASE_URL ?? "https://api.openai.com/v1").trim().replace(/\/$/, "");
+  let base: string;
+  try {
+    const u = new URL(baseRaw);
+    if (u.protocol !== "http:" && u.protocol !== "https:") throw new Error("not http(s)");
+    base = baseRaw;
+  } catch {
+    throw new Error(
+      `VISION_OPENAI_BASE_URL must be an absolute http(s) URL; could not parse: ${baseRaw.slice(0, 96)}`,
+    );
+  }
   const model = env.VISION_MODEL ?? "gpt-4o-mini";
   const system = `You are a nutrition estimation assistant. Return ONLY valid JSON with this exact shape:
 {"items":[{"name":"string","portion_g":null,"calories":0,"protein_g":0,"carbs_g":0,"fat_g":0,"fiber_g":null,"notes":""}],
@@ -167,9 +215,11 @@ Use realistic estimates; set confidence 0–1 based on image clarity and ambigui
   const ctxLines = [meal ? `Meal context: ${meal}` : null, locale ? `Locale/prefs: ${locale}` : null].filter(Boolean);
   const userText = ctxLines.length ? ctxLines.join("\n") : "Estimate nutrition for this meal photo.";
   const userContent: Array<Record<string, unknown>> = [{ type: "text", text: userText }];
-  if (imageUrl) userContent.push({ type: "image_url", image_url: { url: imageUrl } });
-  else if (imageBase64DataUrl) userContent.push({ type: "image_url", image_url: { url: imageBase64DataUrl } });
-  else throw new Error("Provide imageUrl, imageBase64, or telegram.fileId");
+  // Vision input is always a data URL (bytes); we never send remote http(s) image URLs to the model.
+  if (!imageDataUrl.startsWith("data:")) {
+    throw new Error("vision: internal error — expected data: URL");
+  }
+  userContent.push({ type: "image_url", image_url: { url: imageDataUrl } });
 
   const body = {
     model,
@@ -390,14 +440,14 @@ function toolList() {
     {
       name: "weight_analyze_meal_photo",
       description:
-        "Estimate calories/macros from a meal image via vision API; persist row in wm_meal_analyses. Image: imageUrl, imageBase64 (raw or data URL), or telegram.fileId (myclaw may inject base64; else TELEGRAM_BOT_TOKEN or telegram.botToken on worker).",
+        "Estimate calories/macros from a meal image via vision API; persist row in wm_meal_analyses. Supply image bytes: imageBase64 (raw base64 or data:image/... URL) and/or telegram.fileId (worker downloads via Bot API and inlines bytes). Optional imageUrl (https) is fetched server-side and inlined — prefer base64 + fileId; never rely on passing image URLs to the model.",
       inputSchema: {
         type: "object",
         properties: {
           scope: scopeSchema,
           meal: { type: "string" },
           locale: { type: "string" },
-          imageUrl: { type: "string" },
+          imageUrl: { type: "string", description: "Optional; fetched and inlined as bytes before vision." },
           imageBase64: { type: "string" },
           telegram: {
             type: "object",
@@ -850,21 +900,22 @@ async function toolCall(env: Env, name: string, args: Record<string, unknown>): 
     const tg = isRecord(args.telegram) ? (args.telegram as Record<string, unknown>) : null;
     const fileId = tg ? normStr(tg.fileId) : null;
     const botToken = (tg && normStr(tg.botToken)) || env.TELEGRAM_BOT_TOKEN?.trim() || "";
-    let imageUrl: string | null = normStr(args.imageUrl);
-    let imageBase64DataUrl: string | null = null;
     const rawB64 = normStr(args.imageBase64);
+    const imageUrlArg = normStr(args.imageUrl);
+
+    let imageDataUrl: string;
     if (rawB64) {
-      imageBase64DataUrl = rawB64.startsWith("data:") ? rawB64 : `data:image/jpeg;base64,${rawB64}`;
-    }
-    if (fileId) {
+      imageDataUrl = rawB64.startsWith("data:") ? rawB64 : `data:image/jpeg;base64,${rawB64}`;
+    } else if (fileId) {
       if (!botToken) throw new Error("telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args");
-      imageUrl = await telegramGetFileUrl(botToken, fileId);
+      imageDataUrl = await telegramFetchFileAsDataUrl(botToken, fileId);
+    } else if (imageUrlArg && isFetchableHttpsImageUrl(imageUrlArg)) {
+      imageDataUrl = await fetchHttpUrlAsDataUrl(imageUrlArg);
+    } else {
+      throw new Error("Provide imageBase64, telegram.fileId (+ token), or an https imageUrl to fetch and inline");
     }
-    if (!imageUrl && !imageBase64DataUrl) {
-      throw new Error("Provide imageUrl, imageBase64, or telegram.fileId");
-    }
-    const model = env.VISION_MODEL ?? "gpt-4o-mini";
-    const analysis = await visionAnalyzeMealPhoto(env, imageUrl, imageBase64DataUrl, normStr(args.meal), normStr(args.locale));
+
+    const analysis = await visionAnalyzeMealPhoto(env, imageDataUrl, normStr(args.meal), normStr(args.locale));
     const at_ms = "atMs" in args ? parseAtMs(args.atMs) : parseAtMs(args.atISO);
     const ts = nowMs();
     const id = crypto.randomUUID();
@@ -873,10 +924,10 @@ async function toolCall(env: Env, name: string, args: Record<string, unknown>): 
       typeof totals.calories === "number"
         ? `~${Math.round(totals.calories)} kcal (confidence ${typeof analysis.confidence === "number" ? analysis.confidence.toFixed(2) : "?"})`
         : "meal analysis";
-    const imageRef: Record<string, unknown> = {};
-    if (normStr(args.imageUrl)) imageRef.imageUrl = normStr(args.imageUrl);
+    const imageRef: Record<string, unknown> = { vision_input: "data_url_bytes_only" };
     if (fileId) imageRef.telegram = { fileId };
     if (rawB64) imageRef.imageBase64_sha_prefix = rawB64.slice(0, 24);
+    if (imageUrlArg && !rawB64 && !fileId) imageRef.inlined_from_https = true;
     await env.DB.prepare(
       `INSERT INTO wm_meal_analyses
        (id, scope_id, at_ms, model, summary, raw_json, image_ref_json, telegram_chat_id, telegram_message_id, created_at)

@@ -24,9 +24,11 @@ End-to-end flow:
 
 Each object must include **`fileId`** (Telegram `photo` sizes / `file_id`).
 
-2. **myclaw (recommended):** set **`MYCLAW_TELEGRAM_BOT_TOKEN`** on Next.js (same bot as telegram-mcp). For `weight_analyze_meal_photo` calls that include **`telegram.fileId`** but no `imageBase64`/`imageUrl`, myclaw downloads the file via Bot API and passes **`imageBase64`** to the worker. The **weight worker does not need `TELEGRAM_BOT_TOKEN`** for that path.
+2. **myclaw (recommended):** set **`MYCLAW_TELEGRAM_BOT_TOKEN`** on Next.js (same bot as telegram-mcp). When **`telegram.fileId`** is present, myclaw always downloads via Bot API and sends **raw `imageBase64`** to the worker (planner `imageUrl` is dropped). The weight worker inlines everything to a **`data:` URL** before the vision API — **no remote image URLs are sent to the model**.
 
-3. **weight worker only:** set **`TELEGRAM_BOT_TOKEN`** on **weight-management-mcp** if clients send `telegram.fileId` **without** myclaw hydration. The worker then calls `getFile` and uses the HTTPS file URL for vision.
+3. **weight worker only:** set **`TELEGRAM_BOT_TOKEN`** on **weight-management-mcp** if clients send `telegram.fileId` **without** myclaw. The worker downloads the Telegram file, reads **bytes**, then calls vision with a **`data:`** payload only.
+
+4. **Optional `imageUrl` (https):** supported only as a convenience: the worker **fetches once** and inlines bytes. Prefer **`imageBase64` + `telegram.fileId`**; do not treat image URLs as the primary integration.
 
 Example args (fileId; myclaw will replace with base64 when token is set):
 

@@ -43,8 +43,8 @@ export function telegramBotTokenForFileFetch(): string | null {
 }
 
 /**
- * If args use telegram.fileId but not imageUrl/imageBase64, download in Next.js and set imageBase64.
- * Strips fileId from `telegram` so weight-mcp does not need TELEGRAM_BOT_TOKEN (keeps chatId/messageId for DB).
+ * If args include telegram.fileId, download in Next.js and set raw imageBase64 (bytes path only).
+ * Removes planner imageUrl and strips fileId from `telegram` so weight-mcp needs no TELEGRAM_BOT_TOKEN for this call.
  */
 export async function hydrateWeightAnalyzeMealPhotoFromTelegram(args: Record<string, unknown>): Promise<void> {
   const token = telegramBotTokenForFileFetch();
@@ -57,11 +57,11 @@ export async function hydrateWeightAnalyzeMealPhotoFromTelegram(args: Record<str
   if (!fileId) return;
 
   const hasB64 = typeof args.imageBase64 === "string" && args.imageBase64.trim().length > 0;
-  const hasUrl = typeof args.imageUrl === "string" && args.imageUrl.trim().length > 0;
-  if (hasB64 || hasUrl) return;
+  if (hasB64) return;
 
   const b64 = await fetchTelegramFileAsBase64(token, fileId);
   args.imageBase64 = b64;
+  delete args.imageUrl;
 
   const chatId = typeof rec.chatId === "string" ? rec.chatId.trim() : "";
   const messageId =
