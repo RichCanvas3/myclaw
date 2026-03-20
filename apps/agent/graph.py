@@ -155,6 +155,10 @@ def _telegram_meal_calorie_intent(user_text: str) -> bool:
         x in t for x in ("photo", "picture", "image", "pic", "camera")
     ):
         return True
+    if "process" in t and any(x in t for x in ("photo", "picture", "image", "pic")):
+        return True
+    if any(x in t for x in ("analyze", "analysis")) and any(x in t for x in ("photo", "picture", "image", "meal")):
+        return True
     return False
 
 

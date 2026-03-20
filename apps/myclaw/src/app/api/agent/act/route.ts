@@ -1,6 +1,12 @@
 import { getA2aAgent } from "@/lib/agents/registry";
 import type { SuggestedAction } from "@/lib/agents/types";
+import {
+  injectTelegramMealPhotoActionsIfNeeded,
+  seedMealPhotoDedupeFromActions,
+  weightAnalyzeActionsFromTelegramListResult,
+} from "@/lib/goal/injectMealPhotoActions";
 import { mcpToolsCall, mcpToolsList } from "@/lib/mcp/client";
+import { logMyclaw } from "@/lib/observability";
 import { orchestratorCompose, orchestratorComposeEmail, orchestratorPlan } from "@/lib/orchestrator/llm";
 import { memoryAppendEvent, memoryGet, memoryGetProfile, memoryQuery, memoryUpsert } from "@/lib/memory/client";
 import { hydrateWeightAnalyzeMealPhotoFromTelegram } from "@/lib/telegram/fetchFile";
@@ -1567,8 +1573,23 @@ export async function POST(req: Request): Promise<Response> {
       const ctx = { ...session, threadId };
 
       if (suggestedActions && suggestedActions.length) {
+        const n0 = suggestedActions.length;
+        suggestedActions = injectTelegramMealPhotoActionsIfNeeded({
+          fullBlob: messageToSend,
+          session,
+          actions: suggestedActions,
+        });
+        if (suggestedActions.length !== n0) {
+          logMyclaw("goal-inject", "meal-photo actions injected before tool run", {
+            actionCountBefore: n0,
+            actionCountAfter: suggestedActions.length,
+          });
+        }
         const actionsToRun = directGoalTickish ? sortGoalTickGoogleCalendarActions(suggestedActions) : suggestedActions;
-        for (const action of actionsToRun) {
+        const mealPhotoDedupeKeys = seedMealPhotoDedupeFromActions(suggestedActions);
+        const actionQueue = [...actionsToRun];
+        while (actionQueue.length) {
+          const action = actionQueue.shift()!;
           executedActions.push(action);
 
           if (action.type === "mcp.tool" && isRecord(action.input)) {
@@ -1603,6 +1624,18 @@ export async function POST(req: Request): Promise<Response> {
               }
 
               const resp = await mcpToolsCall(server, tool, args);
+              if (server === "gym-telegram" && tool === "telegram_list_messages") {
+                const more = weightAnalyzeActionsFromTelegramListResult(
+                  resp,
+                  session,
+                  messageToSend,
+                  mealPhotoDedupeKeys,
+                );
+                if (more.length) {
+                  logMyclaw("goal-inject", "queued weight_analyze after telegram_list_messages", { count: more.length });
+                  actionQueue.unshift(...more);
+                }
+              }
               if (server === "gym-googlecalendar") {
                 const info = extractCalendarEventInfo(resp);
                 const link = info.htmlLink ?? extractCalendarLink(resp);
