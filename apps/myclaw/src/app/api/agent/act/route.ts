@@ -112,6 +112,30 @@ function extractActiveGoalText(memoryProfile: unknown): string | null {
   return typeof text === "string" && text.trim() ? text.trim() : null;
 }
 
+/** Plan steps + eventIds for goal tick / calendar update-delete (not shown in UI). */
+function summarizeActiveGoalPlan(memoryProfile: unknown): string {
+  if (!isRecord(memoryProfile) || !isRecord(memoryProfile.profile)) return "";
+  const goals = (memoryProfile.profile as Record<string, unknown>).goals;
+  if (!isRecord(goals)) return "";
+  const active = goals.active;
+  if (!isRecord(active)) return "";
+  const plan = active.plan;
+  if (!Array.isArray(plan) || !plan.length) return "";
+  const lines: string[] = [];
+  for (const st of plan.slice(0, 20)) {
+    if (!isRecord(st)) continue;
+    const id = typeof st.id === "string" ? st.id : "";
+    const title = typeof st.title === "string" ? st.title.trim() : "";
+    const whenISO = typeof st.whenISO === "string" ? st.whenISO.trim() : "";
+    const eventId = typeof st.eventId === "string" ? st.eventId.trim() : "";
+    if (!title && !whenISO && !eventId) continue;
+    lines.push(
+      `- ${[id ? `step=${id}` : "", eventId ? `eventId=${eventId}` : "", whenISO ? `when=${whenISO}` : "", title ? `title=${title}` : ""].filter(Boolean).join(" | ")}`,
+    );
+  }
+  return lines.join("\n");
+}
+
 function safeJson(v: unknown): unknown {
   if (typeof v !== "string") return v;
   try {
@@ -119,6 +143,24 @@ function safeJson(v: unknown): unknown {
   } catch {
     return v;
   }
+}
+
+function calendarItemEventId(it: Record<string, unknown>): string | null {
+  const raw =
+    (typeof it.id === "string" && it.id) ||
+    (typeof it.eventId === "string" && it.eventId) ||
+    (isRecord(it.resource) && typeof it.resource.id === "string" && it.resource.id) ||
+    null;
+  const s = raw?.trim();
+  return s || null;
+}
+
+function normalizeEventSummaryForDedupe(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/[^a-z0-9\s:-]/g, "")
+    .trim();
 }
 
 function summarizeCalendarEvents(resp: unknown): string {
@@ -130,7 +172,7 @@ function summarizeCalendarEvents(resp: unknown): string {
     (Array.isArray((parsed as any).events?.items) ? ((parsed as any).events.items as unknown[]) : null);
   if (!items || !items.length) return "";
   const lines: string[] = [];
-  for (const it of items.slice(0, 10)) {
+  for (const it of items.slice(0, 40)) {
     if (!isRecord(it)) continue;
     const summary = typeof (it as any).summary === "string" ? (it as any).summary : "";
     const start = (it as any).start;
@@ -140,7 +182,8 @@ function summarizeCalendarEvents(resp: unknown): string {
       (typeof (it as any).startISO === "string" ? (it as any).startISO : "") ||
       "";
     if (!summary && !when) continue;
-    lines.push(`- ${when} — ${summary}`.trim());
+    const eid = calendarItemEventId(it as Record<string, unknown>);
+    lines.push(`${eid ? `eventId=${eid} | ` : ""}${when} — ${summary}`.trim());
   }
   return lines.join("\n");
 }
@@ -154,7 +197,12 @@ function normalizeIsoMaybe(v: unknown): string | null {
   return new Date(ms).toISOString();
 }
 
-function parseCalendarItems(resp: unknown): Array<{ summary: string; startISO: string | null; endISO: string | null }> {
+function parseCalendarItems(resp: unknown): Array<{
+  eventId: string | null;
+  summary: string;
+  startISO: string | null;
+  endISO: string | null;
+}> {
   const parsed = safeJson(resp);
   if (!isRecord(parsed)) return [];
   const items =
@@ -162,9 +210,11 @@ function parseCalendarItems(resp: unknown): Array<{ summary: string; startISO: s
     (Array.isArray((parsed as any).events) ? ((parsed as any).events as unknown[]) : null) ??
     (Array.isArray((parsed as any).events?.items) ? ((parsed as any).events.items as unknown[]) : null);
   if (!items) return [];
-  const out: Array<{ summary: string; startISO: string | null; endISO: string | null }> = [];
+  const out: Array<{ eventId: string | null; summary: string; startISO: string | null; endISO: string | null }> = [];
   for (const it of items) {
     if (!isRecord(it)) continue;
+    const rec = it as Record<string, unknown>;
+    const eventId = calendarItemEventId(rec);
     const summary = typeof (it as any).summary === "string" ? ((it as any).summary as string).trim() : "";
     const start = (it as any).start;
     const end = (it as any).end;
@@ -175,7 +225,7 @@ function parseCalendarItems(resp: unknown): Array<{ summary: string; startISO: s
       normalizeIsoMaybe(isRecord(end) ? (end as any).dateTime ?? (end as any).date : null) ??
       normalizeIsoMaybe((it as any).endISO);
     if (!summary && !startISO) continue;
-    out.push({ summary, startISO, endISO });
+    out.push({ eventId, summary, startISO, endISO });
   }
   return out;
 }
@@ -205,9 +255,10 @@ async function shouldSkipCreateEventDueToDuplicate(args: Record<string, unknown>
     maxResults: 50,
   });
   const items = parseCalendarItems(listed);
+  const wantNorm = normalizeEventSummaryForDedupe(summary);
   for (const it of items) {
     if (!it.summary) continue;
-    if (it.summary.toLowerCase() !== summary.toLowerCase()) continue;
+    if (normalizeEventSummaryForDedupe(it.summary) !== wantNorm) continue;
     const itStart = it.startISO ? Date.parse(it.startISO) : NaN;
     const itEnd = it.endISO ? Date.parse(it.endISO) : NaN;
     if (!Number.isFinite(itStart) || !Number.isFinite(itEnd)) continue;
@@ -285,21 +336,23 @@ async function buildGoalContext(memoryProfile: unknown): Promise<string> {
   pieces.push(`nowISO: ${nowISO}`);
   const goalText = extractActiveGoalText(memoryProfile);
   if (goalText) pieces.push(`activeGoal: ${goalText}`);
+  const planLines = summarizeActiveGoalPlan(memoryProfile);
+  if (planLines) pieces.push(`goalPlan (use eventId for update/delete; do not re-create):\n${planLines}`);
 
-  // Calendar "observe": next 7 days of events (best-effort).
+  // Calendar "observe": next 21 days with eventIds (for dedupe / reschedule in goal tick).
   try {
     const addr = resolveCalendarAccountAddressFromProfile(memoryProfile);
     if (addr) {
       const t0 = new Date();
-      const t1 = new Date(t0.getTime() + 7 * 24 * 60 * 60 * 1000);
+      const t1 = new Date(t0.getTime() + 21 * 24 * 60 * 60 * 1000);
       const cal = await mcpToolsCall("gym-googlecalendar", "googlecalendar_list_events", {
         accountAddress: addr,
         timeMinISO: t0.toISOString(),
         timeMaxISO: t1.toISOString(),
-        maxResults: 25,
+        maxResults: 50,
       });
       const s = summarizeCalendarEvents(cal);
-      if (s) pieces.push(`calendarNext7Days:\n${s}`);
+      if (s) pieces.push(`calendarNext21Days (each line: eventId=… for mutations):\n${s}`);
     }
   } catch {
     // ignore
@@ -453,6 +506,29 @@ function normalizeGoogleCalendarArgs(tool: string, args: Record<string, unknown>
       }
     }
   }
+}
+
+/** For /goal tick: list/freebusy → delete → update → create; other action types keep their relative order. */
+function sortGoalTickGoogleCalendarActions(actions: SuggestedAction[]): SuggestedAction[] {
+  const indexed = actions.map((action, i) => ({ action, i }));
+  const calRank = (a: SuggestedAction): number => {
+    if (a.type !== "mcp.tool" || !isRecord(a.input) || a.input.server !== "gym-googlecalendar") return -1;
+    const tool = a.input.tool;
+    if (tool === "googlecalendar_list_calendars" || tool === "googlecalendar_get_connection_status") return 0;
+    if (tool === "googlecalendar_list_events" || tool === "googlecalendar_freebusy") return 1;
+    if (tool === "googlecalendar_delete_event") return 2;
+    if (tool === "googlecalendar_update_event") return 3;
+    if (tool === "googlecalendar_create_event") return 4;
+    return 2;
+  };
+  return indexed
+    .sort((a, b) => {
+      const ra = calRank(a.action);
+      const rb = calRank(b.action);
+      if (ra >= 0 && rb >= 0 && ra !== rb) return ra - rb;
+      return a.i - b.i;
+    })
+    .map((x) => x.action);
 }
 
 function validateGoogleCalendarArgs(tool: string, args: Record<string, unknown>) {
@@ -1363,7 +1439,8 @@ export async function POST(req: Request): Promise<Response> {
       const ctx = { ...session, threadId };
 
       if (suggestedActions && suggestedActions.length) {
-        for (const action of suggestedActions) {
+        const actionsToRun = directGoalTickish ? sortGoalTickGoogleCalendarActions(suggestedActions) : suggestedActions;
+        for (const action of actionsToRun) {
           executedActions.push(action);
 
           if (action.type === "mcp.tool" && isRecord(action.input)) {
