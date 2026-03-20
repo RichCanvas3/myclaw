@@ -131,7 +131,7 @@
             "step_index": 4,
             "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026",
             "last_observation": {
-              "atISO": "2026-03-20T02:16:16.553Z",
+              "atISO": "2026-03-20T02:24:29.168Z",
               "calendarLinks": [],
               "errors": [],
               "executedActions": [
@@ -140,16 +140,6 @@
                   "input": {
                     "namespace": "training",
                     "q": "average incline for running training"
-                  }
-                },
-                {
-                  "type": "mcp.tool",
-                  "input": {
-                    "args": {
-                      "count": 5
-                    },
-                    "server": "gym-telegram",
-                    "tool": "telegramRecent"
                   }
                 },
                 {
@@ -236,7 +226,7 @@
             }
           },
           "tags": [],
-          "updated_at": 1773972976555
+          "updated_at": 1773973469170
         }
       },
       "threads": {
@@ -2921,6 +2911,224 @@
           }
         },
         "ts": 1773972976557
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f1b0473c-3282-43d4-a768-a2da9fbd764b",
+          "input": {
+            "message": "/goal tick"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.query",
+              "input": {
+                "namespace": "training",
+                "q": "average incline for running training"
+              }
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-8",
+                      "notes": "Add a new workout.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-29T08:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Next steps include confirming the average incline for training and adjusting your workout schedule based on feedback. I'll also ensure your upcoming workouts are properly scheduled in your calendar."
+          }
+        },
+        "ts": 1773973438930
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f1b0473c-3282-43d4-a768-a2da9fbd764b",
+          "input": {
+            "message": "/goal tick"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.query",
+              "input": {
+                "namespace": "training",
+                "q": "average incline for running training"
+              }
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-8",
+                      "notes": "Add a new workout.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-29T08:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Next steps include confirming the average incline for your training and adjusting your workout times for better alignment with daytime workouts. I'll also ensure your upcoming workouts are scheduled in your calendar."
+          }
+        },
+        "ts": 1773973469173
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f1b0473c-3282-43d4-a768-a2da9fbd764b",
+          "input": {
+            "message": "/goal status"
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "{\n  \"active\": {\n    \"created_at\": 1773923313,\n    \"last_observation\": {\n      \"atISO\": \"2026-03-20T02:24:29.168Z\",\n      \"calendarLinks\": [],\n      \"errors\": [],\n      \"executedActions\": [\n        {\n          \"input\": {\n            \"namespace\": \"training\",\n            \"q\": \"average incline for running training\"\n          },\n          \"type\": \"memory.query\"\n        },\n        {\n          \"input\": {\n            \"key\": \"active\",\n            \"namespace\": \"goals\",\n            \"value\": {\n              \"created_at\": 1773923313,\n              \"last_result\": \"Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.\",\n              \"plan\": [\n                {\n                  \"durationMinutes\": 60,\n                  \"id\": \"step-1\",\n                  \"notes\": \"Easy pace run to build endurance.\",\n                  \"status\": \"pending\",\n                  \"title\": \"5 miles easy run\",\n                  \"whenISO\": \"2026-03-20T08:00:00Z\"\n                },\n                {\n                  \"durationMinutes\": 60,\n                  \"id\": \"step-2\",\n                  \"notes\": \"Focus on core and leg strength.\",\n                  \"status\": \"pending\",\n                  \"title\": \"Strength training\",\n                  \"whenISO\": \"2026-03-21T08:00:00Z\"\n                },\n                {\n                  \"durationMinutes\": 60,\n                  \"id\": \"step-3\",\n                  \"notes\": \"Maintain a challenging but sustainable pace.\",\n                  \"status\": \"pending\",\n                  \"title\": \"6 miles tempo run\",\n                  \"whenISO\": \"2026-03-22T08:00:00Z\"\n                },\n                {\n                  \"durationMinutes\": 60,\n                  \"id\": \"step-4\",\n                  \"notes\": \"Consider swimming or cycling for recovery.\",\n                  \"status\": \"pending\",\n                  \"title\": \"Rest or cross-training\",\n                  \"whenISO\": \"2026-03-23T08:00:00Z\"\n                },\n                {\n                  \"durationMinutes\": 60,\n                  \"id\": \"step-5\",\n                  \"notes\": \"Easy pace run to maintain fitness.\",\n                  \"status\": \"pending\",\n                  \"title\": \"5 miles easy run\",\n                  \"whenISO\": \"2026-03-24T08:00:00Z\"\n                },\n                {\n                  \"durationMinutes\": 120,\n                  \"id\": \"step-6\",\n                  \"notes\": \"Focus on hydration and nutrition during the run.\",\n                  \"status\": \"pending\",\n                  \"title\": \"Long run: 10 miles\",\n                  \"whenISO\": \"2026-03-25T08:00:00Z\"\n                },\n                {\n                  \"durationMinutes\": 60,\n                  \"id\": \"step-7\",\n                  \"notes\": \"Take time to recover and stretch.\",\n                  \"status\": \"pending\",\n                  \"title\": \"Rest and recovery\",\n                  \"whenISO\": \"2026-03-26T08:00:00Z\"\n                },\n                {\n                  \"durationMinutes\": 60,\n                  \"id\": \"step-8\",\n                  \"notes\": \"Add a new workout.\",\n                  \"status\": \"pending\",\n                  \"title\": \"5 miles easy run\",\n                  \"whenISO\": \"2026-03-29T08:00:00Z\"\n                }\n              ],\n              \"status\": \"active\",\n              \"step_index\": 4,\n              \"text\": \"goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026\"\n            }\n          },\n          \"type\": \"memory.upsert\"\n        }\n      ]\n    },\n    \"last_result\": \"Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.\",\n    \"plan\": [\n      {\n        \"durationMinutes\": 60,\n        \"id\": \"step-1\",\n        \"notes\": \"Easy pace run to build endurance.\",\n        \"status\": \"pending\",\n        \"title\": \"5 miles easy run\",\n        \"whenISO\": \"2026-03-20T08:00:00Z\"\n      },\n      {\n        \"durationMinutes\": 60,\n        \"id\": \"step-2\",\n        \"notes\": \"Focus on core and leg strength.\",\n        \"status\": \"pending\",\n        \"title\": \"Strength training\",\n        \"whenISO\": \"2026-03-21T08:00:00Z\"\n      },\n      {\n        \"durationMinutes\": 60,\n        \"id\": \"step-3\",\n        \"notes\": \"Maintain a challenging but sustainable pace.\",\n        \"status\": \"pending\",\n        \"title\": \"6 miles tempo run\",\n        \"whenISO\": \"2026-03-22T08:00:00Z\"\n      },\n      {\n        \"durationMinutes\": 60,\n        \"id\": \"step-4\",\n        \"notes\": \"Consider swimming or cycling for recovery.\",\n        \"status\": \"pending\",\n        \"title\": \"Rest or cross-training\",\n        \"whenISO\": \"2026-03-23T08:00:00Z\"\n      },\n      {\n        \"durationMinutes\": 60,\n        \"id\": \"step-5\",\n        \"notes\": \"Easy pace run to maintain fitness.\",\n        \"status\": \"pending\",\n        \"title\": \"5 miles easy run\",\n        \"whenISO\": \"2026-03-24T08:00:00Z\"\n      },\n      {\n        \"durationMinutes\": 120,\n        \"id\": \"step-6\",\n        \"notes\": \"Focus on hydration and nutrition during the run.\",\n        \"status\": \"pending\",\n        \"title\": \"Long run: 10 miles\",\n        \"whenISO\": \"2026-03-25T08:00:00Z\"\n      },\n      {\n        \"durationMinutes\": 60,\n        \"id\": \"step-7\",\n        \"notes\": \"Take time to recover and stretch.\",\n        \"status\": \"pending\",\n        \"title\": \"Rest and recovery\",\n        \"whenISO\": \"2026-03-26T08:00:00Z\"\n      },\n      {\n        \"durationMinutes\": 60,\n        \"id\": \"step-8\",\n        \"notes\": \"Add a new workout.\",\n        \"status\": \"pending\",\n        \"title\": \"5 miles easy run\",\n        \"whenISO\": \"2026-03-29T08:00:00Z\"\n      }\n    ],\n    \"status\": \"active\",\n    \"step_index\": 4,\n    \"text\": \"goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026\"\n  }\n}"
+          }
+        },
+        "ts": 1773973514232
       }
     ],
     "t_cust_casey:acct_cust_casey:p_casey:hh_casey": [

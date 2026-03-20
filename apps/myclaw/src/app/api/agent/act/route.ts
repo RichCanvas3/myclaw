@@ -67,14 +67,52 @@ async function normalizeTelegramPlannerToolName(
   return { tool: "telegram_list_messages", args: next };
 }
 
+/** Telegram single-message limit is 4096; leave headroom for formatting. */
+const TELEGRAM_GOAL_POST_MAX_CHARS = 3900;
+
 async function postGoalUpdateToTelegram(text: string): Promise<void> {
   const enabled = envBool("MYCLAW_GOAL_TELEGRAM_POST_RESULTS", true);
   if (!enabled) return;
   const chatTitle = goalTelegramChatTitle();
   const chatId = await resolveTelegramChatIdByTitle(chatTitle).catch(() => null);
   if (!chatId) return;
-  const trimmed = text.length > 3500 ? text.slice(0, 3500) + "…" : text;
+  const trimmed = text.length > TELEGRAM_GOAL_POST_MAX_CHARS ? text.slice(0, TELEGRAM_GOAL_POST_MAX_CHARS) + "…" : text;
   await mcpToolsCall("gym-telegram", "telegram_send_message", { chatId, text: trimmed }).catch(() => {});
+}
+
+/** `/goal status` returns large JSON; summarize for chat instead of dumping megabytes. */
+function compactLinesForTelegramGoalNote(cmd: string, text: string, maxLen: number): string {
+  const t = text.trim();
+  if (maxLen <= 20) return t.slice(0, maxLen);
+  if (t.length <= maxLen) return t;
+  if (cmd.includes("/goal status") && t.startsWith("{")) {
+    try {
+      const o = JSON.parse(t) as Record<string, unknown>;
+      const active = o.active;
+      if (isRecord(active)) {
+        const plan = active.plan;
+        const planN = Array.isArray(plan) ? plan.length : 0;
+        const lr = active.last_result;
+        const lrShort =
+          typeof lr === "string"
+            ? lr.slice(0, 280) + (lr.length > 280 ? "…" : "")
+            : isRecord(lr)
+              ? JSON.stringify(lr).slice(0, 280) + "…"
+              : lr;
+        const small = {
+          text: active.text,
+          status: active.status,
+          planSteps: planN,
+          last_result: lrShort,
+        };
+        const s = JSON.stringify(small, null, 2);
+        if (s.length <= maxLen) return s;
+      }
+    } catch {
+      /* fall through */
+    }
+  }
+  return t.slice(0, maxLen - 1) + "…";
 }
 
 function extractCalendarLink(resp: unknown): string | null {
@@ -174,14 +212,6 @@ function calendarItemEventId(it: Record<string, unknown>): string | null {
   return s || null;
 }
 
-function normalizeEventSummaryForDedupe(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/\s+/g, " ")
-    .replace(/[^a-z0-9\s:-]/g, "")
-    .trim();
-}
-
 function summarizeCalendarEvents(resp: unknown): string {
   const parsed = safeJson(resp);
   if (!isRecord(parsed)) return "";
@@ -214,76 +244,6 @@ function normalizeIsoMaybe(v: unknown): string | null {
   const ms = Date.parse(t);
   if (!Number.isFinite(ms)) return null;
   return new Date(ms).toISOString();
-}
-
-function parseCalendarItems(resp: unknown): Array<{
-  eventId: string | null;
-  summary: string;
-  startISO: string | null;
-  endISO: string | null;
-}> {
-  const parsed = safeJson(resp);
-  if (!isRecord(parsed)) return [];
-  const items =
-    (Array.isArray((parsed as any).items) ? ((parsed as any).items as unknown[]) : null) ??
-    (Array.isArray((parsed as any).events) ? ((parsed as any).events as unknown[]) : null) ??
-    (Array.isArray((parsed as any).events?.items) ? ((parsed as any).events.items as unknown[]) : null);
-  if (!items) return [];
-  const out: Array<{ eventId: string | null; summary: string; startISO: string | null; endISO: string | null }> = [];
-  for (const it of items) {
-    if (!isRecord(it)) continue;
-    const rec = it as Record<string, unknown>;
-    const eventId = calendarItemEventId(rec);
-    const summary = typeof (it as any).summary === "string" ? ((it as any).summary as string).trim() : "";
-    const start = (it as any).start;
-    const end = (it as any).end;
-    const startISO =
-      normalizeIsoMaybe(isRecord(start) ? (start as any).dateTime ?? (start as any).date : null) ??
-      normalizeIsoMaybe((it as any).startISO);
-    const endISO =
-      normalizeIsoMaybe(isRecord(end) ? (end as any).dateTime ?? (end as any).date : null) ??
-      normalizeIsoMaybe((it as any).endISO);
-    if (!summary && !startISO) continue;
-    out.push({ eventId, summary, startISO, endISO });
-  }
-  return out;
-}
-
-function overlaps(aStart: number, aEnd: number, bStart: number, bEnd: number): boolean {
-  return aStart < bEnd && bStart < aEnd;
-}
-
-async function shouldSkipCreateEventDueToDuplicate(args: Record<string, unknown>): Promise<boolean> {
-  // Best-effort: if we can list events in a narrow window and find a same-summary overlap, skip.
-  const accountAddress = typeof args.accountAddress === "string" ? args.accountAddress : null;
-  const summary = typeof args.summary === "string" ? args.summary.trim() : "";
-  const startISO = typeof args.startISO === "string" ? args.startISO : null;
-  const endISO = typeof args.endISO === "string" ? args.endISO : null;
-  if (!accountAddress || !summary || !startISO || !endISO) return false;
-  const startMs = Date.parse(startISO);
-  const endMs = Date.parse(endISO);
-  if (!Number.isFinite(startMs) || !Number.isFinite(endMs) || endMs <= startMs) return false;
-
-  const padMs = 2 * 60 * 60 * 1000;
-  const timeMinISO = new Date(startMs - padMs).toISOString();
-  const timeMaxISO = new Date(endMs + padMs).toISOString();
-  const listed = await mcpToolsCall("gym-googlecalendar", "googlecalendar_list_events", {
-    accountAddress,
-    timeMinISO,
-    timeMaxISO,
-    maxResults: 50,
-  });
-  const items = parseCalendarItems(listed);
-  const wantNorm = normalizeEventSummaryForDedupe(summary);
-  for (const it of items) {
-    if (!it.summary) continue;
-    if (normalizeEventSummaryForDedupe(it.summary) !== wantNorm) continue;
-    const itStart = it.startISO ? Date.parse(it.startISO) : NaN;
-    const itEnd = it.endISO ? Date.parse(it.endISO) : NaN;
-    if (!Number.isFinite(itStart) || !Number.isFinite(itEnd)) continue;
-    if (overlaps(startMs, endMs, itStart, itEnd)) return true;
-  }
-  return false;
 }
 
 async function updateActiveGoalPlanWithCalendarEvent(params: {
@@ -1563,22 +1523,6 @@ export async function POST(req: Request): Promise<Response> {
                 validateGoogleCalendarArgs(tool, args as Record<string, unknown>);
               }
 
-              // De-dupe calendar creates (best-effort).
-              if (server === "gym-googlecalendar" && tool === "googlecalendar_create_event") {
-                try {
-                  const skip = await shouldSkipCreateEventDueToDuplicate(args as Record<string, unknown>);
-                  if (skip) {
-                    const resp = { skipped: true, reason: "duplicate_event", args };
-                    const rendered = JSON.stringify(resp, null, 2);
-                    accumulated ||= rendered;
-                    controller.enqueue(encoder.encode(sse("delta", { text: rendered })));
-                    continue;
-                  }
-                } catch {
-                  // ignore dedupe failures; proceed with create
-                }
-              }
-
               const resp = await mcpToolsCall(server, tool, args);
               if (server === "gym-googlecalendar") {
                 const info = extractCalendarEventInfo(resp);
@@ -1776,7 +1720,8 @@ export async function POST(req: Request): Promise<Response> {
       if (directGoal) {
         const lines: string[] = [];
         lines.push("myclaw: goal update");
-        lines.push(`cmd: ${body.message.trim().slice(0, 180)}`);
+        const cmdShown = body.message.trim().slice(0, 220);
+        lines.push(`cmd: ${cmdShown}`);
         if (calendarLinks.length) {
           lines.push("calendar:");
           for (const l of calendarLinks.slice(0, 5)) lines.push(`- ${l}`);
@@ -1786,7 +1731,12 @@ export async function POST(req: Request): Promise<Response> {
           for (const e of toolErrors.slice(0, 5)) lines.push(`- ${e}`);
         }
         const msgText = (fallbackMessage && fallbackMessage.trim()) || accumulated.trim();
-        if (msgText) lines.push(`note: ${msgText.slice(0, 600)}`);
+        if (msgText) {
+          const header = `${lines.join("\n")}\nnote: `;
+          const noteBudget = Math.max(400, TELEGRAM_GOAL_POST_MAX_CHARS - header.length);
+          const noteBody = compactLinesForTelegramGoalNote(body.message.trim(), msgText, noteBudget);
+          lines.push(`note: ${noteBody}`);
+        }
         await postGoalUpdateToTelegram(lines.join("\n"));
       }
 
