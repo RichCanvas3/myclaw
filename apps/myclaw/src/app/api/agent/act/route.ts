@@ -461,6 +461,59 @@ function canonicalizeCalendarInstant(raw: string): string | null {
   return new Date(ms).toISOString();
 }
 
+/** Parse planner output into a single UTC ISO instant (string or nested { dateTime|date }). */
+function rawToIsoString(v: unknown): string | null {
+  if (v == null) return null;
+  if (typeof v === "string") return canonicalizeCalendarInstant(v);
+  if (!isRecord(v)) return null;
+  const nested =
+    (typeof v.dateTime === "string" && v.dateTime.trim() ? v.dateTime : null) ||
+    (typeof v.date_time === "string" && v.date_time.trim() ? v.date_time : null) ||
+    (typeof v.date === "string" && v.date.trim() ? v.date : null) ||
+    null;
+  return nested ? canonicalizeCalendarInstant(nested) : null;
+}
+
+const DEFAULT_CALENDAR_QUERY_DAYS = 21;
+
+/**
+ * googlecalendar_list_events / googlecalendar_freebusy require timeMinISO + timeMaxISO strings.
+ * Planners often omit them, use wrong keys, or set undefined (key present, value missing).
+ */
+function normalizeCalendarQueryTimeRange(args: Record<string, unknown>): void {
+  if (args.timeMinISO == null && args.time_min != null) args.timeMinISO = args.time_min as unknown;
+  if (args.timeMaxISO == null && args.time_max != null) args.timeMaxISO = args.time_max as unknown;
+  if (args.timeMinISO == null && args.startISO != null) args.timeMinISO = args.startISO as unknown;
+  if (args.timeMaxISO == null && args.endISO != null) args.timeMaxISO = args.endISO as unknown;
+  if (args.timeMinISO == null && args.timeMin != null) args.timeMinISO = args.timeMin as unknown;
+  if (args.timeMaxISO == null && args.timeMax != null) args.timeMaxISO = args.timeMax as unknown;
+  if (args.timeMinISO == null && args.start != null) args.timeMinISO = args.start as unknown;
+  if (args.timeMaxISO == null && args.end != null) args.timeMaxISO = args.end as unknown;
+
+  let minS = rawToIsoString(args.timeMinISO);
+  let maxS = rawToIsoString(args.timeMaxISO);
+
+  const nowMs = Date.now();
+  if (!minS) {
+    minS = new Date(nowMs).toISOString();
+  }
+  if (!maxS || (minS && maxS && Date.parse(maxS) <= Date.parse(minS))) {
+    maxS = new Date(Date.parse(minS) + DEFAULT_CALENDAR_QUERY_DAYS * 24 * 60 * 60 * 1000).toISOString();
+  }
+
+  args.timeMinISO = minS;
+  args.timeMaxISO = maxS;
+
+  delete args.time_min;
+  delete args.time_max;
+  delete args.startISO;
+  delete args.endISO;
+  delete args.timeMin;
+  delete args.timeMax;
+  delete args.start;
+  delete args.end;
+}
+
 /**
  * Google Calendar patch often 400s on "Invalid start time" when start/end are inconsistent,
  * end <= start, or only one side is sent for a timed event. Align to a valid UTC pair.
@@ -505,6 +558,11 @@ function finalizeGoogleCalendarStartEndPair(args: Record<string, unknown>, tool:
 }
 
 function normalizeGoogleCalendarArgs(tool: string, args: Record<string, unknown>) {
+  if (tool === "googlecalendar_list_events" || tool === "googlecalendar_freebusy") {
+    normalizeCalendarQueryTimeRange(args);
+    return;
+  }
+
   const isCreate = tool === "googlecalendar_create_event";
   const isUpdate = tool === "googlecalendar_update_event";
   const isDelete = tool === "googlecalendar_delete_event";
@@ -624,6 +682,17 @@ function validateGoogleCalendarArgs(tool: string, args: Record<string, unknown>)
   if (tool === "googlecalendar_delete_event") {
     if (typeof args.eventId !== "string" || !args.eventId.trim()) {
       throw new Error("Invalid googlecalendar_delete_event args: missing eventId.");
+    }
+  }
+  if (tool === "googlecalendar_list_events" || tool === "googlecalendar_freebusy") {
+    if (typeof args.timeMinISO !== "string" || !args.timeMinISO.trim()) {
+      throw new Error("Invalid googlecalendar_list_events/freebusy: missing timeMinISO after normalization.");
+    }
+    if (typeof args.timeMaxISO !== "string" || !args.timeMaxISO.trim()) {
+      throw new Error("Invalid googlecalendar_list_events/freebusy: missing timeMaxISO after normalization.");
+    }
+    if (Date.parse(args.timeMaxISO) <= Date.parse(args.timeMinISO)) {
+      throw new Error("Invalid googlecalendar_list_events/freebusy: timeMaxISO must be after timeMinISO.");
     }
   }
 }
@@ -1194,30 +1263,6 @@ export async function POST(req: Request): Promise<Response> {
                 tool = n.tool;
                 args = n.args;
               }
-              // Safety: if the planner accidentally emits a malformed Google Calendar MCP call,
-              // rewrite it into a calendar.range default (next 30 days).
-              if (
-                server === "gym-googlecalendar" &&
-                tool === "googlecalendar_list_events" &&
-                (!("accountAddress" in args) || !("timeMinISO" in args) || !("timeMaxISO" in args))
-              ) {
-                const now = new Date();
-                const later = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-                const res = await executeCalendarRange({
-                  accountAddress: defaultCalendarAccountAddress() ?? "acct_cust_casey",
-                  timeMinISO: now.toISOString(),
-                  timeMaxISO: later.toISOString(),
-                });
-                toolResults.push({
-                  action: {
-                    type: "calendar.range",
-                    input: { timeMinISO: now.toISOString(), timeMaxISO: later.toISOString() },
-                  },
-                  result: res,
-                });
-                continue;
-              }
-
               // Default weather location (Erie, CO) when missing lat/lon.
               if (server === "gym-weather" && tool.startsWith("weather_")) {
                 const hasLat = typeof args.lat === "number" && Number.isFinite(args.lat);

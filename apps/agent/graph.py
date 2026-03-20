@@ -353,6 +353,7 @@ def _goal_tick_action_pack(
             "  * To **add a truly new workout** when no row exists yet: use `googlecalendar_create_event` with summary/startISO/endISO.",
             "  * If a `goalPlan` step already has `eventId`, prefer **update_event** when that step's time/title changes; **delete_event** only when cancelling that step.",
             "- When both deleting duplicates and creating/updating, order actions: **deletes first**, then **updates**, then **creates**.",
+            "- For `googlecalendar_list_events` / `googlecalendar_freebusy`, always include `timeMinISO` and `timeMaxISO` (RFC3339 strings). If unsure, use `now` and `now + 21 days`. (myclaw also fills missing/invalid ranges.)",
             "- For `gym-googlecalendar` `googlecalendar_create_event`, args MUST include: summary (string), startISO (string ISO datetime), endISO (string ISO datetime).",
             "- For `googlecalendar_update_event`, args MUST include: eventId (string). When changing time, ALWAYS send a coherent **pair**: startISO **and** endISO (or startISO + durationMinutes). Patch with only one instant or ambiguous date-only strings often returns Google 400 Invalid start time.",
             "- For `googlecalendar_delete_event`, args MUST include: eventId (string).",
