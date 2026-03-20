@@ -7,6 +7,8 @@ export interface Env {
   VISION_OPENAI_BASE_URL?: string;
   /** For `telegram.fileId` image resolution (getFile → file URL). */
   TELEGRAM_BOT_TOKEN?: string;
+  /** Set to "0" / "false" to silence `[weight-mcp]` console logs. */
+  WEIGHT_MCP_LOG?: string;
 }
 
 type Scope = {
@@ -73,6 +75,55 @@ function requireAuth(req: Request, env: Env) {
   if (!expected) throw new Error("Server misconfigured: MCP_API_KEY missing");
   const got = (req.headers.get("x-api-key") ?? "").trim();
   if (!got || got !== expected) throw new Response("Unauthorized", { status: 401 });
+}
+
+function weightMcpLogEnabled(env: Env): boolean {
+  const v = (env.WEIGHT_MCP_LOG ?? "").trim().toLowerCase();
+  if (v === "0" || v === "false" || v === "off" || v === "no") return false;
+  return true;
+}
+
+function weightMcpLog(env: Env, event: string, detail?: Record<string, unknown>): void {
+  if (!weightMcpLogEnabled(env)) return;
+  const extra = detail && Object.keys(detail).length ? ` ${JSON.stringify(detail)}` : "";
+  console.log(`[weight-mcp] ${event}${extra}`);
+}
+
+/** Safe args summary for logs (no raw base64). */
+function summarizeWeightToolArgs(name: string, args: Record<string, unknown>): Record<string, unknown> {
+  const sc = isRecord(args.scope) ? args.scope : null;
+  const scopeHint = sc
+    ? {
+        churchId: typeof sc.churchId === "string" ? sc.churchId : undefined,
+        userId: typeof sc.userId === "string" ? sc.userId : undefined,
+        personId: typeof sc.personId === "string" ? sc.personId : undefined,
+      }
+    : {};
+
+  if (name === "weight_analyze_meal_photo") {
+    const tg = isRecord(args.telegram) ? args.telegram : null;
+    const b64len = typeof args.imageBase64 === "string" ? args.imageBase64.length : 0;
+    return {
+      ...scopeHint,
+      imageBase64_chars: b64len,
+      has_imageUrl: Boolean(normStr(args.imageUrl)),
+      telegram_fileId: tg && typeof tg.fileId === "string" ? `${String(tg.fileId).slice(0, 14)}…` : undefined,
+      telegram_chatId: tg && typeof tg.chatId === "string" ? tg.chatId : undefined,
+      telegram_messageId: tg && typeof tg.messageId === "number" ? tg.messageId : undefined,
+    };
+  }
+
+  if (name === "weight_log_food_from_analysis") {
+    const aid = normStr(args.analysisId);
+    return {
+      ...scopeHint,
+      analysisId_prefix: aid ? `${aid.slice(0, 8)}…` : "",
+      mode: args.mode,
+    };
+  }
+
+  const keys = Object.keys(args).filter((k) => k !== "scope");
+  return { ...scopeHint, argKeys: keys.slice(0, 14) };
 }
 
 function nowMs(): number {
@@ -1269,20 +1320,28 @@ async function handleMcp(req: Request, env: Env): Promise<Response> {
   let resp: unknown;
   try {
     if (method === "tools/list") {
-      resp = { jsonrpc: "2.0", id, result: { tools: toolList() } };
+      weightMcpLog(env, "jsonrpc", { method: "tools/list" });
+      const tools = toolList();
+      weightMcpLog(env, "jsonrpc_ok", { method: "tools/list", toolCount: tools.length });
+      resp = { jsonrpc: "2.0", id, result: { tools } };
     } else if (method === "tools/call") {
       const name = normStr(params.name);
       const args = isRecord(params.arguments) ? (params.arguments as Record<string, unknown>) : {};
       if (!name) resp = errResult(id, -32602, "Missing tool name");
       else {
+        const t0 = Date.now();
+        weightMcpLog(env, "tools/call", { tool: name, args: summarizeWeightToolArgs(name, args) });
         const out = await toolCall(env, name, args);
+        weightMcpLog(env, "tools/call_ok", { tool: name, ms: Date.now() - t0 });
         resp = okResult(id, JSON.stringify(out, null, 2));
       }
     } else {
+      weightMcpLog(env, "jsonrpc_unknown_method", { method });
       resp = errResult(id, -32601, `Unknown method: ${method}`);
     }
   } catch (e) {
     if (e instanceof Response) return e;
+    weightMcpLog(env, "jsonrpc_error", { method, error: (e as Error).message });
     resp = errResult(id, -32603, (e as Error).message);
   }
 
@@ -1302,7 +1361,10 @@ export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     if (url.pathname === "/health") return json({ ok: true, ts: nowMs() }, { headers: cors(req) });
-    if (url.pathname === "/mcp") return handleMcp(req, env);
+    if (url.pathname === "/mcp") {
+      weightMcpLog(env, "http_enter", { path: "/mcp", method: req.method });
+      return handleMcp(req, env);
+    }
     return new Response("Not Found", { status: 404, headers: cors(req) });
   },
 };

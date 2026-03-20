@@ -3,6 +3,8 @@ main = "src/index.ts"
 compatibility_date = "2026-03-19"
 
 [vars]
+WEIGHT_MCP_LOG = "1"
+# Set WEIGHT_MCP_LOG = "0" in dashboard to quiet [weight-mcp] logs.
 # Secrets (wrangler secret put … or dashboard):
 # MCP_API_KEY — required; sent as x-api-key from clients
 # VISION_API_KEY — OpenAI-compatible key for meal photo analysis

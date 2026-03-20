@@ -1,4 +1,5 @@
 import { getMcpServer } from "@/lib/mcp/registry";
+import { logMyclaw, summarizeMcpToolArgs } from "@/lib/observability";
 
 type JsonRpcRequest = {
   jsonrpc: "2.0";
@@ -66,6 +67,23 @@ async function mcpRequestRaw(
   opts?: { sessionId?: string | null },
 ): Promise<McpRawResponse> {
   const server = getMcpServer(serverId);
+  const paramsRec = req.params && isRecord(req.params) ? req.params : null;
+  const toolName =
+    req.method === "tools/call" && paramsRec && typeof paramsRec.name === "string" ? String(paramsRec.name) : undefined;
+  const toolArgs =
+    toolName && paramsRec && isRecord(paramsRec.arguments) ? (paramsRec.arguments as Record<string, unknown>) : undefined;
+  const resourceUri =
+    paramsRec && typeof paramsRec.uri === "string" ? String(paramsRec.uri).slice(0, 120) : undefined;
+  const started = Date.now();
+  logMyclaw(
+    "mcp",
+    `→ ${serverId} ${req.method}${toolName ? ` ${toolName}` : resourceUri ? ` ${resourceUri}` : ""}`,
+    {
+      session: opts?.sessionId ? "sticky" : "new",
+      args: toolName && toolArgs ? summarizeMcpToolArgs(toolName, toolArgs) : undefined,
+    },
+  );
+
   const res = await fetch(server.url, {
     method: "POST",
     headers: {
@@ -78,11 +96,25 @@ async function mcpRequestRaw(
   });
 
   const text = await res.text();
-  if (!res.ok) throw new Error(`MCP ${serverId} HTTP ${res.status}: ${text}`);
+  const ms = Date.now() - started;
+  if (!res.ok) {
+    logMyclaw("mcp", `← ${serverId} HTTP ${res.status} ${ms}ms`, { tool: toolName });
+    throw new Error(`MCP ${serverId} HTTP ${res.status}: ${text}`);
+  }
   const sessionId = res.headers.get("mcp-session-id");
   const events = parseMcpSse(text);
   const result = extractJsonRpcResult(events);
+  const errObj = typeof result === "object" && result !== null && "error" in result ? (result as { error?: { message?: string } }).error : null;
+  if (errObj?.message) {
+    logMyclaw("mcp", `← ${serverId} jsonrpc error ${ms}ms`, { tool: toolName, error: errObj.message });
+  } else {
+    logMyclaw("mcp", `← ${serverId} ok ${ms}ms`, { tool: toolName, sessionId: sessionId ?? undefined });
+  }
   return { sessionId, events, result };
+}
+
+function isRecord(v: unknown): v is Record<string, unknown> {
+  return typeof v === "object" && v !== null;
 }
 
 async function mcpRequest(serverId: string, req: JsonRpcRequest): Promise<unknown> {

@@ -3,6 +3,8 @@
  * Used to pass imageBase64 to weight-management-mcp so the worker does not need TELEGRAM_BOT_TOKEN.
  */
 
+import { logMyclaw } from "@/lib/observability";
+
 const DEFAULT_MAX_BYTES = 8 * 1024 * 1024; // 8 MiB — keep MCP JSON payloads reasonable
 
 export async function fetchTelegramFileAsBase64(
@@ -62,6 +64,12 @@ export async function hydrateWeightAnalyzeMealPhotoFromTelegram(args: Record<str
   const b64 = await fetchTelegramFileAsBase64(token, fileId);
   args.imageBase64 = b64;
   delete args.imageUrl;
+  logMyclaw("telegram-hydrate", "fileId → imageBase64 for weight_analyze_meal_photo", {
+    fileIdPrefix: `${fileId.slice(0, 12)}…`,
+    base64Chars: b64.length,
+    chatId: typeof rec.chatId === "string" ? rec.chatId : undefined,
+    messageId: typeof rec.messageId === "number" ? rec.messageId : undefined,
+  });
 
   const chatId = typeof rec.chatId === "string" ? rec.chatId.trim() : "";
   const messageId =

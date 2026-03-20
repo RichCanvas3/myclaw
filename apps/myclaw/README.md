@@ -13,6 +13,8 @@ Template: [docs/langgraph-mcp-servers.example.json](./docs/langgraph-mcp-servers
 
 **Full wiring checklist:** [docs/CONFIG_CHECKLIST.md](./docs/CONFIG_CHECKLIST.md).
 
+**MCP / Telegram debug logs:** [docs/MCP_LOGGING.md](./docs/MCP_LOGGING.md).
+
 *Calendaring + Google OAuth:* use **`gym-googlecalendar`** only (there is no separate “Google” MCP in this repo).
 
 ## Telegram autonomous actions

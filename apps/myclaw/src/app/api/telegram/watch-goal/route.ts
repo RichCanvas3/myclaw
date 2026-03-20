@@ -1,6 +1,7 @@
 import type { OrchestratorContext } from "@/lib/agents/types";
 import { mcpResourcesList, mcpResourcesRead, mcpResourcesSubscribe, mcpToolsCall } from "@/lib/mcp/client";
 import { memoryAppendEvent, memoryGet, memoryUpsert } from "@/lib/memory/client";
+import { logMyclaw } from "@/lib/observability";
 import { hydrateWeightAnalyzeMealPhotoFromTelegram, telegramBotTokenForFileFetch } from "@/lib/telegram/fetchFile";
 import { extractTelegramMessagePhotoFileId } from "@/lib/telegram/photoFileId";
 
@@ -80,18 +81,32 @@ async function analyzeAndLogTelegramMealPhoto(params: {
   msg: TelegramMsg;
 }): Promise<{ ok: boolean; skipped?: boolean; error?: string; analysisId?: string }> {
   const fid = (params.msg.photoFileId ?? "").trim();
-  if (!fid) return { ok: false, skipped: true, error: "no_photo_file_id" };
+  if (!fid) {
+    logMyclaw("watch-goal", "meal photo skip: no fileId on message", { messageId: params.msg.messageId });
+    return { ok: false, skipped: true, error: "no_photo_file_id" };
+  }
 
   if (await wasMealPhotoAlreadyProcessed(params.ctx, params.chatId, params.msg.messageId)) {
+    logMyclaw("watch-goal", "meal photo skip: already processed", {
+      chatId: params.chatId,
+      messageId: params.msg.messageId,
+    });
     return { ok: true, skipped: true };
   }
 
   if (!telegramBotTokenForFileFetch()) {
+    logMyclaw("watch-goal", "meal photo fail: no MYCLAW_TELEGRAM_BOT_TOKEN", { chatId: params.chatId });
     return {
       ok: false,
       error: "MYCLAW_TELEGRAM_BOT_TOKEN required to fetch photo bytes for gym-weight",
     };
   }
+
+  logMyclaw("watch-goal", "meal photo pipeline start", {
+    chatId: params.chatId,
+    messageId: params.msg.messageId,
+    fileIdPrefix: `${fid.slice(0, 12)}…`,
+  });
 
   const scope: Record<string, unknown> = {
     churchId: params.ctx.churchId,
@@ -136,8 +151,13 @@ async function analyzeAndLogTelegramMealPhoto(params: {
     });
 
     await markMealPhotoProcessed(params.ctx, params.chatId, params.msg.messageId);
+    logMyclaw("watch-goal", "meal photo pipeline ok", { analysisId, messageId: params.msg.messageId });
     return { ok: true, analysisId };
   } catch (e) {
+    logMyclaw("watch-goal", "meal photo pipeline error", {
+      messageId: params.msg.messageId,
+      error: (e as Error).message,
+    });
     return { ok: false, error: (e as Error).message };
   }
 }
