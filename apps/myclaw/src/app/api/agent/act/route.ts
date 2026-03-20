@@ -48,6 +48,25 @@ function goalTelegramChatTitle(): string {
   return v || "Smart Agent";
 }
 
+/** Goal-tick context used headings that looked like tool names; planners sometimes hallucinated them as MCP tools. */
+async function normalizeTelegramPlannerToolName(
+  tool: string,
+  args: Record<string, unknown>,
+): Promise<{ tool: string; args: Record<string, unknown> }> {
+  const aliases = new Set(["telegramRecent", "telegram_recent", "telegram_recent_messages"]);
+  if (!aliases.has(tool)) return { tool, args };
+  const next = { ...args };
+  const hasChatId =
+    typeof next.chatId === "string" || (typeof next.chatId === "number" && Number.isFinite(next.chatId));
+  if (!hasChatId) {
+    const title = goalTelegramChatTitle();
+    const cid = await resolveTelegramChatIdByTitle(title).catch(() => null);
+    if (cid) next.chatId = cid;
+  }
+  if (next.limit == null) next.limit = 20;
+  return { tool: "telegram_list_messages", args: next };
+}
+
 async function postGoalUpdateToTelegram(text: string): Promise<void> {
   const enabled = envBool("MYCLAW_GOAL_TELEGRAM_POST_RESULTS", true);
   if (!enabled) return;
@@ -352,7 +371,11 @@ async function buildGoalContext(memoryProfile: unknown): Promise<string> {
         maxResults: 50,
       });
       const s = summarizeCalendarEvents(cal);
-      if (s) pieces.push(`calendarNext21Days (each line: eventId=… for mutations):\n${s}`);
+      if (s) {
+        pieces.push(
+          `observation_google_calendar_21d (read-only snapshot; NOT an MCP tool — use googlecalendar_list_events to query):\n${s}`,
+        );
+      }
     }
   } catch {
     // ignore
@@ -365,7 +388,11 @@ async function buildGoalContext(memoryProfile: unknown): Promise<string> {
     if (chatId) {
       const msgs = await mcpToolsCall("gym-telegram", "telegram_list_messages", { chatId, limit: 10 });
       const s = summarizeTelegramMessages(msgs);
-      if (s) pieces.push(`telegramRecent("${title}"):\n${s}`);
+      if (s) {
+        pieces.push(
+          `observation_telegram_chat_lines (read-only snippet; NOT an MCP tool — use telegram_list_messages with chatId ${chatId}):\n${s}`,
+        );
+      }
     }
   } catch {
     // ignore
@@ -444,6 +471,59 @@ function coerceString(v: unknown): string | null {
   return s ? s : null;
 }
 
+/** Parse planner/wire dates to UTC ISO; date-only YYYY-MM-DD → noon UTC (timed event). */
+function canonicalizeCalendarInstant(raw: string): string | null {
+  const t = raw.trim();
+  if (!t) return null;
+  const dateOnly = /^(\d{4}-\d{2}-\d{2})$/.exec(t);
+  const ms = dateOnly ? Date.parse(`${dateOnly[1]}T12:00:00.000Z`) : Date.parse(t);
+  if (!Number.isFinite(ms)) return null;
+  return new Date(ms).toISOString();
+}
+
+/**
+ * Google Calendar patch often 400s on "Invalid start time" when start/end are inconsistent,
+ * end <= start, or only one side is sent for a timed event. Align to a valid UTC pair.
+ */
+function finalizeGoogleCalendarStartEndPair(args: Record<string, unknown>, tool: "create" | "update"): void {
+  const hasStartRaw = coerceString(args.startISO) != null;
+  const hasEndRaw = coerceString(args.endISO) != null;
+  if (!hasStartRaw && !hasEndRaw) return;
+
+  let startS = hasStartRaw ? canonicalizeCalendarInstant(String(args.startISO)) : null;
+  let endS = hasEndRaw ? canonicalizeCalendarInstant(String(args.endISO)) : null;
+
+  const durationRaw = args.durationMinutes;
+  const durationMs =
+    typeof durationRaw === "number" && Number.isFinite(durationRaw) && durationRaw > 0
+      ? Math.round(durationRaw) * 60 * 1000
+      : 60 * 60 * 1000;
+
+  if (startS && !endS) {
+    endS = new Date(Date.parse(startS) + durationMs).toISOString();
+  }
+  if (endS && !startS) {
+    startS = new Date(Date.parse(endS) - durationMs).toISOString();
+  }
+  if (!startS || !endS) {
+    throw new Error(
+      `${tool === "create" ? "googlecalendar_create_event" : "googlecalendar_update_event"}: invalid or unparseable startISO/endISO (Google expects valid instants, typically as RFC3339).`,
+    );
+  }
+  let startMs = Date.parse(startS);
+  let endMs = Date.parse(endS);
+  if (endMs <= startMs) {
+    endMs = startMs + Math.max(durationMs, 60 * 1000);
+    endS = new Date(endMs).toISOString();
+  }
+  args.startISO = startS;
+  args.endISO = endS;
+
+  // Avoid workers forwarding both flat ISO and nested start/end objects.
+  delete args.start;
+  delete args.end;
+}
+
 function normalizeGoogleCalendarArgs(tool: string, args: Record<string, unknown>) {
   const isCreate = tool === "googlecalendar_create_event";
   const isUpdate = tool === "googlecalendar_update_event";
@@ -453,8 +533,10 @@ function normalizeGoogleCalendarArgs(tool: string, args: Record<string, unknown>
   // Common alternate field names emitted by planners.
   if (isCreate || isUpdate) {
     args.summary ??= args.title ?? args.name ?? args.task ?? args.what;
-    args.startISO ??= args.start ?? args.startTime ?? args.start_time ?? args.startDateTime ?? args.whenStart;
-    args.endISO ??= args.end ?? args.endTime ?? args.end_time ?? args.endDateTime ?? args.whenEnd;
+    const startAlt = args.start ?? args.startTime ?? args.start_time ?? args.startDateTime ?? args.whenStart;
+    const endAlt = args.end ?? args.endTime ?? args.end_time ?? args.endDateTime ?? args.whenEnd;
+    if (args.startISO == null && startAlt != null) args.startISO = startAlt as unknown;
+    if (args.endISO == null && endAlt != null) args.endISO = endAlt as unknown;
   }
   if (isUpdate || isDelete) {
     args.eventId ??= args.id ?? args.event_id ?? args.eventID;
@@ -482,9 +564,10 @@ function normalizeGoogleCalendarArgs(tool: string, args: Record<string, unknown>
   if (isCreate || isUpdate) {
     const durationRaw = args.durationMinutes;
     if (!coerceString(args.endISO) && typeof durationRaw === "number" && Number.isFinite(durationRaw)) {
-      const startMs = Date.parse(String(args.startISO ?? ""));
-      if (Number.isFinite(startMs)) {
-        args.endISO = new Date(startMs + durationRaw * 60 * 1000).toISOString();
+      const startCanon = args.startISO ? canonicalizeCalendarInstant(String(args.startISO)) : null;
+      if (startCanon) {
+        args.startISO = startCanon;
+        args.endISO = new Date(Date.parse(startCanon) + Math.round(durationRaw) * 60 * 1000).toISOString();
       }
     }
   }
@@ -505,6 +588,14 @@ function normalizeGoogleCalendarArgs(tool: string, args: Record<string, unknown>
         args.endISO = new Date(newStart + durMs).toISOString();
       }
     }
+  }
+
+  if (isCreate) {
+    const hasTimes = coerceString(args.startISO) != null || coerceString(args.endISO) != null;
+    if (hasTimes) finalizeGoogleCalendarStartEndPair(args, "create");
+  } else if (isUpdate) {
+    const hasAnyTime = coerceString(args.startISO) != null || coerceString(args.endISO) != null;
+    if (hasAnyTime) finalizeGoogleCalendarStartEndPair(args, "update");
   }
 }
 
@@ -1115,9 +1206,14 @@ export async function POST(req: Request): Promise<Response> {
           }
           if (action.type === "mcp.tool" && isRecord(action.input)) {
             const server = typeof action.input.server === "string" ? action.input.server : "";
-            const tool = typeof action.input.tool === "string" ? action.input.tool : "";
-            const args = isRecord(action.input.args) ? { ...action.input.args } : {};
+            let tool = typeof action.input.tool === "string" ? action.input.tool : "";
+            let args = isRecord(action.input.args) ? { ...action.input.args } : {};
             try {
+              if (server === "gym-telegram") {
+                const n = await normalizeTelegramPlannerToolName(tool, args);
+                tool = n.tool;
+                args = n.args;
+              }
               // Safety: if the planner accidentally emits a malformed Google Calendar MCP call,
               // rewrite it into a calendar.range default (next 30 days).
               if (
@@ -1446,9 +1542,15 @@ export async function POST(req: Request): Promise<Response> {
           if (action.type === "mcp.tool" && isRecord(action.input)) {
             try {
               const server = typeof action.input.server === "string" ? action.input.server : null;
-              const tool = typeof action.input.tool === "string" ? action.input.tool : null;
-              const args = isRecord(action.input.args) ? { ...action.input.args } : null;
+              let tool = typeof action.input.tool === "string" ? action.input.tool : null;
+              let args = isRecord(action.input.args) ? { ...action.input.args } : null;
               if (!server || !tool || !args) throw new Error("Invalid mcp.tool action");
+
+              if (server === "gym-telegram") {
+                const n = await normalizeTelegramPlannerToolName(tool, args);
+                tool = n.tool;
+                args = n.args;
+              }
 
               // Default Google Calendar accountAddress when missing.
               if (server === "gym-googlecalendar" && tool.startsWith("googlecalendar_")) {

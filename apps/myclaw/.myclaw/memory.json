@@ -117,16 +117,41 @@
                 "status": "pending",
                 "title": "Rest and recovery",
                 "whenISO": "2026-03-26T08:00:00Z"
+              },
+              {
+                "durationMinutes": 60,
+                "id": "step-8",
+                "notes": "Add a new workout.",
+                "status": "pending",
+                "title": "5 miles easy run",
+                "whenISO": "2026-03-29T08:00:00Z"
               }
             ],
             "status": "active",
             "step_index": 4,
             "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026",
             "last_observation": {
-              "atISO": "2026-03-20T02:00:40.238Z",
+              "atISO": "2026-03-20T02:16:16.553Z",
               "calendarLinks": [],
               "errors": [],
               "executedActions": [
+                {
+                  "type": "memory.query",
+                  "input": {
+                    "namespace": "training",
+                    "q": "average incline for running training"
+                  }
+                },
+                {
+                  "type": "mcp.tool",
+                  "input": {
+                    "args": {
+                      "count": 5
+                    },
+                    "server": "gym-telegram",
+                    "tool": "telegramRecent"
+                  }
+                },
                 {
                   "type": "memory.upsert",
                   "input": {
@@ -191,6 +216,14 @@
                           "status": "pending",
                           "title": "Rest and recovery",
                           "whenISO": "2026-03-26T08:00:00Z"
+                        },
+                        {
+                          "durationMinutes": 60,
+                          "id": "step-8",
+                          "notes": "Add a new workout.",
+                          "status": "pending",
+                          "title": "5 miles easy run",
+                          "whenISO": "2026-03-29T08:00:00Z"
                         }
                       ],
                       "status": "active",
@@ -198,19 +231,12 @@
                       "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
                     }
                   }
-                },
-                {
-                  "type": "memory.query",
-                  "input": {
-                    "namespace": "goals",
-                    "q": "Check average incline for training."
-                  }
                 }
               ]
             }
           },
           "tags": [],
-          "updated_at": 1773972040243
+          "updated_at": 1773972976555
         }
       },
       "threads": {
@@ -228,18 +254,18 @@
         "telegram:mcp_session_id": {
           "value": {
             "sessionId": "5adb3d57-a251-4f44-af99-fb3378231b45",
-            "updatedAtISO": "2026-03-20T00:04:26.394Z"
+            "updatedAtISO": "2026-03-20T02:15:06.992Z"
           },
           "tags": [],
-          "updated_at": 1773965066395
+          "updated_at": 1773972906993
         },
         "telegram:lastGoalProcessed:-1003743757503": {
           "value": {
-            "messageId": 46,
-            "atISO": "2026-03-20T00:04:27.783Z"
+            "messageId": 49,
+            "atISO": "2026-03-20T02:15:07.357Z"
           },
           "tags": [],
-          "updated_at": 1773965067787
+          "updated_at": 1773972907357
         },
         "telegram:goal_langgraph_thread_id:-1003743757503": {
           "value": {
@@ -2320,6 +2346,581 @@
           }
         },
         "ts": 1773972040245
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "1a734a3f-1b88-4a19-bb85-3a973ab35f59",
+          "input": {
+            "message": "/goal tick remove all the duplicates in the google calendar, and schedule exercise for reasonable times of the day"
+          },
+          "suggestedActions": [
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "ndesc4qbcmbhnu4oqsjpeikdhk"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "b0isfrdognp19oqgcaj2blipfo"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "rar5t463q1csirtlv6ialvfeic"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "85v04gspes4f8kgpbm3aokmhgg"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "ljd7sqake68v1dmh93j288lr9k"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "bu135q5tahmuh9r4uotiquef88"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "s57u2g7rq1c6jve14sdsih48ig"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "p870aq4k6phal6ke7t8ds8jg6s"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "9n7bdn0eof770o85al6v3sfako"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "2sk5cgnpse2tbiol90f18n43ec"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "vo0lh6n2r3kisi7sm4mpcb7u64"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "10kt32ivle9ksm9o9bs5fvn9ic"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "rsumia17rhs4g4vhumea7u43o4"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "2pfe358goj8slqbparuu0vlor8"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "0q0c6bel027eaj37emsnig2tuo"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "qa1c39l6ljfdijch5kuvucm8js"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "eventId": "tr7aluohhot20tmg58fnqolgd0"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_delete_event"
+              }
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T08:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Next steps: Remove duplicate calendar events and update workout times for better alignment with daytime. Then, check the average incline for training."
+          }
+        },
+        "ts": 1773972580280
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "1a734a3f-1b88-4a19-bb85-3a973ab35f59",
+          "input": {
+            "message": "/goal tick add all the workouts for the month needed to prepare for the goal"
+          },
+          "suggestedActions": [
+            {
+              "type": "googlecalendar_update_event"
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-8",
+                      "notes": "Add a new workout.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-29T08:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Next, let's add the workouts for the month to prepare for your goal. I'll start by scheduling the upcoming workouts and checking for any necessary updates to existing events."
+          }
+        },
+        "ts": 1773972774794
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "1a734a3f-1b88-4a19-bb85-3a973ab35f59",
+          "input": {
+            "message": "/goal tick want all these on the google calendar"
+          },
+          "suggestedActions": [
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-03-29T09:00:00Z",
+                  "eventId": "2jb5v08iac4gqpbaeev8n6lj3a",
+                  "startISO": "2026-03-29T08:00:00Z",
+                  "summary": "5 miles easy run"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_update_event"
+              }
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-8",
+                      "notes": "Add a new workout.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-29T08:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Next steps include updating existing calendar events for your workouts and ensuring all planned activities are on your Google Calendar."
+          }
+        },
+        "ts": 1773972816194
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "1a734a3f-1b88-4a19-bb85-3a973ab35f59",
+          "input": {
+            "message": "/goal tick process food pictures from telegram and determine caleries"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.query",
+              "input": {
+                "namespace": "training",
+                "q": "average incline for running training"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "count": 5
+                },
+                "server": "gym-telegram",
+                "tool": "telegramRecent"
+              }
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-8",
+                      "notes": "Add a new workout.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-29T08:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Next, let's check the average incline for your training and process food pictures from Telegram to determine calories. I'll also ensure your workouts are scheduled for daytime. Here are the next steps: 1. Query for average incline data. 2. Process food pictures from Telegram. 3. Update workout times to align with daytime."
+          }
+        },
+        "ts": 1773972976557
       }
     ],
     "t_cust_casey:acct_cust_casey:p_casey:hh_casey": [
