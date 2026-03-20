@@ -389,6 +389,229 @@
           "updated_at": 1773925853116
         }
       }
+    },
+    "calvarybible:demo_user_noah:p_seeker_2:hh_casey": {
+      "threads": {
+        "telegram:mcp_session_id": {
+          "value": {
+            "sessionId": "a4af1a61-056e-4138-92fd-b94ec9db1735",
+            "updatedAtISO": "2026-03-20T14:28:45.007Z"
+          },
+          "tags": [],
+          "updated_at": 1774016925009
+        },
+        "telegram:goal_langgraph_thread_id:-1003743757503": {
+          "value": {
+            "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+            "updatedAtISO": "2026-03-20T14:23:59.689Z"
+          },
+          "tags": [],
+          "updated_at": 1774016639691
+        },
+        "telegram:lastGoalProcessed:-1003743757503": {
+          "value": {
+            "messageId": 100,
+            "atISO": "2026-03-20T14:28:38.048Z"
+          },
+          "tags": [],
+          "updated_at": 1774016918050
+        }
+      }
+    },
+    "calvarybible:demo_user_noah_watchtest:p_seeker_2:hh_casey": {
+      "threads": {
+        "telegram:mcp_session_id": {
+          "value": {
+            "sessionId": "c3eab715-b264-4a2d-a289-387055c36d70",
+            "updatedAtISO": "2026-03-20T14:32:33.545Z"
+          },
+          "tags": [],
+          "updated_at": 1774017153547
+        },
+        "telegram:goal_langgraph_thread_id:-1003743757503": {
+          "value": {
+            "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+            "updatedAtISO": "2026-03-20T14:31:57.689Z"
+          },
+          "tags": [],
+          "updated_at": 1774017117691
+        },
+        "telegram:lastGoalProcessed:-1003743757503": {
+          "value": {
+            "messageId": 100,
+            "atISO": "2026-03-20T14:32:50.296Z"
+          },
+          "tags": [],
+          "updated_at": 1774017170306
+        }
+      }
+    },
+    "calvarybible:demo_user_noah_watchtest2:p_seeker_2:hh_casey": {
+      "threads": {
+        "telegram:mcp_session_id": {
+          "value": {
+            "sessionId": "8dc43f8e-2bb5-46f4-b1c9-b92e870812ce",
+            "updatedAtISO": "2026-03-20T14:34:05.858Z"
+          },
+          "tags": [],
+          "updated_at": 1774017245860
+        },
+        "telegram:goal_langgraph_thread_id:-1003743757503": {
+          "value": {
+            "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+            "updatedAtISO": "2026-03-20T14:33:38.772Z"
+          },
+          "tags": [],
+          "updated_at": 1774017218775
+        },
+        "telegram:lastGoalProcessed:-1003743757503": {
+          "value": {
+            "messageId": 100,
+            "atISO": "2026-03-20T14:34:28.534Z"
+          },
+          "tags": [],
+          "updated_at": 1774017268536
+        }
+      }
+    },
+    "calvarybible:demo_user_noah_watchtest3:p_seeker_2:hh_casey": {
+      "threads": {
+        "telegram:mcp_session_id": {
+          "value": {
+            "sessionId": "fa25cd07-3232-474a-897c-7e49777bd2c0",
+            "updatedAtISO": "2026-03-20T14:37:54.374Z"
+          },
+          "tags": [],
+          "updated_at": 1774017474376
+        },
+        "telegram:goal_langgraph_thread_id:-1003743757503": {
+          "value": {
+            "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+            "updatedAtISO": "2026-03-20T14:37:25.024Z"
+          },
+          "tags": [],
+          "updated_at": 1774017445026
+        },
+        "telegram:lastGoalProcessed:-1003743757503": {
+          "value": {
+            "messageId": 100,
+            "atISO": "2026-03-20T14:38:35.674Z"
+          },
+          "tags": [],
+          "updated_at": 1774017515676
+        },
+        "telegram:mealPhotoProcessed:-1003743757503:49": {
+          "value": {
+            "processed": true,
+            "atISO": "2026-03-20T14:38:16.484Z"
+          },
+          "tags": [],
+          "updated_at": 1774017496486
+        },
+        "telegram:mealPhotoProcessed:-1003743757503:66": {
+          "value": {
+            "processed": true,
+            "atISO": "2026-03-20T14:38:20.177Z"
+          },
+          "tags": [],
+          "updated_at": 1774017500178
+        },
+        "telegram:mealPhotoProcessed:-1003743757503:72": {
+          "value": {
+            "processed": true,
+            "atISO": "2026-03-20T14:38:23.989Z"
+          },
+          "tags": [],
+          "updated_at": 1774017503991
+        },
+        "telegram:mealPhotoProcessed:-1003743757503:73": {
+          "value": {
+            "processed": true,
+            "atISO": "2026-03-20T14:38:30.163Z"
+          },
+          "tags": [],
+          "updated_at": 1774017510166
+        },
+        "telegram:mealPhotoProcessed:-1003743757503:100": {
+          "value": {
+            "processed": true,
+            "atISO": "2026-03-20T14:38:35.668Z"
+          },
+          "tags": [],
+          "updated_at": 1774017515670
+        }
+      }
+    },
+    "calvarybible:demo_user_noah_langsmith:p_seeker_2:hh_casey": {
+      "threads": {
+        "telegram:mcp_session_id": {
+          "value": {
+            "sessionId": "815b364d-461e-49d3-991c-ecee9e39acd1",
+            "updatedAtISO": "2026-03-20T15:08:00.351Z"
+          },
+          "tags": [],
+          "updated_at": 1774019280354
+        },
+        "telegram:mealPhotoProcessed:-1003743757503:72": {
+          "value": {
+            "analysisId": "c148dc0c-cdf9-4b4d-9c5d-e151ffe47ece",
+            "summary": "~350 kcal (confidence 0.70)",
+            "mealTotals": {
+              "calories": 350,
+              "protein_g": 3,
+              "carbs_g": 50,
+              "fat_g": 15
+            },
+            "confidence": 0.7,
+            "postedAtISO": "2026-03-20T15:08:06.735Z",
+            "updatedAtISO": "2026-03-20T15:08:06.735Z"
+          },
+          "tags": [],
+          "updated_at": 1774019286737
+        },
+        "telegram:mealPhotoProcessed:-1003743757503:73": {
+          "value": {
+            "analysisId": "52e90873-5c40-484a-ae16-f166d5115bbd",
+            "summary": "~480 kcal (confidence 0.70)",
+            "mealTotals": {
+              "calories": 480,
+              "protein_g": 27,
+              "carbs_g": 19,
+              "fat_g": 33
+            },
+            "confidence": 0.7,
+            "postedAtISO": "2026-03-20T15:08:13.156Z",
+            "updatedAtISO": "2026-03-20T15:08:13.156Z"
+          },
+          "tags": [],
+          "updated_at": 1774019293158
+        },
+        "telegram:mealPhotoProcessed:-1003743757503:100": {
+          "value": {
+            "analysisId": "085ac7b5-240d-42d5-9163-4f2f27d3c466",
+            "summary": "~480 kcal (confidence 0.70)",
+            "mealTotals": {
+              "calories": 480,
+              "protein_g": 27,
+              "carbs_g": 19,
+              "fat_g": 33
+            },
+            "confidence": 0.7,
+            "postedAtISO": "2026-03-20T15:08:19.268Z",
+            "updatedAtISO": "2026-03-20T15:08:19.269Z"
+          },
+          "tags": [],
+          "updated_at": 1774019299271
+        },
+        "telegram:lastGoalProcessed:-1003743757503": {
+          "value": {
+            "messageId": 100,
+            "atISO": "2026-03-20T15:08:19.275Z"
+          },
+          "tags": [],
+          "updated_at": 1774019299277
+        }
+      }
     }
   },
   "events": {
@@ -5310,6 +5533,4054 @@
           }
         },
         "ts": 1773965068210
+      }
+    ],
+    "calvarybible:demo_user_noah:p_seeker_2:hh_casey": [
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=1 fromUserId=123.\n\nUser message:\nwebhook-test\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016640439
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=2 fromUserId=6105195555.\n\nUser message:\ntest for new message notification\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016641444
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=3 fromUserId=6105195555.\n\nUser message:\nanother message\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016643040
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=4 fromUserId=6105195555.\n\nUser message:\n@gym_copilot_bot/setprivacy\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016644224
+      },
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "a4af1a61-056e-4138-92fd-b94ec9db1735",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 0,
+          "processed": 5,
+          "results": [
+            {
+              "messageId": 1,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 2,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 3,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 4,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 5,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            }
+          ]
+        },
+        "ts": 1774016644946
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=5 fromUserId=6105195555.\n\nUser message:\nhello world\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016645348
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=6 fromUserId=6105195555.\n\nUser message:\nhello\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016659857
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=7 fromUserId=6105195555.\n\nUser message:\ntest2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016660645
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=8 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016661912
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=9 fromUserId=6105195555.\n\nUser message:\nts\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016662886
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=10 fromUserId=6105195555.\n\nUser message:\nfzf\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016663953
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=11 fromUserId=6105195555.\n\nUser message:\naaaaa\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016664915
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=12 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016665969
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=13 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016667038
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=14 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016668035
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=15 fromUserId=6105195555.\n\nUser message:\na\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016669081
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=16 fromUserId=6105195555.\n\nUser message:\nb\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016670254
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=17 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016671278
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=18 fromUserId=6105195555.\n\nUser message:\nok final testg\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016672203
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=21 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016673392
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=22 fromUserId=6105195555.\n\nUser message:\nhello 2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016674393
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=23 fromUserId=6105195555.\n\nUser message:\nShow me the verse of the day\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016675425
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=24 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016676621
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=25 fromUserId=6105195555.\n\nUser message:\nhello richard\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016677973
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=26 fromUserId=6105195555.\n\nUser message:\nHello world\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016679060
+      },
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "a4af1a61-056e-4138-92fd-b94ec9db1735",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 5,
+          "processed": 20,
+          "results": [
+            {
+              "messageId": 6,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 7,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 8,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 9,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 10,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 11,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 12,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 13,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 14,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 15,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 16,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 17,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 18,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 21,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 22,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 23,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 24,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 25,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 26,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 27,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            }
+          ]
+        },
+        "ts": 1774016679703
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=27 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016680121
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=28 fromUserId=6105195555.\n\nUser message:\nhello again again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016691553
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=29 fromUserId=6105195555.\n\nUser message:\ntest2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016692923
+      },
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "a4af1a61-056e-4138-92fd-b94ec9db1735",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 27,
+          "processed": 9,
+          "results": [
+            {
+              "messageId": 28,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 29,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 30,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 31,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 32,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 33,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 34,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 35,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            },
+            {
+              "messageId": 46,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+              "error": null
+            }
+          ]
+        },
+        "ts": 1774016701476
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=30 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016701827
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=31 fromUserId=6105195555.\n\nUser message:\ntest4\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016701984
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=32 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016702004
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=33 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016702050
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=34 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow, try again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016702068
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=35 fromUserId=6105195555.\n\nUser message:\nI don't see any runs on my calendar in google\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016702079
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "bf12ec76-a4e3-41c4-ae93-5245d1ee0358",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=46 fromUserId=6105195555.\n\nUser message:\nChange times for workouts to better align with day time workouts\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774016702208
+      }
+    ],
+    "calvarybible:demo_user_noah_watchtest:p_seeker_2:hh_casey": [
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=1 fromUserId=123.\n\nUser message:\nwebhook-test\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017118599
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=2 fromUserId=6105195555.\n\nUser message:\ntest for new message notification\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017119242
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=3 fromUserId=6105195555.\n\nUser message:\nanother message\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017120298
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=4 fromUserId=6105195555.\n\nUser message:\n@gym_copilot_bot/setprivacy\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017121368
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=5 fromUserId=6105195555.\n\nUser message:\nhello world\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017122371
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=6 fromUserId=6105195555.\n\nUser message:\nhello\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017126502
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=7 fromUserId=6105195555.\n\nUser message:\ntest2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017126636
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=8 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017126654
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=9 fromUserId=6105195555.\n\nUser message:\nts\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017126804
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=10 fromUserId=6105195555.\n\nUser message:\nfzf\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017127891
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=11 fromUserId=6105195555.\n\nUser message:\naaaaa\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017132050
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=12 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017132178
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=13 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017132205
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=14 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017132419
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=15 fromUserId=6105195555.\n\nUser message:\na\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017133515
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=16 fromUserId=6105195555.\n\nUser message:\nb\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017137668
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=17 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017137790
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=18 fromUserId=6105195555.\n\nUser message:\nok final testg\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017137814
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=21 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017137866
+      },
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "c3eab715-b264-4a2d-a289-387055c36d70",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 0,
+          "processed": 20,
+          "results": [
+            {
+              "messageId": 1,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 2,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 3,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 4,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 5,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 6,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 7,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 8,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 9,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 10,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 11,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 12,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 13,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 14,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 15,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 16,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 17,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 18,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 21,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 22,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            }
+          ]
+        },
+        "ts": 1774017138817
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=22 fromUserId=6105195555.\n\nUser message:\nhello 2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017139238
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=23 fromUserId=6105195555.\n\nUser message:\nShow me the verse of the day\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017155984
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=24 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017157100
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=25 fromUserId=6105195555.\n\nUser message:\nhello richard\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017158216
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=26 fromUserId=6105195555.\n\nUser message:\nHello world\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017159277
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=27 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017160465
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=28 fromUserId=6105195555.\n\nUser message:\nhello again again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017161521
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=29 fromUserId=6105195555.\n\nUser message:\ntest2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017162870
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=30 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017163926
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=31 fromUserId=6105195555.\n\nUser message:\ntest4\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017165081
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=32 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017166238
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=33 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017167467
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=34 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow, try again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017168525
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=35 fromUserId=6105195555.\n\nUser message:\nI don't see any runs on my calendar in google\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017169594
+      },
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "c3eab715-b264-4a2d-a289-387055c36d70",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 22,
+          "processed": 19,
+          "results": [
+            {
+              "messageId": 23,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 24,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 25,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 26,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 27,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 28,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 29,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 30,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 31,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 32,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 33,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 34,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 35,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 46,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+              "error": null
+            },
+            {
+              "messageId": 49,
+              "mealAuto": {
+                "ok": false,
+                "error": "Failed to parse URL from https://<your-worker-host>/mcp"
+              },
+              "goalTick": null,
+              "ok": false,
+              "status": 500,
+              "threadId": null,
+              "error": "Failed to parse URL from https://<your-worker-host>/mcp"
+            },
+            {
+              "messageId": 66,
+              "mealAuto": {
+                "ok": false,
+                "error": "Failed to parse URL from https://<your-worker-host>/mcp"
+              },
+              "goalTick": null,
+              "ok": false,
+              "status": 500,
+              "threadId": null,
+              "error": "Failed to parse URL from https://<your-worker-host>/mcp"
+            },
+            {
+              "messageId": 72,
+              "mealAuto": {
+                "ok": false,
+                "error": "Failed to parse URL from https://<your-worker-host>/mcp"
+              },
+              "goalTick": null,
+              "ok": false,
+              "status": 500,
+              "threadId": null,
+              "error": "Failed to parse URL from https://<your-worker-host>/mcp"
+            },
+            {
+              "messageId": 73,
+              "mealAuto": {
+                "ok": false,
+                "error": "Failed to parse URL from https://<your-worker-host>/mcp"
+              },
+              "goalTick": null,
+              "ok": false,
+              "status": 500,
+              "threadId": null,
+              "error": "Failed to parse URL from https://<your-worker-host>/mcp"
+            },
+            {
+              "messageId": 100,
+              "mealAuto": {
+                "ok": false,
+                "error": "Failed to parse URL from https://<your-worker-host>/mcp"
+              },
+              "goalTick": null,
+              "ok": false,
+              "status": 500,
+              "threadId": null,
+              "error": "Failed to parse URL from https://<your-worker-host>/mcp"
+            }
+          ]
+        },
+        "ts": 1774017170312
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f9f08c6e-3c2e-4356-a9d1-5c5d21160836",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=46 fromUserId=6105195555.\n\nUser message:\nChange times for workouts to better align with day time workouts\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017178812
+      }
+    ],
+    "calvarybible:demo_user_noah_watchtest2:p_seeker_2:hh_casey": [
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=1 fromUserId=123.\n\nUser message:\nwebhook-test\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017219199
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=2 fromUserId=6105195555.\n\nUser message:\ntest for new message notification\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017220227
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=3 fromUserId=6105195555.\n\nUser message:\nanother message\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017221297
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=4 fromUserId=6105195555.\n\nUser message:\n@gym_copilot_bot/setprivacy\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017222345
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=5 fromUserId=6105195555.\n\nUser message:\nhello world\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017223411
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=6 fromUserId=6105195555.\n\nUser message:\nhello\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017224713
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=7 fromUserId=6105195555.\n\nUser message:\ntest2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017225744
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=8 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017226767
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=9 fromUserId=6105195555.\n\nUser message:\nts\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017227850
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=10 fromUserId=6105195555.\n\nUser message:\nfzf\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017228916
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=11 fromUserId=6105195555.\n\nUser message:\naaaaa\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017230025
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=12 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017231167
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=13 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017232223
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=14 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017233285
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=15 fromUserId=6105195555.\n\nUser message:\na\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017234427
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=16 fromUserId=6105195555.\n\nUser message:\nb\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017235610
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=17 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017236632
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=18 fromUserId=6105195555.\n\nUser message:\nok final testg\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017237808
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=21 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017238960
+      },
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "8dc43f8e-2bb5-46f4-b1c9-b92e870812ce",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 0,
+          "processed": 20,
+          "results": [
+            {
+              "messageId": 1,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 2,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 3,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 4,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 5,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 6,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 7,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 8,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 9,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 10,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 11,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 12,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 13,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 14,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 15,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 16,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 17,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 18,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 21,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 22,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            }
+          ]
+        },
+        "ts": 1774017240081
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=22 fromUserId=6105195555.\n\nUser message:\nhello 2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017240490
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=23 fromUserId=6105195555.\n\nUser message:\nShow me the verse of the day\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017248293
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=24 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017249423
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=25 fromUserId=6105195555.\n\nUser message:\nhello richard\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017250535
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=26 fromUserId=6105195555.\n\nUser message:\nHello world\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017256775
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=27 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017257863
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=28 fromUserId=6105195555.\n\nUser message:\nhello again again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017258978
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=29 fromUserId=6105195555.\n\nUser message:\ntest2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017260205
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=30 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017261316
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=31 fromUserId=6105195555.\n\nUser message:\ntest4\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017262424
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=32 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017263606
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=33 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017265290
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=34 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow, try again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017266343
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=35 fromUserId=6105195555.\n\nUser message:\nI don't see any runs on my calendar in google\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017267518
+      },
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "8dc43f8e-2bb5-46f4-b1c9-b92e870812ce",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 22,
+          "processed": 19,
+          "results": [
+            {
+              "messageId": 23,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 24,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 25,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 26,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 27,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 28,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 29,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 30,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 31,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 32,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 33,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 34,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 35,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 46,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+              "error": null
+            },
+            {
+              "messageId": 49,
+              "mealAuto": {
+                "ok": false,
+                "error": "weight_analyze_meal_photo: no analysisId ({\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32603,\"message\":\"telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args\"}})"
+              },
+              "goalTick": null,
+              "ok": false,
+              "status": 500,
+              "threadId": null,
+              "error": "weight_analyze_meal_photo: no analysisId ({\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32603,\"message\":\"telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args\"}})"
+            },
+            {
+              "messageId": 66,
+              "mealAuto": {
+                "ok": false,
+                "error": "weight_analyze_meal_photo: no analysisId ({\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32603,\"message\":\"telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args\"}})"
+              },
+              "goalTick": null,
+              "ok": false,
+              "status": 500,
+              "threadId": null,
+              "error": "weight_analyze_meal_photo: no analysisId ({\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32603,\"message\":\"telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args\"}})"
+            },
+            {
+              "messageId": 72,
+              "mealAuto": {
+                "ok": false,
+                "error": "weight_analyze_meal_photo: no analysisId ({\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32603,\"message\":\"telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args\"}})"
+              },
+              "goalTick": null,
+              "ok": false,
+              "status": 500,
+              "threadId": null,
+              "error": "weight_analyze_meal_photo: no analysisId ({\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32603,\"message\":\"telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args\"}})"
+            },
+            {
+              "messageId": 73,
+              "mealAuto": {
+                "ok": false,
+                "error": "weight_analyze_meal_photo: no analysisId ({\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32603,\"message\":\"telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args\"}})"
+              },
+              "goalTick": null,
+              "ok": false,
+              "status": 500,
+              "threadId": null,
+              "error": "weight_analyze_meal_photo: no analysisId ({\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32603,\"message\":\"telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args\"}})"
+            },
+            {
+              "messageId": 100,
+              "mealAuto": {
+                "ok": false,
+                "error": "weight_analyze_meal_photo: no analysisId ({\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32603,\"message\":\"telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args\"}})"
+              },
+              "goalTick": null,
+              "ok": false,
+              "status": 500,
+              "threadId": null,
+              "error": "weight_analyze_meal_photo: no analysisId ({\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32603,\"message\":\"telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args\"}})"
+            }
+          ]
+        },
+        "ts": 1774017268541
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "6ee7d27e-5512-4123-ac86-f5da33ba165a",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=46 fromUserId=6105195555.\n\nUser message:\nChange times for workouts to better align with day time workouts\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017268728
+      }
+    ],
+    "calvarybible:demo_user_noah_watchtest3:p_seeker_2:hh_casey": [
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=1 fromUserId=123.\n\nUser message:\nwebhook-test\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017445457
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=2 fromUserId=6105195555.\n\nUser message:\ntest for new message notification\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017446584
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=3 fromUserId=6105195555.\n\nUser message:\nanother message\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017447622
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=4 fromUserId=6105195555.\n\nUser message:\n@gym_copilot_bot/setprivacy\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017448650
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=5 fromUserId=6105195555.\n\nUser message:\nhello world\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017449836
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=6 fromUserId=6105195555.\n\nUser message:\nhello\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017451290
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=7 fromUserId=6105195555.\n\nUser message:\ntest2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017452302
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=8 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017453352
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=9 fromUserId=6105195555.\n\nUser message:\nts\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017454382
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=10 fromUserId=6105195555.\n\nUser message:\nfzf\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017455677
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=11 fromUserId=6105195555.\n\nUser message:\naaaaa\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017457008
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=12 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017458207
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=13 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017459228
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=14 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017460393
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=15 fromUserId=6105195555.\n\nUser message:\na\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017461632
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=16 fromUserId=6105195555.\n\nUser message:\nb\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017462814
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=17 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017463899
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=18 fromUserId=6105195555.\n\nUser message:\nok final testg\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017465371
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=21 fromUserId=6105195555.\n\nUser message:\ntest\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017466415
+      },
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "fa25cd07-3232-474a-897c-7e49777bd2c0",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 0,
+          "processed": 20,
+          "results": [
+            {
+              "messageId": 1,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 2,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 3,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 4,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 5,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 6,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 7,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 8,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 9,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 10,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 11,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 12,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 13,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 14,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 15,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 16,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 17,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 18,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 21,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 22,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            }
+          ]
+        },
+        "ts": 1774017467186
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=22 fromUserId=6105195555.\n\nUser message:\nhello 2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017467599
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=23 fromUserId=6105195555.\n\nUser message:\nShow me the verse of the day\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017476654
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=24 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017477806
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=25 fromUserId=6105195555.\n\nUser message:\nhello richard\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017478914
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=26 fromUserId=6105195555.\n\nUser message:\nHello world\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017480253
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=27 fromUserId=6105195555.\n\nUser message:\nhello again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017481720
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=28 fromUserId=6105195555.\n\nUser message:\nhello again again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017482813
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=29 fromUserId=6105195555.\n\nUser message:\ntest2\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017483904
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=30 fromUserId=6105195555.\n\nUser message:\ntest3\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017485064
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=31 fromUserId=6105195555.\n\nUser message:\ntest4\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017486321
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=32 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017487429
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=33 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017488747
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=34 fromUserId=6105195555.\n\nUser message:\nadd a work out for tomorrow, try again\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017489947
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=35 fromUserId=6105195555.\n\nUser message:\nI don't see any runs on my calendar in google\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017491166
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+          "input": {
+            "message": "/goal tick Telegram update from \"Smart Agent\" supergroup.\nchatId=-1003743757503 messageId=46 fromUserId=6105195555.\n\nUser message:\nChange times for workouts to better align with day time workouts\n\nImportant: reply in the same Telegram chat using telegram_send_message with chatId=-1003743757503."
+          },
+          "suggestedActions": [],
+          "output": {
+            "message": "No active goal yet. Set one with `/goal set <your goal>` (or `/goal add <goal>`)."
+          }
+        },
+        "ts": 1774017492538
+      },
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "fa25cd07-3232-474a-897c-7e49777bd2c0",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 22,
+          "processed": 19,
+          "results": [
+            {
+              "messageId": 23,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 24,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 25,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 26,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 27,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 28,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 29,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 30,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 31,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 32,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 33,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 34,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 35,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 46,
+              "mealAuto": null,
+              "goalTick": {
+                "ok": true,
+                "status": 200,
+                "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c"
+              },
+              "ok": true,
+              "status": 200,
+              "threadId": "0937a5c0-a1cf-4955-a343-fd5335a8181c",
+              "error": null
+            },
+            {
+              "messageId": 49,
+              "mealAuto": {
+                "ok": true,
+                "analysisId": "17c47e3a-52b9-442d-bab8-b7ffaee3f961"
+              },
+              "goalTick": null,
+              "ok": true,
+              "status": 200,
+              "threadId": null,
+              "error": null
+            },
+            {
+              "messageId": 66,
+              "mealAuto": {
+                "ok": true,
+                "analysisId": "3580df02-4751-43de-ac5f-68a4c56a14ff"
+              },
+              "goalTick": null,
+              "ok": true,
+              "status": 200,
+              "threadId": null,
+              "error": null
+            },
+            {
+              "messageId": 72,
+              "mealAuto": {
+                "ok": true,
+                "analysisId": "7843964c-e250-4fe3-a715-9bf7660c53d7"
+              },
+              "goalTick": null,
+              "ok": true,
+              "status": 200,
+              "threadId": null,
+              "error": null
+            },
+            {
+              "messageId": 73,
+              "mealAuto": {
+                "ok": true,
+                "analysisId": "7e61aec5-79bf-4b8f-b20c-ec416a7e7ba5"
+              },
+              "goalTick": null,
+              "ok": true,
+              "status": 200,
+              "threadId": null,
+              "error": null
+            },
+            {
+              "messageId": 100,
+              "mealAuto": {
+                "ok": true,
+                "analysisId": "c7f2a713-f4d8-446a-bec4-b51d0511c142"
+              },
+              "goalTick": null,
+              "ok": true,
+              "status": 200,
+              "threadId": null,
+              "error": null
+            }
+          ]
+        },
+        "ts": 1774017515682
+      }
+    ],
+    "calvarybible:demo_user_noah_langsmith:p_seeker_2:hh_casey": [
+      {
+        "type": "telegram.goal_tick",
+        "payload": {
+          "chatTitle": "Smart Agent",
+          "uri": "telegram://chat/by-title/Smart%20Agent/messages",
+          "sessionId": "815b364d-461e-49d3-991c-ecee9e39acd1",
+          "chatId": "-1003743757503",
+          "notified": false,
+          "since": 71,
+          "processed": 3,
+          "results": [
+            {
+              "messageId": 72,
+              "mealAuto": {
+                "ok": true,
+                "analysisId": "c148dc0c-cdf9-4b4d-9c5d-e151ffe47ece"
+              },
+              "goalTick": null,
+              "ok": true,
+              "status": 200,
+              "threadId": null,
+              "error": null
+            },
+            {
+              "messageId": 73,
+              "mealAuto": {
+                "ok": true,
+                "analysisId": "52e90873-5c40-484a-ae16-f166d5115bbd"
+              },
+              "goalTick": null,
+              "ok": true,
+              "status": 200,
+              "threadId": null,
+              "error": null
+            },
+            {
+              "messageId": 100,
+              "mealAuto": {
+                "ok": true,
+                "analysisId": "085ac7b5-240d-42d5-9163-4f2f27d3c466"
+              },
+              "goalTick": null,
+              "ok": true,
+              "status": 200,
+              "threadId": null,
+              "error": null
+            }
+          ]
+        },
+        "ts": 1774019299282
       }
     ]
   }

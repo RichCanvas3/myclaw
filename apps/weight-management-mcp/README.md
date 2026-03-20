@@ -8,6 +8,7 @@ Cloudflare Worker MCP for weight, food, meal-photo estimates (vision), water, fa
 - `MCP_API_KEY` — `x-api-key` for `/mcp`
 - `VISION_API_KEY`, `VISION_MODEL` (default `gpt-4o-mini`), optional `VISION_OPENAI_BASE_URL` — OpenAI-compatible vision for `weight_analyze_meal_photo`
 - `TELEGRAM_BOT_TOKEN` — required when clients send **`telegram.fileId`** without a resolvable **`imageUrl`** (getFile + download in worker). Omit if every caller passes **`imageUrl`** (e.g. myclaw after `getFile`).
+- **`https://…/telegram/media/…`** (gym-telegram-mcp) is fetched with **no extra headers** (public GET), same as `curl` without `x-api-key`.
 
 ## D1
 

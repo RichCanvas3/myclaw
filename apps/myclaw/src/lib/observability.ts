@@ -5,6 +5,8 @@
  * Disable noise: MYCLAW_DEBUG=0
  */
 
+import { telegramFileIdLooksPlaceholder } from "@/lib/telegram/photoFileId";
+
 export function observabilityEnabled(): boolean {
   const d = (process.env.MYCLAW_DEBUG ?? "").trim().toLowerCase();
   if (d === "0" || d === "false" || d === "off" || d === "no") return false;
@@ -50,11 +52,22 @@ export function summarizeMcpToolArgs(tool: string, args: Record<string, unknown>
     const tg = args.telegram;
     const tgr = typeof tg === "object" && tg !== null ? (tg as Record<string, unknown>) : null;
     const b64 = typeof args.imageBase64 === "string" ? args.imageBase64.length : 0;
+    const urlKind = imageUrlKindForLog(args.imageUrl);
+    const fidRaw = typeof tgr?.fileId === "string" ? String(tgr.fileId).trim() : "";
+    const myclawToken = Boolean((process.env.MYCLAW_TELEGRAM_BOT_TOKEN ?? process.env.TELEGRAM_BOT_TOKEN ?? "").trim());
+    let meal_photo_path: string;
+    if (urlKind !== "none") meal_photo_path = "myclaw_imageUrl";
+    else if (b64 > 0) meal_photo_path = "base64";
+    else if (fidRaw) meal_photo_path = myclawToken ? "unexpected_no_url" : "worker_telegram_fileId";
+    else meal_photo_path = "missing";
     return {
       ...scopeHint,
       imageBase64_chars: b64,
-      imageUrl_kind: imageUrlKindForLog(args.imageUrl),
-      telegram_fileId: typeof tgr?.fileId === "string" ? `${String(tgr.fileId).slice(0, 14)}…` : undefined,
+      imageUrl_kind: urlKind,
+      meal_photo_path,
+      fileId_len: fidRaw ? fidRaw.length : undefined,
+      fileId_suspect_placeholder: fidRaw ? telegramFileIdLooksPlaceholder(fidRaw) : undefined,
+      telegram_fileId: fidRaw ? `${fidRaw.slice(0, 14)}…` : undefined,
       telegram_chatId: typeof tgr?.chatId === "string" ? tgr.chatId : undefined,
       telegram_messageId: typeof tgr?.messageId === "number" ? tgr.messageId : undefined,
     };

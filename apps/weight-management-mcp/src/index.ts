@@ -1,6 +1,18 @@
+// Minimal local D1 typings (avoid relying on editor/workspace type resolution).
+type D1Result<T = Record<string, unknown>> = { results?: T[] | null } & Record<string, unknown>;
+type D1PreparedStatement = {
+  bind(...values: unknown[]): D1PreparedStatement;
+  first<T = Record<string, unknown>>(): Promise<T | null>;
+  all<T = Record<string, unknown>>(): Promise<D1Result<T>>;
+  run(): Promise<Record<string, unknown>>;
+};
+type D1Database = { prepare(query: string): D1PreparedStatement };
+type Fetcher = { fetch(input: Request | string, init?: RequestInit): Promise<Response> };
+
 export interface Env {
   DB: D1Database;
   MCP_API_KEY?: string;
+  TELEGRAM_MCP?: Fetcher;
   /** OpenAI-compatible vision (e.g. gpt-4o-mini). */
   VISION_API_KEY?: string;
   VISION_MODEL?: string;
@@ -174,9 +186,83 @@ function uint8ToBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-async function fetchHttpUrlAsDataUrl(url: string): Promise<string> {
-  const r = await fetch(url);
-  if (!r.ok) throw new Error(`fetch image HTTP ${r.status}`);
+function mediaTokenFromTelegramUrl(url: string): string | null {
+  try {
+    const path = new URL(url).pathname;
+    if (!path.startsWith("/telegram/media/")) return null;
+    const token = path.replace(/^\/telegram\/media\//, "").split("/")[0]?.trim() ?? "";
+    return token || null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchHttpUrlAsDataUrl(url: string, env: Env): Promise<string> {
+  const mediaTok = mediaTokenFromTelegramUrl(url);
+  let effectiveUrl = url;
+  // Worker->Worker fetches can see stale/cached edge errors; cache-bust Telegram media proxy URLs.
+  // This is a single request (no retry) but avoids “stuck 404” artifacts.
+  try {
+    const u = new URL(url);
+    if (u.pathname.startsWith("/telegram/media/")) {
+      u.searchParams.set("cb", String(Date.now()));
+      effectiveUrl = u.toString();
+    }
+  } catch {
+    // ignore parse errors; fetch will throw later
+  }
+  try {
+    const u = new URL(url);
+    weightMcpLog(env, "meal_photo/fetch_image", {
+      host: u.hostname,
+      media_token_len: mediaTok?.length,
+      media_token_prefix: mediaTok ? `${mediaTok.slice(0, 8)}…` : undefined,
+    });
+  } catch {
+    /* ignore */
+  }
+  // Mimic curl; also ask fetch not to store/reuse a cached response.
+  const fetcher =
+    env.TELEGRAM_MCP && (() => {
+      try {
+        const u = new URL(effectiveUrl);
+        if (u.hostname === "gym-telegram-mcp.richardpedersen3.workers.dev") return env.TELEGRAM_MCP;
+      } catch {
+        /* ignore */
+      }
+      return null;
+    })();
+  const fetchFn: (input: Request | string, init?: RequestInit) => Promise<Response> = fetcher
+    ? (input, init) => fetcher.fetch(input, init)
+    : fetch;
+  const r = await fetchFn(effectiveUrl, {
+    method: "GET",
+    redirect: "follow",
+    cache: "no-store",
+    headers: {
+      "User-Agent": "curl/8.5.0",
+      Accept: "*/*",
+    },
+  } as RequestInit);
+  if (!r.ok) {
+    let hint = "";
+    if (r.status === 404) {
+      try {
+        if (new URL(url).pathname.startsWith("/telegram/media/")) {
+          hint =
+            " (gym-telegram-mcp: unknown media token in D1 or wrong hostname — compare imageUrl to a working curl; GET /telegram/media/ is public)";
+          weightMcpLog(env, "meal_photo/fetch_image_failed", {
+            status: 404,
+            imageUrl: url.slice(0, 180),
+            media_token_len: mediaTok?.length,
+          });
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    throw new Error(`fetch image HTTP ${r.status}${hint}`);
+  }
   const buf = new Uint8Array(await r.arrayBuffer());
   if (buf.length > MAX_MEAL_IMAGE_BYTES) {
     throw new Error(`image too large (${buf.length} bytes; max ${MAX_MEAL_IMAGE_BYTES})`);
@@ -240,11 +326,6 @@ async function telegramGetFileUrl(botToken: string, fileId: string): Promise<str
   const j = (await r.json()) as { ok?: boolean; result?: { file_path?: string }; description?: string };
   if (!j?.ok || !j.result?.file_path) throw new Error(j.description ?? "telegram getFile failed");
   return `https://api.telegram.org/file/bot${botToken}/${j.result.file_path}`;
-}
-
-async function telegramFetchFileAsDataUrl(botToken: string, fileId: string): Promise<string> {
-  const fileHttpUrl = await telegramGetFileUrl(botToken, fileId);
-  return fetchHttpUrlAsDataUrl(fileHttpUrl);
 }
 
 async function visionAnalyzeMealPhoto(
@@ -970,11 +1051,15 @@ async function toolCall(env: Env, name: string, args: Record<string, unknown>): 
 
     // Prefer https imageUrl (e.g. Telegram file URL from myclaw getFile); worker fetches — no base64 on the wire from client.
     let imageDataUrl: string;
+    /** Resolved fetch URL for logs (Telegram CDN URLs embed the bot token — log only in trusted environments). */
+    let imageSourceHttpsUrl: string | null = null;
     if (imageUrlArg && isFetchableHttpsImageUrl(imageUrlArg)) {
-      imageDataUrl = await fetchHttpUrlAsDataUrl(imageUrlArg);
+      imageSourceHttpsUrl = imageUrlArg;
+      imageDataUrl = await fetchHttpUrlAsDataUrl(imageUrlArg, env);
     } else if (fileId) {
       if (!botToken) throw new Error("telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args");
-      imageDataUrl = await telegramFetchFileAsDataUrl(botToken, fileId);
+      imageSourceHttpsUrl = await telegramGetFileUrl(botToken, fileId);
+      imageDataUrl = await fetchHttpUrlAsDataUrl(imageSourceHttpsUrl, env);
     } else if (rawB64) {
       imageDataUrl = rawB64.startsWith("data:") ? rawB64 : `data:image/jpeg;base64,${rawB64}`;
     } else {
@@ -982,6 +1067,7 @@ async function toolCall(env: Env, name: string, args: Record<string, unknown>): 
     }
 
     const analysis = await visionAnalyzeMealPhoto(env, imageDataUrl, normStr(args.meal), normStr(args.locale));
+    const model = (env.VISION_MODEL ?? "gpt-4o-mini").trim();
     const at_ms = "atMs" in args ? parseAtMs(args.atMs) : parseAtMs(args.atISO);
     const ts = nowMs();
     const id = crypto.randomUUID();
@@ -1015,6 +1101,14 @@ async function toolCall(env: Env, name: string, args: Record<string, unknown>): 
         ts,
       )
       .run();
+
+    weightMcpLog(env, "meal_photo/processed", {
+      analysisId: id,
+      summary,
+      image_https_url: imageSourceHttpsUrl,
+      image_source: imageSourceHttpsUrl ? "https_fetch" : "base64_inline",
+    });
+
     return { ok: true, analysisId: id, scope_id: sid, at_ms, model, summary, analysis };
   }
 

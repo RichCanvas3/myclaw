@@ -375,6 +375,7 @@ def _goal_tick_action_pack(
             "- **Meal photos from Telegram (LangChain plans; myclaw resolves URL):** Do NOT use `weight_list_food` to “see” new photos — it only lists DB rows. "
             "Pipeline: (1) `gym-telegram` `telegram_list_messages` (or use `[context]` fileId lines) to get each photo’s **fileId** + chatId + messageId. "
             "(2) `gym-weight` `weight_analyze_meal_photo` with `scope` + `telegram`: {\"fileId\",\"chatId\",\"messageId\"} + optional `meal`. "
+            "**fileId** MUST be the exact string from `telegram_list_messages` (or `[context]` photo JSON), never placeholders like `image_file_id`. "
             "**Do not** invent arbitrary `imageUrl`. myclaw calls **Telegram getFile** (metadata), builds a Telegram **file** HTTPS URL, and gym-weight **fetches** it (`MYCLAW_TELEGRAM_BOT_TOKEN` on Next.js, or `TELEGRAM_BOT_TOKEN` on the weight worker if fileId-only). "
             "(3) Optional: `weight_log_food_from_analysis` with `analysisId` to persist. "
             "If list_messages lacks **fileId** on photos, fix telegram-mcp message JSON.",

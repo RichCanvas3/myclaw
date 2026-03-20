@@ -2,7 +2,11 @@ import type { OrchestratorContext } from "@/lib/agents/types";
 import { mcpResourcesList, mcpResourcesRead, mcpResourcesSubscribe, mcpToolsCall } from "@/lib/mcp/client";
 import { memoryAppendEvent, memoryGet, memoryUpsert } from "@/lib/memory/client";
 import { logMyclaw } from "@/lib/observability";
-import { hydrateWeightAnalyzeMealPhotoFromTelegram, telegramBotTokenForFileFetch } from "@/lib/telegram/fetchFile";
+import {
+  hydrateWeightAnalyzeMealPhotoFromTelegram,
+  telegramBotTokenForFileFetch,
+  validateWeightAnalyzeMealPhotoArgs,
+} from "@/lib/telegram/fetchFile";
 import { extractTelegramMessagePhotoFileId } from "@/lib/telegram/photoFileId";
 
 export const runtime = "nodejs";
@@ -17,8 +21,12 @@ type WatchGoalRequest = {
   sessionId?: string;
   // Ops: first run sets cursor and does nothing unless true.
   includeBacklog?: boolean;
+  // Ops/testing: override lastProcessed cursor (process messages with messageId > sinceMessageId).
+  sinceMessageId?: number;
   // Safety: cap number of messages processed per call.
   maxMessages?: number;
+  // When true, post nutrition summary back to Telegram via telegram_send_message.
+  postToTelegram?: boolean;
 };
 
 type TelegramMsg = {
@@ -29,6 +37,8 @@ type TelegramMsg = {
   dateUnix?: number | null;
   /** Largest photo file_id when MCP exposes photos[] / photo / document. */
   photoFileId?: string | null;
+  /** Public image URL from telegram-mcp (preferred; avoids bot tokens). */
+  imageUrl?: string | null;
 };
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -54,22 +64,108 @@ function safeJson(v: unknown): unknown {
   }
 }
 
-async function wasMealPhotoAlreadyProcessed(ctx: OrchestratorContext, chatId: string, messageId: number): Promise<boolean> {
+type MealPhotoState = {
+  analysisId?: string;
+  summary?: string;
+  mealTotals?: { calories?: number; protein_g?: number; carbs_g?: number; fat_g?: number };
+  confidence?: number | null;
+  postedAtISO?: string;
+  updatedAtISO?: string;
+};
+
+async function getMealPhotoState(ctx: OrchestratorContext, chatId: string, messageId: number): Promise<MealPhotoState | null> {
   const key = mealPhotoProcessedKey(chatId, messageId);
   const resp = await memoryGet({ ctx, namespace: "threads", key }).catch(() => null);
-  if (!isRecord(resp) || !isRecord(resp.value)) return false;
-  const v = resp.value as Record<string, unknown>;
-  return v.processed === true || typeof v.atISO === "string";
+  if (!isRecord(resp) || !isRecord(resp.value)) return null;
+  return resp.value as MealPhotoState;
 }
 
-async function markMealPhotoProcessed(ctx: OrchestratorContext, chatId: string, messageId: number): Promise<void> {
+async function wasMealPhotoAlreadyProcessed(ctx: OrchestratorContext, chatId: string, messageId: number): Promise<boolean> {
+  const v = await getMealPhotoState(ctx, chatId, messageId);
+  return !!(v && typeof v.analysisId === "string" && v.analysisId.trim());
+}
+
+async function markMealPhotoProcessed(
+  ctx: OrchestratorContext,
+  chatId: string,
+  messageId: number,
+  next: MealPhotoState,
+): Promise<void> {
   const key = mealPhotoProcessedKey(chatId, messageId);
   await memoryUpsert({
     ctx,
     namespace: "threads",
     key,
-    value: { processed: true, atISO: new Date().toISOString() },
+    value: { ...next, updatedAtISO: new Date().toISOString() },
   }).catch(() => {});
+}
+
+function numOrNull(v: unknown): number | null {
+  if (typeof v !== "number" || !Number.isFinite(v)) return null;
+  return v;
+}
+
+function fmt0(n: number | null | undefined): string {
+  if (n == null) return "?";
+  return String(Math.round(n));
+}
+
+function dateISOFromTelegram(msg: TelegramMsg): string {
+  const u = typeof msg.dateUnix === "number" && Number.isFinite(msg.dateUnix) ? Math.trunc(msg.dateUnix) : null;
+  if (!u) return new Date().toISOString().slice(0, 10);
+  return new Date(u * 1000).toISOString().slice(0, 10);
+}
+
+function composeTelegramNutritionText(params: {
+  messageId: number;
+  analysisId: string;
+  mealTotals: { calories?: number; protein_g?: number; carbs_g?: number; fat_g?: number };
+  confidence?: number | null;
+  daySummary?: {
+    totals?: { calories?: number; protein_g?: number; carbs_g?: number; fat_g?: number };
+    targets?: { calories?: number; protein_g?: number; carbs_g?: number; fat_g?: number } | null;
+    dateISO?: string;
+  } | null;
+}): string {
+  const t = params.mealTotals ?? {};
+  const mealLine =
+    `Meal photo (msg ${params.messageId}): ` +
+    `${fmt0(numOrNull(t.calories))} kcal | P ${fmt0(numOrNull(t.protein_g))}g C ${fmt0(numOrNull(t.carbs_g))}g F ${fmt0(numOrNull(t.fat_g))}g` +
+    (params.confidence != null && Number.isFinite(params.confidence) ? ` (conf ${params.confidence.toFixed(2)})` : "");
+
+  const ds = params.daySummary;
+  const totals = ds?.totals ?? null;
+  const targets = ds?.targets ?? null;
+  const dayLine =
+    totals && targets && (targets.calories || targets.protein_g || targets.carbs_g || targets.fat_g)
+      ? `Today (${ds?.dateISO ?? "UTC"}): ` +
+        `${fmt0(numOrNull(totals.calories))}/${fmt0(numOrNull(targets.calories))} kcal | ` +
+        `P ${fmt0(numOrNull(totals.protein_g))}/${fmt0(numOrNull(targets.protein_g))}g ` +
+        `C ${fmt0(numOrNull(totals.carbs_g))}/${fmt0(numOrNull(targets.carbs_g))}g ` +
+        `F ${fmt0(numOrNull(totals.fat_g))}/${fmt0(numOrNull(targets.fat_g))}g`
+      : totals
+        ? `Today (${ds?.dateISO ?? "UTC"}): ${fmt0(numOrNull(totals.calories))} kcal so far`
+        : null;
+
+  let remainingLine: string | null = null;
+  if (totals && targets) {
+    const remK =
+      numOrNull(targets.calories) != null && numOrNull(totals.calories) != null ? targets.calories! - totals.calories! : null;
+    const remP =
+      numOrNull(targets.protein_g) != null && numOrNull(totals.protein_g) != null ? targets.protein_g! - totals.protein_g! : null;
+    const remC =
+      numOrNull(targets.carbs_g) != null && numOrNull(totals.carbs_g) != null ? targets.carbs_g! - totals.carbs_g! : null;
+    const remF =
+      numOrNull(targets.fat_g) != null && numOrNull(totals.fat_g) != null ? targets.fat_g! - totals.fat_g! : null;
+    if (remK != null || remP != null || remC != null || remF != null) {
+      remainingLine = `Remaining: ${fmt0(remK)} kcal | P ${fmt0(remP)}g C ${fmt0(remC)}g F ${fmt0(remF)}g`;
+    }
+  }
+
+  const lines = [mealLine, dayLine, remainingLine, `analysisId=${params.analysisId}`].filter(
+    (x): x is string => typeof x === "string" && x.trim().length > 0,
+  );
+  return lines.join("\n");
 }
 
 /**
@@ -79,31 +175,77 @@ async function analyzeAndLogTelegramMealPhoto(params: {
   ctx: OrchestratorContext;
   chatId: string;
   msg: TelegramMsg;
+  postToTelegram: boolean;
 }): Promise<{ ok: boolean; skipped?: boolean; error?: string; analysisId?: string }> {
+  const imgUrl = normStr(params.msg.imageUrl);
   const fid = (params.msg.photoFileId ?? "").trim();
-  if (!fid) {
-    logMyclaw("watch-goal", "meal photo skip: no fileId on message", { messageId: params.msg.messageId });
-    return { ok: false, skipped: true, error: "no_photo_file_id" };
+  if (!imgUrl && !fid) {
+    logMyclaw("watch-goal", "meal photo skip: no imageUrl/fileId on message", { messageId: params.msg.messageId });
+    return { ok: false, skipped: true, error: "no_photo_source" };
   }
 
-  if (await wasMealPhotoAlreadyProcessed(params.ctx, params.chatId, params.msg.messageId)) {
-    logMyclaw("watch-goal", "meal photo skip: already processed", {
+  const existing = await getMealPhotoState(params.ctx, params.chatId, params.msg.messageId);
+  const existingId = existing && typeof existing.analysisId === "string" ? existing.analysisId.trim() : "";
+  const alreadyPosted = !!(existing && typeof existing.postedAtISO === "string" && existing.postedAtISO.trim());
+  if (existingId) {
+    if (params.postToTelegram && !alreadyPosted) {
+      try {
+        const dateISO = dateISOFromTelegram(params.msg);
+        const dayRaw = await mcpToolsCall("gym-weight", "weight_day_summary", {
+          scope: {
+            churchId: params.ctx.churchId,
+            userId: params.ctx.userId,
+            personId: params.ctx.personId,
+            ...(params.ctx.householdId ? { householdId: params.ctx.householdId } : {}),
+          },
+          dateISO,
+        });
+        const day = safeJson(dayRaw);
+        const text = composeTelegramNutritionText({
+          messageId: params.msg.messageId,
+          analysisId: existingId,
+          mealTotals: existing.mealTotals ?? {},
+          confidence: existing.confidence ?? null,
+          daySummary: isRecord(day)
+            ? {
+                totals: isRecord(day.totals) ? (day.totals as any) : undefined,
+                targets: (isRecord(day.targets) ? (day.targets as any) : null) as any,
+                dateISO: typeof day.dateISO === "string" ? day.dateISO : dateISO,
+              }
+            : null,
+        });
+        await mcpToolsCall("gym-telegram", "telegram_send_message", { chatId: params.chatId, text });
+        await markMealPhotoProcessed(params.ctx, params.chatId, params.msg.messageId, {
+          ...(existing ?? {}),
+          analysisId: existingId,
+          postedAtISO: new Date().toISOString(),
+        });
+      } catch (e) {
+        logMyclaw("watch-goal", "meal photo post-to-telegram error", {
+          messageId: params.msg.messageId,
+          error: (e as Error).message,
+        });
+      }
+    }
+    logMyclaw("watch-goal", "meal photo skip: already analyzed", {
       chatId: params.chatId,
       messageId: params.msg.messageId,
     });
-    return { ok: true, skipped: true };
+    return { ok: true, skipped: true, analysisId: existingId };
   }
 
-  if (!telegramBotTokenForFileFetch()) {
-    logMyclaw("watch-goal", "meal photo: no MYCLAW_TELEGRAM_BOT_TOKEN — hydrating fileId only; gym-weight needs TELEGRAM_BOT_TOKEN", {
-      chatId: params.chatId,
-    });
+  if (!imgUrl && !telegramBotTokenForFileFetch()) {
+    logMyclaw(
+      "watch-goal",
+      "meal photo: no MYCLAW_TELEGRAM_BOT_TOKEN and no message imageUrl — forwarding fileId; gym-weight needs TELEGRAM_BOT_TOKEN",
+      { chatId: params.chatId },
+    );
   }
 
   logMyclaw("watch-goal", "meal photo pipeline start", {
     chatId: params.chatId,
     messageId: params.msg.messageId,
-    fileIdPrefix: `${fid.slice(0, 12)}…`,
+    ...(imgUrl ? { imageUrl: imgUrl.slice(0, 140) } : { fileIdPrefix: `${fid.slice(0, 12)}…` }),
   });
 
   const scope: Record<string, unknown> = {
@@ -119,8 +261,9 @@ async function analyzeAndLogTelegramMealPhoto(params: {
   const args: Record<string, unknown> = {
     scope,
     meal: mealLabel,
+    ...(imgUrl ? { imageUrl: imgUrl } : {}),
     telegram: {
-      fileId: fid,
+      ...(imgUrl ? {} : { fileId: fid }),
       chatId: params.chatId,
       messageId: params.msg.messageId,
     },
@@ -128,6 +271,7 @@ async function analyzeAndLogTelegramMealPhoto(params: {
 
   try {
     await hydrateWeightAnalyzeMealPhotoFromTelegram(args);
+    validateWeightAnalyzeMealPhotoArgs(args);
     const analyzedRaw = await mcpToolsCall("gym-weight", "weight_analyze_meal_photo", args);
     const parsed = safeJson(analyzedRaw);
     const analysisId = isRecord(parsed) && typeof parsed.analysisId === "string" ? parsed.analysisId.trim() : "";
@@ -148,7 +292,52 @@ async function analyzeAndLogTelegramMealPhoto(params: {
       telegram: { chatId: params.chatId, messageId: params.msg.messageId },
     });
 
-    await markMealPhotoProcessed(params.ctx, params.chatId, params.msg.messageId);
+    const mealTotals = isRecord(parsed) && isRecord(parsed.analysis) && isRecord((parsed.analysis as any).totals)
+      ? {
+          calories: numOrNull(((parsed.analysis as any).totals as any).calories) ?? undefined,
+          protein_g: numOrNull(((parsed.analysis as any).totals as any).protein_g) ?? undefined,
+          carbs_g: numOrNull(((parsed.analysis as any).totals as any).carbs_g) ?? undefined,
+          fat_g: numOrNull(((parsed.analysis as any).totals as any).fat_g) ?? undefined,
+        }
+      : {};
+    const conf =
+      isRecord(parsed) && isRecord(parsed.analysis) ? numOrNull((parsed.analysis as any).confidence) : null;
+    const summary = isRecord(parsed) && typeof parsed.summary === "string" ? parsed.summary : null;
+
+    const baseState: MealPhotoState = {
+      analysisId,
+      ...(summary ? { summary } : {}),
+      mealTotals,
+      confidence: conf,
+    };
+
+    // Persist analysis state first so we won't duplicate the D1 writes if posting fails.
+    await markMealPhotoProcessed(params.ctx, params.chatId, params.msg.messageId, baseState);
+
+    if (params.postToTelegram) {
+      const dateISO = dateISOFromTelegram(params.msg);
+      const dayRaw = await mcpToolsCall("gym-weight", "weight_day_summary", { scope, dateISO }).catch(() => null);
+      const day = dayRaw ? safeJson(dayRaw) : null;
+      const text = composeTelegramNutritionText({
+        messageId: params.msg.messageId,
+        analysisId,
+        mealTotals,
+        confidence: conf,
+        daySummary: day && isRecord(day)
+          ? {
+              totals: isRecord(day.totals) ? (day.totals as any) : undefined,
+              targets: (isRecord(day.targets) ? (day.targets as any) : null) as any,
+              dateISO: typeof day.dateISO === "string" ? day.dateISO : dateISO,
+            }
+          : null,
+      });
+      await mcpToolsCall("gym-telegram", "telegram_send_message", { chatId: params.chatId, text });
+      await markMealPhotoProcessed(params.ctx, params.chatId, params.msg.messageId, {
+        ...baseState,
+        postedAtISO: new Date().toISOString(),
+      });
+    }
+
     logMyclaw("watch-goal", "meal photo pipeline ok", { analysisId, messageId: params.msg.messageId });
     return { ok: true, analysisId };
   } catch (e) {
@@ -257,6 +446,11 @@ function extractReadMessages(result: unknown): { chatId: string; messages: Teleg
     const messageId = typeof m.messageId === "number" ? m.messageId : null;
     if (!messageId) continue;
     const photoFileId = extractTelegramMessagePhotoFileId(m);
+    const imageUrl =
+      normStr(m.imageUrl) ||
+      (isRecord(m.image)
+        ? normStr((m.image as Record<string, unknown>).imageUrl) || normStr((m.image as Record<string, unknown>).url)
+        : null);
     out.push({
       messageId,
       fromUserId: typeof m.fromUserId === "number" ? m.fromUserId : null,
@@ -264,6 +458,7 @@ function extractReadMessages(result: unknown): { chatId: string; messages: Teleg
       text: normStr(m.text),
       caption: normStr(m.caption),
       photoFileId: photoFileId ?? null,
+      imageUrl,
     });
   }
   return { chatId, messages: out };
@@ -430,9 +625,17 @@ export async function POST(req: Request): Promise<Response> {
 
   // 4) Dedup & process new messages.
   const latestId = msgList.messages.reduce((mx, m) => Math.max(mx, m.messageId), 0);
-  const lastProcessed = await getLastProcessed(ctx, msgList.chatId);
+  const storedLastProcessed = await getLastProcessed(ctx, msgList.chatId);
+  const overrideSince =
+    typeof body.sinceMessageId === "number" && Number.isFinite(body.sinceMessageId) ? Math.trunc(body.sinceMessageId) : null;
+  const lastProcessed = overrideSince != null ? overrideSince : storedLastProcessed;
 
-  if (lastProcessed == null && !body.includeBacklog) {
+  const postRequested = body.postToTelegram !== false;
+  // Backfill runs should not spam Telegram by default. If caller pins sinceMessageId, allow posting.
+  const isBackfill = !!body.includeBacklog && overrideSince == null;
+  const postToTelegram = postRequested && !isBackfill;
+
+  if (lastProcessed == null && !body.includeBacklog && overrideSince == null) {
     if (latestId) await setLastProcessed(ctx, msgList.chatId, latestId);
     return json({ ok: true, notified, sessionId, chatTitle, chatId: msgList.chatId, processed: 0, reason: "initialized_cursor" });
   }
@@ -445,7 +648,7 @@ export async function POST(req: Request): Promise<Response> {
       const t = (m.text ?? "").trim();
       const c = (m.caption ?? "").trim();
       const hasText = t.length > 0 || c.length > 0;
-      const hasPhoto = !!(m.photoFileId && m.photoFileId.trim());
+      const hasPhoto = !!((m.photoFileId && m.photoFileId.trim()) || (m.imageUrl && m.imageUrl.trim()));
       return hasText || hasPhoto;
     })
     .sort((a, b) => a.messageId - b.messageId)
@@ -465,7 +668,7 @@ export async function POST(req: Request): Promise<Response> {
   for (const msg of newMsgs) {
     const mealAuto =
       msg.photoFileId && msg.photoFileId.trim()
-        ? await analyzeAndLogTelegramMealPhoto({ ctx, chatId: msgList.chatId, msg })
+        ? await analyzeAndLogTelegramMealPhoto({ ctx, chatId: msgList.chatId, msg, postToTelegram })
         : null;
 
     const userFacing = (msg.text ?? msg.caption ?? "").trim();

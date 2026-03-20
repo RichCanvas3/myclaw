@@ -9,7 +9,7 @@ import { mcpToolsCall, mcpToolsList } from "@/lib/mcp/client";
 import { logMyclaw } from "@/lib/observability";
 import { orchestratorCompose, orchestratorComposeEmail, orchestratorPlan } from "@/lib/orchestrator/llm";
 import { memoryAppendEvent, memoryGet, memoryGetProfile, memoryQuery, memoryUpsert } from "@/lib/memory/client";
-import { hydrateWeightAnalyzeMealPhotoFromTelegram } from "@/lib/telegram/fetchFile";
+import { hydrateWeightAnalyzeMealPhotoFromTelegram, validateWeightAnalyzeMealPhotoArgs } from "@/lib/telegram/fetchFile";
 import { extractTelegramMessagePhotoFileId } from "@/lib/telegram/photoFileId";
 import { normStr, resolveTelegramChatIdByTitle } from "@/lib/telegram/resolve";
 
@@ -1324,6 +1324,7 @@ export async function POST(req: Request): Promise<Response> {
               }
               if (server === "gym-weight" && tool === "weight_analyze_meal_photo") {
                 await hydrateWeightAnalyzeMealPhotoFromTelegram(args as Record<string, unknown>);
+                validateWeightAnalyzeMealPhotoArgs(args as Record<string, unknown>);
               }
 
               const res = await mcpToolsCall(server, tool, args);
@@ -1610,6 +1611,7 @@ export async function POST(req: Request): Promise<Response> {
               }
               if (server === "gym-weight" && tool === "weight_analyze_meal_photo") {
                 await hydrateWeightAnalyzeMealPhotoFromTelegram(args as Record<string, unknown>);
+                validateWeightAnalyzeMealPhotoArgs(args as Record<string, unknown>);
               }
 
               // Default Google Calendar accountAddress when missing.

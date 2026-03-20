@@ -5,6 +5,7 @@
  */
 
 import { logMyclaw } from "@/lib/observability";
+import { telegramFileIdLooksPlaceholder } from "@/lib/telegram/photoFileId";
 
 const DEFAULT_MAX_BYTES = 8 * 1024 * 1024; // 8 MiB — only used if something still downloads bytes locally
 
@@ -80,6 +81,10 @@ export async function hydrateWeightAnalyzeMealPhotoFromTelegram(args: Record<str
 
   const token = telegramBotTokenForFileFetch();
   if (!token) {
+    logMyclaw("telegram-hydrate", "skip imageUrl: no bot token on myclaw; forwarding fileId to gym-weight (needs TELEGRAM_BOT_TOKEN there)", {
+      fileIdPrefix: `${fileId.slice(0, 12)}…`,
+      suspect_placeholder: telegramFileIdLooksPlaceholder(fileId),
+    });
     return;
   }
 
@@ -104,4 +109,28 @@ export async function hydrateWeightAnalyzeMealPhotoFromTelegram(args: Record<str
     chatId: chatId || undefined,
     messageId,
   });
+}
+
+/**
+ * After hydrate: ensure we did not send an unusable plan (missing image source or fake fileId).
+ */
+export function validateWeightAnalyzeMealPhotoArgs(args: Record<string, unknown>): void {
+  if (hasUsableImageUrl(args)) return;
+  const rawB64 = typeof args.imageBase64 === "string" ? args.imageBase64.trim() : "";
+  if (rawB64.length > 0) return;
+
+  const tg = args.telegram;
+  const rec = typeof tg === "object" && tg !== null ? (tg as Record<string, unknown>) : null;
+  const fileId = rec && typeof rec.fileId === "string" ? rec.fileId.trim() : "";
+
+  if (!fileId) {
+    throw new Error(
+      "weight_analyze_meal_photo: no image source — add MYCLAW_TELEGRAM_BOT_TOKEN on myclaw (preferred), or a real telegram.fileId from telegram_list_messages plus TELEGRAM_BOT_TOKEN on gym-weight, or imageBase64.",
+    );
+  }
+  if (telegramFileIdLooksPlaceholder(fileId)) {
+    throw new Error(
+      "weight_analyze_meal_photo: telegram.fileId is not a real Telegram file_id (looks like a placeholder). Call telegram_list_messages and copy the exact fileId from the photo line in the JSON.",
+    );
+  }
 }

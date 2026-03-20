@@ -17,3 +17,7 @@ binding = "DB"
 database_name = "myclaw-weight"
 database_id = "0810e607-0f5e-4453-b08d-b699adf2f990"
 
+[[services]]
+binding = "TELEGRAM_MCP"
+service = "gym-telegram-mcp"
+
