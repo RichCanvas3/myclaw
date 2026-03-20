@@ -343,6 +343,11 @@ def _goal_tick_action_pack(
             "- Keep actions minimal and concrete.",
             "- Prefer information gathering first if blocked.",
             "- Never claim you executed tools; only propose actions.",
+            "- **LangGraph / LangSmith initiation (PRIMARY):** You start Telegram meal-photo work here by emitting concrete `mcp.tool` actions. "
+            "myclaw only **executes** that plan and fetches Telegram bytes; it does not replace your responsibility to plan `gym-telegram` / `gym-weight` steps.",
+            "- **Telegram meal-photo contract:** If `user_text` or `[context]` refers to Telegram photos, meal pictures, processing images, or calories from chat — `actions` MUST include "
+            "one `gym-weight` `weight_analyze_meal_photo` per distinct fileId (with scope + telegram.fileId/chatId/messageId), after `telegram_list_messages` if fileIds are missing, "
+            "or immediately if `[context]` already lists `msg#… fileId=…`. Memory upsert or send_message alone is invalid for that class of request.",
             "- MANDATORY: if the user hint mentions calories/nutrition/macros from Telegram photos/pictures, "
             "`actions` MUST include real MCP tools (`gym-telegram` and/or `gym-weight`), not goals/memory alone; "
             "use `fileId` lines from `[context]` when present.",
@@ -367,13 +372,12 @@ def _goal_tick_action_pack(
             "- If missing time fields for a create, ask one short question in `message` instead of omitting calendar actions entirely.",
             "- If coordinating with a coach/trainer/another person, prefer drafting a short message and sending via `gym-telegram` or `gym-sendgrid` (if you have an address).",
             "- For nutrition/weight/meal photos/water/fasting: use `gym-weight` tools (weight_*).",
-            "- **Meal photos from Telegram (when user asks to read/process images or calories):** Do NOT use `weight_list_food` for that — it only lists logged DB rows (empty if nothing logged). "
-            "Instead: (1) `telegram_list_messages` with `chatId` (from context or resolve via `telegram_list_chats`) and `limit` 25–50. "
-            "(2) For every message that has a photo `fileId` in the response, call `gym-weight` `weight_analyze_meal_photo` with "
-            '`scope` matching `session` keys (churchId, userId, personId, optional householdId), '
-            '`telegram`: {\"fileId\":\"...\",\"chatId\":\"...\",\"messageId\":<n>}, optional `meal` from caption/text. '
-            "(3) Then call `weight_log_food_from_analysis` with that `analysisId` and mode `aggregate` (or `items`) to persist calories unless the user asked not to log. "
-            "If list_messages returns **no** fileId on photo messages, the Telegram MCP must expose file_ids; you cannot analyze without fileId.",
+            "- **Meal photos from Telegram (LangChain plans; myclaw executes bytes):** Do NOT use `weight_list_food` to “see” new photos — it only lists DB rows. "
+            "Pipeline: (1) `gym-telegram` `telegram_list_messages` (or use `[context]` fileId lines) to get each photo’s **fileId** + chatId + messageId. "
+            "(2) `gym-weight` `weight_analyze_meal_photo` with `scope` + `telegram`: {\"fileId\",\"chatId\",\"messageId\"} + optional `meal`. "
+            "**Do not** pass `imageUrl`; myclaw Next.js calls **Telegram Bot API getFile** directly, downloads bytes, and sends `imageBase64` to gym-weight (requires `MYCLAW_TELEGRAM_BOT_TOKEN` on the web app). "
+            "(3) Optional: `weight_log_food_from_analysis` with `analysisId` to persist. "
+            "If list_messages lacks **fileId** on photos, fix telegram-mcp message JSON.",
             "- If contact/account details are missing, propose a `memory.query` for likely keys first; if still missing, ask the user for the missing detail in `message`.",
             "- The message may include `[context]` with headings like `observation_telegram_chat_lines` or `observation_google_calendar_21d` — these are **not** MCP tools. Use real tools only (e.g. `telegram_list_messages`, `googlecalendar_list_events`, `weight_*`).",
             "",

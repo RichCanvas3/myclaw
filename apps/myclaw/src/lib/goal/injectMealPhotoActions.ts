@@ -15,8 +15,9 @@ function safeJson(v: unknown): unknown {
 }
 
 /**
- * When LangGraph returns telegram_list_* but omits gym-weight, inject analyze steps using
- * fileId lines from the same `[context]` blob myclaw already attached to `/goal tick`.
+ * SAFETY NET only. LangGraph `/goal tick` should **initiate** meal-photo processing via explicit
+ * `mcp.tool` gym-weight actions (see graph.py). This module patches the action list when the
+ * deployed planner still omits them, using `[context]` fileId lines or `telegram_list_messages` results.
  */
 
 function actionsHaveWeightMcp(actions: SuggestedAction[]): boolean {

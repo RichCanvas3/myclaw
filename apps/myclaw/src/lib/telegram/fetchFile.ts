@@ -1,6 +1,7 @@
 /**
- * Download a Telegram file by file_id using the Bot API (Next.js server only).
- * Used to pass imageBase64 to weight-management-mcp so the worker does not need TELEGRAM_BOT_TOKEN.
+ * Direct Telegram Bot API (HTTPS) from Next.js — no MCP hop for bytes.
+ * Flow: LangGraph / LangChain plan → myclaw executes tools → for `weight_analyze_meal_photo` with
+ * `telegram.fileId`, we call getFile + download here, then pass `imageBase64` to gym-weight.
  */
 
 import { logMyclaw } from "@/lib/observability";
@@ -45,13 +46,12 @@ export function telegramBotTokenForFileFetch(): string | null {
 }
 
 /**
- * If args include telegram.fileId, download in Next.js and set raw imageBase64 (bytes path only).
- * Removes planner imageUrl and strips fileId from `telegram` so weight-mcp needs no TELEGRAM_BOT_TOKEN for this call.
+ * If args include telegram.fileId, download via **Telegram Bot API directly** from this server
+ * and set raw `imageBase64`. Strips `fileId` from `telegram` so gym-weight only sees bytes (+ chatId/messageId for D1).
+ *
+ * When `fileId` is present, `MYCLAW_TELEGRAM_BOT_TOKEN` is **required** (same bot as telegram-mcp).
  */
 export async function hydrateWeightAnalyzeMealPhotoFromTelegram(args: Record<string, unknown>): Promise<void> {
-  const token = telegramBotTokenForFileFetch();
-  if (!token) return;
-
   const tg = args.telegram;
   if (typeof tg !== "object" || tg === null) return;
   const rec = tg as Record<string, unknown>;
@@ -60,6 +60,13 @@ export async function hydrateWeightAnalyzeMealPhotoFromTelegram(args: Record<str
 
   const hasB64 = typeof args.imageBase64 === "string" && args.imageBase64.trim().length > 0;
   if (hasB64) return;
+
+  const token = telegramBotTokenForFileFetch();
+  if (!token) {
+    throw new Error(
+      "MYCLAW_TELEGRAM_BOT_TOKEN is required: myclaw downloads Telegram photos via Bot API (getFile) and sends imageBase64 to gym-weight. Set the same bot token you use for telegram-mcp.",
+    );
+  }
 
   const b64 = await fetchTelegramFileAsBase64(token, fileId);
   args.imageBase64 = b64;

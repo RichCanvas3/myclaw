@@ -13,7 +13,7 @@ Template: [docs/langgraph-mcp-servers.example.json](./docs/langgraph-mcp-servers
 
 **Full wiring checklist:** [docs/CONFIG_CHECKLIST.md](./docs/CONFIG_CHECKLIST.md).
 
-**MCP / Telegram debug logs:** [docs/MCP_LOGGING.md](./docs/MCP_LOGGING.md).
+**MCP / Telegram debug logs:** [docs/MCP_LOGGING.md](./docs/MCP_LOGGING.md). **Telegram photo → weight bytes path:** [docs/TELEGRAM_PHOTO_FLOW.md](./docs/TELEGRAM_PHOTO_FLOW.md). **LangGraph initiates `/goal tick` photo plans:** [docs/LANGGRAPH_TELEGRAM_PHOTOS.md](./docs/LANGGRAPH_TELEGRAM_PHOTOS.md).
 
 *Calendaring + Google OAuth:* use **`gym-googlecalendar`** only (there is no separate “Google” MCP in this repo).
 
