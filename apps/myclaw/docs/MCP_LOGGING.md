@@ -14,7 +14,7 @@ Logs use the prefix **`[myclaw:<scope>]`** (`mcp`, `telegram-hydrate`, `watch-go
 **What’s logged**
 
 - Every MCP request/response in `src/lib/mcp/client.ts` (server id, method, tool name, summarized args, duration). Image payloads are **not** dumped (lengths only).
-- Telegram → base64 hydration in `src/lib/telegram/fetchFile.ts`.
+- Telegram → `imageUrl` hydration (getFile, no local download) in `src/lib/telegram/fetchFile.ts`; logs use `imageUrl_kind`, never token-bearing URLs.
 - Watch-goal meal photo pipeline in `src/app/api/telegram/watch-goal/route.ts`.
 
 View: local dev terminal, Vercel/hosting **Functions logs**, or Docker logs.

@@ -5,7 +5,7 @@
 | Layer | Role |
 |-------|------|
 | **LangGraph** (`/goal tick` → `_goal_tick_action_pack`) | **Primary.** The OpenAI planner on the LangSmith deployment returns JSON with `actions` that MUST include real `mcp.tool` calls: `gym-telegram` (e.g. `telegram_list_messages`) and `gym-weight` (`weight_analyze_meal_photo` with `telegram.fileId`, `chatId`, `messageId`). |
-| **myclaw `/api/agent/act`** | **Executes** those actions. For `weight_analyze_meal_photo`, it calls Telegram Bot API (`getFile`) and sends `imageBase64` to gym-weight. |
+| **myclaw `/api/agent/act`** | **Executes** those actions. For `weight_analyze_meal_photo`, it calls Telegram `getFile` (metadata only), sets **`imageUrl`** for gym-weight, and does **not** download image bytes on Next.js. |
 | **myclaw inject + queue** (`injectMealPhotoActions.ts`) | **Safety net** if the planner forgets gym-weight; does not replace LangGraph initiation. |
 
 ## LangSmith deployment checklist
@@ -21,4 +21,4 @@
 
 ## See also
 
-- [TELEGRAM_PHOTO_FLOW.md](./TELEGRAM_PHOTO_FLOW.md) — bytes path on myclaw.
+- [TELEGRAM_PHOTO_FLOW.md](./TELEGRAM_PHOTO_FLOW.md) — URL path (worker fetch).

@@ -114,7 +114,7 @@ export async function orchestratorPlan(params: {
     "- If the user asks to edit/delete/pin, call telegram_edit_message_text / telegram_delete_message / telegram_pin_message (requires messageId and permissions).",
     "- If chatId is missing, first call telegram_list_chats OR ask the user for chatId.",
     "- For nutrition, food logging, water, fasting, weight trends, barcode lookup, or meal photos: use gym-weight (weight_*) tools; scope should mirror session (churchId, userId, personId, householdId, accountAddress as needed).",
-    "- For Telegram meal photos: use gym-telegram to list/read messages and obtain photo fileId + chatId + messageId; then gym-weight weight_analyze_meal_photo with telegram: {fileId, chatId, messageId}. Do not invent imageUrl. The Next.js server calls Telegram Bot API getFile directly and sends imageBase64 to gym-weight (MYCLAW_TELEGRAM_BOT_TOKEN).",
+    "- For Telegram meal photos: use gym-telegram to list/read messages and obtain photo fileId + chatId + messageId; then gym-weight weight_analyze_meal_photo with telegram: {fileId, chatId, messageId}. Do not invent arbitrary imageUrl. myclaw calls Telegram getFile (metadata) and passes a Telegram file imageUrl to gym-weight, which fetches the image (MYCLAW_TELEGRAM_BOT_TOKEN on Next.js, or TELEGRAM_BOT_TOKEN on gym-weight if only fileId is forwarded).",
     "- After user confirms analysis, use weight_log_food_from_analysis (items or aggregate).",
     "- For calendar: ALWAYS use calendar.range (do NOT call googlecalendar_* tools directly).",
     "- Use nowISO as the current time anchor.",

@@ -95,11 +95,9 @@ async function analyzeAndLogTelegramMealPhoto(params: {
   }
 
   if (!telegramBotTokenForFileFetch()) {
-    logMyclaw("watch-goal", "meal photo fail: no MYCLAW_TELEGRAM_BOT_TOKEN", { chatId: params.chatId });
-    return {
-      ok: false,
-      error: "MYCLAW_TELEGRAM_BOT_TOKEN required to fetch photo bytes for gym-weight",
-    };
+    logMyclaw("watch-goal", "meal photo: no MYCLAW_TELEGRAM_BOT_TOKEN — hydrating fileId only; gym-weight needs TELEGRAM_BOT_TOKEN", {
+      chatId: params.chatId,
+    });
   }
 
   logMyclaw("watch-goal", "meal photo pipeline start", {

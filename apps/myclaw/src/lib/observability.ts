@@ -22,6 +22,18 @@ export function logMyclaw(scope: string, message: string, data?: Record<string, 
   else console.log(tag, message);
 }
 
+/** Classify imageUrl for logs only — never log token-bearing Telegram file URLs. */
+export function imageUrlKindForLog(url: unknown): "telegram_cdn" | "https" | "none" {
+  if (typeof url !== "string" || !url.trim()) return "none";
+  if (/api\.telegram\.org\/file\/bot/i.test(url)) return "telegram_cdn";
+  try {
+    const u = new URL(url);
+    return u.protocol === "https:" || u.protocol === "http:" ? "https" : "none";
+  } catch {
+    return "none";
+  }
+}
+
 /** Shrink MCP tool args for logs (never dump raw image bytes). */
 export function summarizeMcpToolArgs(tool: string, args: Record<string, unknown>): Record<string, unknown> {
   const scope = args.scope;
@@ -41,7 +53,7 @@ export function summarizeMcpToolArgs(tool: string, args: Record<string, unknown>
     return {
       ...scopeHint,
       imageBase64_chars: b64,
-      has_imageUrl: typeof args.imageUrl === "string" && args.imageUrl.length > 0,
+      imageUrl_kind: imageUrlKindForLog(args.imageUrl),
       telegram_fileId: typeof tgr?.fileId === "string" ? `${String(tgr.fileId).slice(0, 14)}…` : undefined,
       telegram_chatId: typeof tgr?.chatId === "string" ? tgr.chatId : undefined,
       telegram_messageId: typeof tgr?.messageId === "number" ? tgr.messageId : undefined,

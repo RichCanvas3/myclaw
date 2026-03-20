@@ -90,6 +90,17 @@ function weightMcpLog(env: Env, event: string, detail?: Record<string, unknown>)
 }
 
 /** Safe args summary for logs (no raw base64). */
+function imageUrlKindForLog(url: unknown): "telegram_cdn" | "https" | "none" {
+  if (typeof url !== "string" || !url.trim()) return "none";
+  if (/api\.telegram\.org\/file\/bot/i.test(url)) return "telegram_cdn";
+  try {
+    const u = new URL(url);
+    return u.protocol === "https:" || u.protocol === "http:" ? "https" : "none";
+  } catch {
+    return "none";
+  }
+}
+
 function summarizeWeightToolArgs(name: string, args: Record<string, unknown>): Record<string, unknown> {
   const sc = isRecord(args.scope) ? args.scope : null;
   const scopeHint = sc
@@ -106,7 +117,7 @@ function summarizeWeightToolArgs(name: string, args: Record<string, unknown>): R
     return {
       ...scopeHint,
       imageBase64_chars: b64len,
-      has_imageUrl: Boolean(normStr(args.imageUrl)),
+      imageUrl_kind: imageUrlKindForLog(args.imageUrl),
       telegram_fileId: tg && typeof tg.fileId === "string" ? `${String(tg.fileId).slice(0, 14)}…` : undefined,
       telegram_chatId: tg && typeof tg.chatId === "string" ? tg.chatId : undefined,
       telegram_messageId: tg && typeof tg.messageId === "number" ? tg.messageId : undefined,
@@ -491,14 +502,17 @@ function toolList() {
     {
       name: "weight_analyze_meal_photo",
       description:
-        "Estimate calories/macros from a meal image via vision API; persist row in wm_meal_analyses. Supply image bytes: imageBase64 (raw base64 or data:image/... URL) and/or telegram.fileId (worker downloads via Bot API and inlines bytes). Optional imageUrl (https) is fetched server-side and inlined — prefer base64 + fileId; never rely on passing image URLs to the model.",
+        "Estimate calories/macros from a meal image via vision API; persist row in wm_meal_analyses. Prefer imageUrl (https): this worker fetches the URL and runs vision (e.g. myclaw passes Telegram api.telegram.org/file/bot… after getFile). Alternatives: telegram.fileId + TELEGRAM_BOT_TOKEN on worker, or imageBase64 for legacy/small payloads.",
       inputSchema: {
         type: "object",
         properties: {
           scope: scopeSchema,
           meal: { type: "string" },
           locale: { type: "string" },
-          imageUrl: { type: "string", description: "Optional; fetched and inlined as bytes before vision." },
+          imageUrl: {
+            type: "string",
+            description: "Preferred; https URL fetched in this worker (bytes not sent in tool args).",
+          },
           imageBase64: { type: "string" },
           telegram: {
             type: "object",
@@ -954,16 +968,17 @@ async function toolCall(env: Env, name: string, args: Record<string, unknown>): 
     const rawB64 = normStr(args.imageBase64);
     const imageUrlArg = normStr(args.imageUrl);
 
+    // Prefer https imageUrl (e.g. Telegram file URL from myclaw getFile); worker fetches — no base64 on the wire from client.
     let imageDataUrl: string;
-    if (rawB64) {
-      imageDataUrl = rawB64.startsWith("data:") ? rawB64 : `data:image/jpeg;base64,${rawB64}`;
+    if (imageUrlArg && isFetchableHttpsImageUrl(imageUrlArg)) {
+      imageDataUrl = await fetchHttpUrlAsDataUrl(imageUrlArg);
     } else if (fileId) {
       if (!botToken) throw new Error("telegram.fileId requires TELEGRAM_BOT_TOKEN on worker or telegram.botToken in args");
       imageDataUrl = await telegramFetchFileAsDataUrl(botToken, fileId);
-    } else if (imageUrlArg && isFetchableHttpsImageUrl(imageUrlArg)) {
-      imageDataUrl = await fetchHttpUrlAsDataUrl(imageUrlArg);
+    } else if (rawB64) {
+      imageDataUrl = rawB64.startsWith("data:") ? rawB64 : `data:image/jpeg;base64,${rawB64}`;
     } else {
-      throw new Error("Provide imageBase64, telegram.fileId (+ token), or an https imageUrl to fetch and inline");
+      throw new Error("Provide imageUrl (https), telegram.fileId (+ token), or imageBase64");
     }
 
     const analysis = await visionAnalyzeMealPhoto(env, imageDataUrl, normStr(args.meal), normStr(args.locale));
@@ -975,10 +990,13 @@ async function toolCall(env: Env, name: string, args: Record<string, unknown>): 
       typeof totals.calories === "number"
         ? `~${Math.round(totals.calories)} kcal (confidence ${typeof analysis.confidence === "number" ? analysis.confidence.toFixed(2) : "?"})`
         : "meal analysis";
-    const imageRef: Record<string, unknown> = { vision_input: "data_url_bytes_only" };
+    const imageRef: Record<string, unknown> = { vision_input: "worker_fetched" };
     if (fileId) imageRef.telegram = { fileId };
     if (rawB64) imageRef.imageBase64_sha_prefix = rawB64.slice(0, 24);
-    if (imageUrlArg && !rawB64 && !fileId) imageRef.inlined_from_https = true;
+    if (imageUrlArg && !rawB64) {
+      if (/api\.telegram\.org\/file\/bot/i.test(imageUrlArg)) imageRef.source = "telegram_cdn_url";
+      else imageRef.source = "https_url";
+    }
     await env.DB.prepare(
       `INSERT INTO wm_meal_analyses
        (id, scope_id, at_ms, model, summary, raw_json, image_ref_json, telegram_chat_id, telegram_message_id, created_at)

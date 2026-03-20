@@ -372,10 +372,10 @@ def _goal_tick_action_pack(
             "- If missing time fields for a create, ask one short question in `message` instead of omitting calendar actions entirely.",
             "- If coordinating with a coach/trainer/another person, prefer drafting a short message and sending via `gym-telegram` or `gym-sendgrid` (if you have an address).",
             "- For nutrition/weight/meal photos/water/fasting: use `gym-weight` tools (weight_*).",
-            "- **Meal photos from Telegram (LangChain plans; myclaw executes bytes):** Do NOT use `weight_list_food` to “see” new photos — it only lists DB rows. "
+            "- **Meal photos from Telegram (LangChain plans; myclaw resolves URL):** Do NOT use `weight_list_food` to “see” new photos — it only lists DB rows. "
             "Pipeline: (1) `gym-telegram` `telegram_list_messages` (or use `[context]` fileId lines) to get each photo’s **fileId** + chatId + messageId. "
             "(2) `gym-weight` `weight_analyze_meal_photo` with `scope` + `telegram`: {\"fileId\",\"chatId\",\"messageId\"} + optional `meal`. "
-            "**Do not** pass `imageUrl`; myclaw Next.js calls **Telegram Bot API getFile** directly, downloads bytes, and sends `imageBase64` to gym-weight (requires `MYCLAW_TELEGRAM_BOT_TOKEN` on the web app). "
+            "**Do not** invent arbitrary `imageUrl`. myclaw calls **Telegram getFile** (metadata), builds a Telegram **file** HTTPS URL, and gym-weight **fetches** it (`MYCLAW_TELEGRAM_BOT_TOKEN` on Next.js, or `TELEGRAM_BOT_TOKEN` on the weight worker if fileId-only). "
             "(3) Optional: `weight_log_food_from_analysis` with `analysisId` to persist. "
             "If list_messages lacks **fileId** on photos, fix telegram-mcp message JSON.",
             "- If contact/account details are missing, propose a `memory.query` for likely keys first; if still missing, ask the user for the missing detail in `message`.",

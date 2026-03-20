@@ -24,13 +24,13 @@ End-to-end flow:
 
 Each object must include **`fileId`** (Telegram `photo` sizes / `file_id`).
 
-2. **myclaw (recommended):** set **`MYCLAW_TELEGRAM_BOT_TOKEN`** on Next.js (same bot as telegram-mcp). When **`telegram.fileId`** is present, myclaw always downloads via Bot API and sends **raw `imageBase64`** to the worker (planner `imageUrl` is dropped). The weight worker inlines everything to a **`data:` URL** before the vision API — **no remote image URLs are sent to the model**.
+2. **myclaw (recommended):** set **`MYCLAW_TELEGRAM_BOT_TOKEN`** on Next.js (same bot as telegram-mcp). When **`telegram.fileId`** is present, myclaw calls **`getFile`** only (no download on Next.js), builds `https://api.telegram.org/file/bot<TOKEN>/...`, sets **`imageUrl`** on `weight_analyze_meal_photo`, and strips **`fileId`** from `telegram` before the MCP call (keeps `chatId` / `messageId`). **That URL embeds the bot token** — do not log it or store it in D1; gym-weight only uses it in memory to fetch bytes.
 
-3. **weight worker only:** set **`TELEGRAM_BOT_TOKEN`** on **weight-management-mcp** if clients send `telegram.fileId` **without** myclaw. The worker downloads the Telegram file, reads **bytes**, then calls vision with a **`data:`** payload only.
+3. **weight worker only (no myclaw token):** set **`TELEGRAM_BOT_TOKEN`** on **weight-management-mcp**. Clients can send **`telegram.fileId`** (and optional `chatId` / `messageId`); the worker calls `getFile`, downloads the file, inlines to **`data:`**, runs vision.
 
-4. **Optional `imageUrl` (https):** supported only as a convenience: the worker **fetches once** and inlines bytes. Prefer **`imageBase64` + `telegram.fileId`**; do not treat image URLs as the primary integration.
+4. **`imageUrl` (https)** is the **preferred** path from myclaw (Telegram file URL). Other https URLs are supported the same way (worker fetches once). Legacy **`imageBase64`** still works for small payloads.
 
-Example args (fileId; myclaw will replace with base64 when token is set):
+Example args (fileId; myclaw will replace with `imageUrl` when token is set):
 
 ```json
 {
@@ -42,4 +42,4 @@ Example args (fileId; myclaw will replace with base64 when token is set):
 
 5. Optional: pass **`telegram.botToken`** per request instead of env secrets (not recommended for production).
 
-**Privacy:** analyses store `image_ref_json` (file id / URL hints), not raw image bytes in D1.
+**Privacy:** analyses store `image_ref_json` (source hints, optional `fileId`, never the full token-bearing URL), not raw image bytes in D1.

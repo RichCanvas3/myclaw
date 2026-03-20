@@ -7,7 +7,7 @@ Cloudflare Worker MCP for weight, food, meal-photo estimates (vision), water, fa
 - `WEIGHT_MCP_LOG` — optional; default **`1`** in `wrangler.toml`. Set **`0`** to disable `[weight-mcp]` console logs (use `wrangler tail` / dashboard to view).
 - `MCP_API_KEY` — `x-api-key` for `/mcp`
 - `VISION_API_KEY`, `VISION_MODEL` (default `gpt-4o-mini`), optional `VISION_OPENAI_BASE_URL` — OpenAI-compatible vision for `weight_analyze_meal_photo`
-- `TELEGRAM_BOT_TOKEN` — required to resolve `telegram.fileId` → image URL via Bot API `getFile`
+- `TELEGRAM_BOT_TOKEN` — required when clients send **`telegram.fileId`** without a resolvable **`imageUrl`** (getFile + download in worker). Omit if every caller passes **`imageUrl`** (e.g. myclaw after `getFile`).
 
 ## D1
 
