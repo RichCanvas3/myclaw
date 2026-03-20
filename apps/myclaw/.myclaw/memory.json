@@ -68,7 +68,7 @@
                 "notes": "Easy pace run to build endurance.",
                 "status": "pending",
                 "title": "5 miles easy run",
-                "whenISO": "2026-03-20T08:00:00Z"
+                "whenISO": "2026-03-20T07:00:00Z"
               },
               {
                 "durationMinutes": 60,
@@ -76,7 +76,7 @@
                 "notes": "Focus on core and leg strength.",
                 "status": "pending",
                 "title": "Strength training",
-                "whenISO": "2026-03-21T08:00:00Z"
+                "whenISO": "2026-03-21T07:00:00Z"
               },
               {
                 "durationMinutes": 60,
@@ -84,7 +84,7 @@
                 "notes": "Maintain a challenging but sustainable pace.",
                 "status": "pending",
                 "title": "6 miles tempo run",
-                "whenISO": "2026-03-22T08:00:00Z"
+                "whenISO": "2026-03-22T07:00:00Z"
               },
               {
                 "durationMinutes": 60,
@@ -92,7 +92,7 @@
                 "notes": "Consider swimming or cycling for recovery.",
                 "status": "pending",
                 "title": "Rest or cross-training",
-                "whenISO": "2026-03-23T08:00:00Z"
+                "whenISO": "2026-03-23T07:00:00Z"
               },
               {
                 "durationMinutes": 60,
@@ -100,7 +100,7 @@
                 "notes": "Easy pace run to maintain fitness.",
                 "status": "pending",
                 "title": "5 miles easy run",
-                "whenISO": "2026-03-24T08:00:00Z"
+                "whenISO": "2026-03-24T07:00:00Z"
               },
               {
                 "durationMinutes": 120,
@@ -108,7 +108,7 @@
                 "notes": "Focus on hydration and nutrition during the run.",
                 "status": "pending",
                 "title": "Long run: 10 miles",
-                "whenISO": "2026-03-25T08:00:00Z"
+                "whenISO": "2026-03-25T07:00:00Z"
               },
               {
                 "durationMinutes": 60,
@@ -116,7 +116,7 @@
                 "notes": "Take time to recover and stretch.",
                 "status": "pending",
                 "title": "Rest and recovery",
-                "whenISO": "2026-03-26T08:00:00Z"
+                "whenISO": "2026-03-26T07:00:00Z"
               },
               {
                 "durationMinutes": 60,
@@ -124,22 +124,78 @@
                 "notes": "Add a new workout.",
                 "status": "pending",
                 "title": "5 miles easy run",
-                "whenISO": "2026-03-29T08:00:00Z"
+                "whenISO": "2026-03-29T07:00:00Z"
+              },
+              {
+                "durationMinutes": 60,
+                "id": "step-9",
+                "notes": "Increase distance gradually.",
+                "status": "pending",
+                "title": "7 miles easy run",
+                "whenISO": "2026-03-30T07:00:00Z"
+              },
+              {
+                "durationMinutes": 60,
+                "id": "step-10",
+                "notes": "Focus on upper body strength.",
+                "status": "pending",
+                "title": "Strength training",
+                "whenISO": "2026-03-31T07:00:00Z"
+              },
+              {
+                "durationMinutes": 60,
+                "id": "step-11",
+                "notes": "Maintain a challenging but sustainable pace.",
+                "status": "pending",
+                "title": "8 miles tempo run",
+                "whenISO": "2026-04-01T07:00:00Z"
+              },
+              {
+                "durationMinutes": 60,
+                "id": "step-12",
+                "notes": "Consider swimming or cycling for recovery.",
+                "status": "pending",
+                "title": "Rest or cross-training",
+                "whenISO": "2026-04-02T07:00:00Z"
+              },
+              {
+                "durationMinutes": 60,
+                "id": "step-13",
+                "notes": "Easy pace run to maintain fitness.",
+                "status": "pending",
+                "title": "5 miles easy run",
+                "whenISO": "2026-04-03T07:00:00Z"
+              },
+              {
+                "durationMinutes": 120,
+                "id": "step-14",
+                "notes": "Focus on hydration and nutrition during the run.",
+                "status": "pending",
+                "title": "Long run: 12 miles",
+                "whenISO": "2026-04-04T07:00:00Z"
+              },
+              {
+                "durationMinutes": 60,
+                "id": "step-15",
+                "notes": "Take time to recover and stretch.",
+                "status": "pending",
+                "title": "Rest and recovery",
+                "whenISO": "2026-04-05T07:00:00Z"
               }
             ],
             "status": "active",
             "step_index": 4,
             "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026",
             "last_observation": {
-              "atISO": "2026-03-20T02:35:03.932Z",
+              "atISO": "2026-03-20T03:02:52.586Z",
               "calendarLinks": [],
               "errors": [],
               "executedActions": [
                 {
-                  "type": "memory.query",
+                  "type": "telegram_list_messages",
                   "input": {
-                    "namespace": "training",
-                    "q": "average incline for running training"
+                    "chatId": "-1003743757503",
+                    "limit": 50
                   }
                 },
                 {
@@ -157,7 +213,7 @@
                           "notes": "Easy pace run to build endurance.",
                           "status": "pending",
                           "title": "5 miles easy run",
-                          "whenISO": "2026-03-20T08:00:00Z"
+                          "whenISO": "2026-03-20T07:00:00Z"
                         },
                         {
                           "durationMinutes": 60,
@@ -165,7 +221,7 @@
                           "notes": "Focus on core and leg strength.",
                           "status": "pending",
                           "title": "Strength training",
-                          "whenISO": "2026-03-21T08:00:00Z"
+                          "whenISO": "2026-03-21T07:00:00Z"
                         },
                         {
                           "durationMinutes": 60,
@@ -173,7 +229,7 @@
                           "notes": "Maintain a challenging but sustainable pace.",
                           "status": "pending",
                           "title": "6 miles tempo run",
-                          "whenISO": "2026-03-22T08:00:00Z"
+                          "whenISO": "2026-03-22T07:00:00Z"
                         },
                         {
                           "durationMinutes": 60,
@@ -181,7 +237,7 @@
                           "notes": "Consider swimming or cycling for recovery.",
                           "status": "pending",
                           "title": "Rest or cross-training",
-                          "whenISO": "2026-03-23T08:00:00Z"
+                          "whenISO": "2026-03-23T07:00:00Z"
                         },
                         {
                           "durationMinutes": 60,
@@ -189,7 +245,7 @@
                           "notes": "Easy pace run to maintain fitness.",
                           "status": "pending",
                           "title": "5 miles easy run",
-                          "whenISO": "2026-03-24T08:00:00Z"
+                          "whenISO": "2026-03-24T07:00:00Z"
                         },
                         {
                           "durationMinutes": 120,
@@ -197,7 +253,7 @@
                           "notes": "Focus on hydration and nutrition during the run.",
                           "status": "pending",
                           "title": "Long run: 10 miles",
-                          "whenISO": "2026-03-25T08:00:00Z"
+                          "whenISO": "2026-03-25T07:00:00Z"
                         },
                         {
                           "durationMinutes": 60,
@@ -205,7 +261,7 @@
                           "notes": "Take time to recover and stretch.",
                           "status": "pending",
                           "title": "Rest and recovery",
-                          "whenISO": "2026-03-26T08:00:00Z"
+                          "whenISO": "2026-03-26T07:00:00Z"
                         },
                         {
                           "durationMinutes": 60,
@@ -213,7 +269,63 @@
                           "notes": "Add a new workout.",
                           "status": "pending",
                           "title": "5 miles easy run",
-                          "whenISO": "2026-03-29T08:00:00Z"
+                          "whenISO": "2026-03-29T07:00:00Z"
+                        },
+                        {
+                          "durationMinutes": 60,
+                          "id": "step-9",
+                          "notes": "Increase distance gradually.",
+                          "status": "pending",
+                          "title": "7 miles easy run",
+                          "whenISO": "2026-03-30T07:00:00Z"
+                        },
+                        {
+                          "durationMinutes": 60,
+                          "id": "step-10",
+                          "notes": "Focus on upper body strength.",
+                          "status": "pending",
+                          "title": "Strength training",
+                          "whenISO": "2026-03-31T07:00:00Z"
+                        },
+                        {
+                          "durationMinutes": 60,
+                          "id": "step-11",
+                          "notes": "Maintain a challenging but sustainable pace.",
+                          "status": "pending",
+                          "title": "8 miles tempo run",
+                          "whenISO": "2026-04-01T07:00:00Z"
+                        },
+                        {
+                          "durationMinutes": 60,
+                          "id": "step-12",
+                          "notes": "Consider swimming or cycling for recovery.",
+                          "status": "pending",
+                          "title": "Rest or cross-training",
+                          "whenISO": "2026-04-02T07:00:00Z"
+                        },
+                        {
+                          "durationMinutes": 60,
+                          "id": "step-13",
+                          "notes": "Easy pace run to maintain fitness.",
+                          "status": "pending",
+                          "title": "5 miles easy run",
+                          "whenISO": "2026-04-03T07:00:00Z"
+                        },
+                        {
+                          "durationMinutes": 120,
+                          "id": "step-14",
+                          "notes": "Focus on hydration and nutrition during the run.",
+                          "status": "pending",
+                          "title": "Long run: 12 miles",
+                          "whenISO": "2026-04-04T07:00:00Z"
+                        },
+                        {
+                          "durationMinutes": 60,
+                          "id": "step-15",
+                          "notes": "Take time to recover and stretch.",
+                          "status": "pending",
+                          "title": "Rest and recovery",
+                          "whenISO": "2026-04-05T07:00:00Z"
                         }
                       ],
                       "status": "active",
@@ -226,7 +338,7 @@
             }
           },
           "tags": [],
-          "updated_at": 1773974103934
+          "updated_at": 1773975772591
         }
       },
       "threads": {
@@ -3231,6 +3343,1026 @@
           }
         },
         "ts": 1773974103937
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f1b0473c-3282-43d4-a768-a2da9fbd764b",
+          "input": {
+            "message": "/goal tick update google calendar with all the exercises"
+          },
+          "suggestedActions": [
+            {
+              "type": "googlecalendar_delete_event"
+            },
+            {
+              "type": "googlecalendar_update_event"
+            },
+            {
+              "type": "googlecalendar_update_event"
+            },
+            {
+              "type": "googlecalendar_update_event"
+            },
+            {
+              "type": "googlecalendar_update_event"
+            },
+            {
+              "type": "googlecalendar_update_event"
+            },
+            {
+              "type": "googlecalendar_update_event"
+            },
+            {
+              "type": "googlecalendar_update_event"
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-8",
+                      "notes": "Add a new workout.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-29T08:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Updating your Google Calendar with the planned workouts for the next week. I'll also check for any duplicate events to ensure a clean calendar."
+          }
+        },
+        "ts": 1773974741824
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f1b0473c-3282-43d4-a768-a2da9fbd764b",
+          "input": {
+            "message": "/goal tick add all the other days.  I want a month full of exercises to prepare on my google calendar"
+          },
+          "suggestedActions": [
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-8",
+                      "notes": "Add a new workout.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-29T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-9",
+                      "notes": "Increase distance gradually.",
+                      "status": "pending",
+                      "title": "7 miles easy run",
+                      "whenISO": "2026-03-30T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-10",
+                      "notes": "Focus on upper body strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-31T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-11",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "8 miles tempo run",
+                      "whenISO": "2026-04-01T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-12",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-04-02T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-13",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-04-03T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-14",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 12 miles",
+                      "whenISO": "2026-04-04T08:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-15",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-04-05T08:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-03-30T09:00:00Z",
+                  "startISO": "2026-03-30T08:00:00Z",
+                  "summary": "7 miles easy run"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-03-31T09:00:00Z",
+                  "startISO": "2026-03-31T08:00:00Z",
+                  "summary": "Strength training"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-04-01T09:00:00Z",
+                  "startISO": "2026-04-01T08:00:00Z",
+                  "summary": "8 miles tempo run"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-04-02T09:00:00Z",
+                  "startISO": "2026-04-02T08:00:00Z",
+                  "summary": "Rest or cross-training"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-04-03T09:00:00Z",
+                  "startISO": "2026-04-03T08:00:00Z",
+                  "summary": "5 miles easy run"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-04-04T10:00:00Z",
+                  "startISO": "2026-04-04T08:00:00Z",
+                  "summary": "Long run: 12 miles"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-04-05T09:00:00Z",
+                  "startISO": "2026-04-05T08:00:00Z",
+                  "summary": "Rest and recovery"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_create_event"
+              }
+            }
+          ],
+          "output": {
+            "message": "Let's expand your training plan for the month and ensure all workouts are scheduled on your Google Calendar. I'll add additional workouts and check for any duplicates."
+          }
+        },
+        "ts": 1773974883008
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f1b0473c-3282-43d4-a768-a2da9fbd764b",
+          "input": {
+            "message": "/goal tick why at 2am in morning.  I don't wake up until 7am"
+          },
+          "suggestedActions": [
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-03-20T08:00:00Z",
+                  "eventId": "c740vrasorfhlor1k19lamoqm0",
+                  "startISO": "2026-03-20T07:00:00Z"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_update_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-03-21T08:00:00Z",
+                  "eventId": "ctte2obk3lpiflsdb8m3mp4p5k",
+                  "startISO": "2026-03-21T07:00:00Z"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_update_event"
+              }
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-8",
+                      "notes": "Add a new workout.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-29T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-9",
+                      "notes": "Increase distance gradually.",
+                      "status": "pending",
+                      "title": "7 miles easy run",
+                      "whenISO": "2026-03-30T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-10",
+                      "notes": "Focus on upper body strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-31T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-11",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "8 miles tempo run",
+                      "whenISO": "2026-04-01T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-12",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-04-02T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-13",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-04-03T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-14",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 12 miles",
+                      "whenISO": "2026-04-04T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-15",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-04-05T07:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Let's adjust your workout times to better fit your schedule. I will update the next few workouts to start at 7 AM instead of 8 AM. I'll also check the average incline for your training as the next step."
+          }
+        },
+        "ts": 1773975000774
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f1b0473c-3282-43d4-a768-a2da9fbd764b",
+          "input": {
+            "message": "/goal tick need the latest updated dates and full description of workouts to show on calendar"
+          },
+          "suggestedActions": [
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-03-20T08:00:00Z",
+                  "eventId": "c740vrasorfhlor1k19lamoqm0",
+                  "startISO": "2026-03-20T07:00:00Z"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_update_event"
+              }
+            },
+            {
+              "type": "mcp.tool",
+              "input": {
+                "args": {
+                  "endISO": "2026-03-21T08:00:00Z",
+                  "eventId": "ctte2obk3lpiflsdb8m3mp4p5k",
+                  "startISO": "2026-03-21T07:00:00Z"
+                },
+                "server": "gym-googlecalendar",
+                "tool": "googlecalendar_update_event"
+              }
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-8",
+                      "notes": "Add a new workout.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-29T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-9",
+                      "notes": "Increase distance gradually.",
+                      "status": "pending",
+                      "title": "7 miles easy run",
+                      "whenISO": "2026-03-30T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-10",
+                      "notes": "Focus on upper body strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-31T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-11",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "8 miles tempo run",
+                      "whenISO": "2026-04-01T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-12",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-04-02T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-13",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-04-03T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-14",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 12 miles",
+                      "whenISO": "2026-04-04T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-15",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-04-05T07:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Let's update your calendar with the latest workout details and ensure everything is scheduled correctly. I'll check for any duplicates and update the events accordingly."
+          }
+        },
+        "ts": 1773975127212
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f1b0473c-3282-43d4-a768-a2da9fbd764b",
+          "input": {
+            "message": "/goal tick readin images from telegram and process them to get calorie count"
+          },
+          "suggestedActions": [
+            {
+              "type": "telegram_list_messages",
+              "input": {
+                "chatId": "-1003743757503",
+                "limit": 50
+              }
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-8",
+                      "notes": "Add a new workout.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-29T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-9",
+                      "notes": "Increase distance gradually.",
+                      "status": "pending",
+                      "title": "7 miles easy run",
+                      "whenISO": "2026-03-30T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-10",
+                      "notes": "Focus on upper body strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-31T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-11",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "8 miles tempo run",
+                      "whenISO": "2026-04-01T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-12",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-04-02T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-13",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-04-03T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-14",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 12 miles",
+                      "whenISO": "2026-04-04T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-15",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-04-05T07:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Next, let's check your Telegram messages for meal photos to analyze for calorie counts. After that, we'll update your goal state with the next steps."
+          }
+        },
+        "ts": 1773975236463
+      },
+      {
+        "type": "orchestrator.run",
+        "payload": {
+          "threadId": "f1b0473c-3282-43d4-a768-a2da9fbd764b",
+          "input": {
+            "message": "/goal tick check the calories based on pictures in telegram"
+          },
+          "suggestedActions": [
+            {
+              "type": "telegram_list_messages",
+              "input": {
+                "chatId": "-1003743757503",
+                "limit": 50
+              }
+            },
+            {
+              "type": "memory.upsert",
+              "input": {
+                "key": "active",
+                "namespace": "goals",
+                "value": {
+                  "created_at": 1773923313,
+                  "last_result": "Increased weekly running distance and incorporated strength training. Next step: Check average incline for training.",
+                  "plan": [
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-1",
+                      "notes": "Easy pace run to build endurance.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-20T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-2",
+                      "notes": "Focus on core and leg strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-21T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-3",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "6 miles tempo run",
+                      "whenISO": "2026-03-22T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-4",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-03-23T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-5",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-24T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-6",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 10 miles",
+                      "whenISO": "2026-03-25T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-7",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-03-26T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-8",
+                      "notes": "Add a new workout.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-03-29T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-9",
+                      "notes": "Increase distance gradually.",
+                      "status": "pending",
+                      "title": "7 miles easy run",
+                      "whenISO": "2026-03-30T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-10",
+                      "notes": "Focus on upper body strength.",
+                      "status": "pending",
+                      "title": "Strength training",
+                      "whenISO": "2026-03-31T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-11",
+                      "notes": "Maintain a challenging but sustainable pace.",
+                      "status": "pending",
+                      "title": "8 miles tempo run",
+                      "whenISO": "2026-04-01T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-12",
+                      "notes": "Consider swimming or cycling for recovery.",
+                      "status": "pending",
+                      "title": "Rest or cross-training",
+                      "whenISO": "2026-04-02T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-13",
+                      "notes": "Easy pace run to maintain fitness.",
+                      "status": "pending",
+                      "title": "5 miles easy run",
+                      "whenISO": "2026-04-03T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 120,
+                      "id": "step-14",
+                      "notes": "Focus on hydration and nutrition during the run.",
+                      "status": "pending",
+                      "title": "Long run: 12 miles",
+                      "whenISO": "2026-04-04T07:00:00Z"
+                    },
+                    {
+                      "durationMinutes": 60,
+                      "id": "step-15",
+                      "notes": "Take time to recover and stretch.",
+                      "status": "pending",
+                      "title": "Rest and recovery",
+                      "whenISO": "2026-04-05T07:00:00Z"
+                    }
+                  ],
+                  "status": "active",
+                  "step_index": 4,
+                  "text": "goal to run the Heavy Half Leadville race in Colorado on Saturday, June 27, 2026"
+                }
+              }
+            }
+          ],
+          "output": {
+            "message": "Next, let's check the calories based on pictures in Telegram and update your goal plan accordingly. I'll also ensure your upcoming workouts are properly scheduled in your calendar."
+          }
+        },
+        "ts": 1773975772593
       }
     ],
     "t_cust_casey:acct_cust_casey:p_casey:hh_casey": [

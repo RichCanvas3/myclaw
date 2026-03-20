@@ -1,0 +1,11 @@
+---
+description: Core processing flows must not depend on .env on/off toggles
+alwaysApply: true
+---
+
+# Processing vs configuration
+
+- **Do not** add environment variables whose only purpose is to **enable or disable** a core product flow (e.g. `*_AUTO_*`, `*_ENABLE_*` for meal photos, goal sync, watch pipelines). If the code path exists and prerequisites are met, it should run.
+- **Use `.env` for:** secrets (tokens, API keys), service URLs, account/session defaults, and **optional** operational hardening (auth tokens for cron endpoints—not feature gates).
+- **Prerequisite gating is OK:** skip or return a clear error when a **secret or URL is missing** (e.g. no bot token → cannot download Telegram files). That is not the same as a discretionary “processing off” flag.
+- **Rare exception:** emergency/debug kill switches are acceptable if explicitly justified in code comments and kept minimal—prefer fixing the flow or using idempotency instead.

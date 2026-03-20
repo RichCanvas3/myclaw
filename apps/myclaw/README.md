@@ -21,7 +21,7 @@ If `gym-telegram-mcp` is configured, `myclaw` can **detect new Telegram messages
 
 - `POST /api/telegram/pump`: checks chats for new messages (cursor-based) and (optionally) runs the orchestrator to auto-reply using `telegram_send_message` only.
 - `POST /api/telegram/watch-email`: keeps a stable `mcp-session-id`, subscribes to a chat resource, and sends an email when `telegram-mcp` delivers a `notifications/resources/updated` event (deduped by messageId).
-- `POST /api/telegram/watch-goal`: keeps a stable `mcp-session-id`, subscribes to a chat resource, and forwards new chat messages into `/goal tick ...` (deduped by messageId). The goal runner can respond back into the same chat via `telegram_send_message`.
+- `POST /api/telegram/watch-goal`: keeps a stable `mcp-session-id`, subscribes to a chat resource, and forwards new chat messages into `/goal tick ...` (deduped by messageId). **Photo messages** always run `gym-weight` vision + `weight_log_food_from_analysis` when a `fileId` is present and `MYCLAW_TELEGRAM_BOT_TOKEN` / `GYM_WEIGHT_MCP_URL` are configured (no separate enable flag). The goal runner can respond back into the same chat via `telegram_send_message`.
 
 Environment variables (see `.env.example`):
 

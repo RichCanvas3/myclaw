@@ -147,6 +147,145 @@ def _get_active_goal(memory_profile: Any) -> dict[str, Any] | None:
     return active if isinstance(active, dict) else None
 
 
+def _telegram_meal_calorie_intent(user_text: str) -> bool:
+    t = user_text.lower()
+    if "telegram" in t and any(x in t for x in ("calorie", "calories", "nutrition", "macro")):
+        return True
+    if any(x in t for x in ("calorie", "calories", "nutrition", "macro")) and any(
+        x in t for x in ("photo", "picture", "image", "pic", "camera")
+    ):
+        return True
+    return False
+
+
+def _actions_have_weight_mcp(actions: list[dict[str, Any]]) -> bool:
+    for a in actions:
+        if a.get("type") != "mcp.tool":
+            continue
+        inp = a.get("input")
+        if isinstance(inp, dict) and inp.get("server") == "gym-weight":
+            return True
+    return False
+
+
+def _actions_have_telegram_list_messages(actions: list[dict[str, Any]]) -> bool:
+    for a in actions:
+        if a.get("type") != "mcp.tool":
+            continue
+        inp = a.get("input")
+        if (
+            isinstance(inp, dict)
+            and inp.get("server") == "gym-telegram"
+            and inp.get("tool") == "telegram_list_messages"
+        ):
+            return True
+    return False
+
+
+def _scope_dict_from_session(session: Session, memory: dict[str, Any]) -> dict[str, Any]:
+    s = _default_session(session, memory)
+    out: dict[str, Any] = {}
+    for k in ("churchId", "userId", "personId", "householdId"):
+        v = s.get(k)
+        if v:
+            out[k] = v
+    return out
+
+
+def _extract_chat_id_from_user_blob(user_text: str) -> str | None:
+    for pat in (
+        r"use telegram_list_messages with chatId ([-\d]+)",
+        r"with chatId ([-\d]+)",
+        r"\bchatId=(-?\d+)",
+    ):
+        m = re.search(pat, user_text)
+        if m:
+            return m.group(1).strip()
+    return None
+
+
+def _extract_msg_file_ids_from_context(user_text: str) -> list[tuple[int, str]]:
+    out: list[tuple[int, str]] = []
+    for m in re.finditer(r"msg#(\d+)\s+fileId=([^:\s]+)\s*:", user_text):
+        try:
+            mid = int(m.group(1))
+        except ValueError:
+            continue
+        fid = (m.group(2) or "").strip()
+        if fid:
+            out.append((mid, fid))
+    return out
+
+
+def _inject_telegram_meal_photo_actions_if_needed(
+    user_text: str,
+    session: Session,
+    memory: dict[str, Any],
+    actions: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """
+    LLMs often emit only memory.upsert for meal-photo hints. Force MCP calls when intent matches.
+    """
+    if not _telegram_meal_calorie_intent(user_text):
+        return actions
+    if _actions_have_weight_mcp(actions):
+        return actions
+
+    scope = _scope_dict_from_session(session, memory)
+    if not scope.get("churchId") or not scope.get("userId") or not scope.get("personId"):
+        return actions
+
+    prefix: list[dict[str, Any]] = []
+    cid = _extract_chat_id_from_user_blob(user_text)
+    pairs = _extract_msg_file_ids_from_context(user_text)
+
+    if pairs and cid:
+        for mid, fid in pairs[:6]:
+            prefix.append(
+                {
+                    "type": "mcp.tool",
+                    "input": {
+                        "server": "gym-weight",
+                        "tool": "weight_analyze_meal_photo",
+                        "args": {
+                            "scope": scope,
+                            "telegram": {"fileId": fid, "chatId": cid, "messageId": mid},
+                            "meal": "Meal photo from Telegram",
+                        },
+                    },
+                }
+            )
+        return prefix + actions
+
+    if cid and not _actions_have_telegram_list_messages(actions):
+        prefix.append(
+            {
+                "type": "mcp.tool",
+                "input": {
+                    "server": "gym-telegram",
+                    "tool": "telegram_list_messages",
+                    "args": {"chatId": cid, "limit": 40},
+                },
+            }
+        )
+        return prefix + actions
+
+    if not cid and not _actions_have_telegram_list_messages(actions):
+        prefix.append(
+            {
+                "type": "mcp.tool",
+                "input": {
+                    "server": "gym-telegram",
+                    "tool": "telegram_list_messages",
+                    "args": {"chatTitle": os.getenv("MYCLAW_GOAL_TELEGRAM_CHAT_TITLE", "Smart Agent"), "limit": 40},
+                },
+            }
+        )
+        return prefix + actions
+
+    return actions
+
+
 def _goal_set_action_pack(goal_text: str) -> list[dict[str, Any]]:
     goal_text = goal_text.strip()
     if not goal_text:
@@ -200,6 +339,9 @@ def _goal_tick_action_pack(
             "- Keep actions minimal and concrete.",
             "- Prefer information gathering first if blocked.",
             "- Never claim you executed tools; only propose actions.",
+            "- MANDATORY: if the user hint mentions calories/nutrition/macros from Telegram photos/pictures, "
+            "`actions` MUST include real MCP tools (`gym-telegram` and/or `gym-weight`), not goals/memory alone; "
+            "use `fileId` lines from `[context]` when present.",
             "- ALWAYS include a goals.active memory.upsert with updated state.",
             "- Treat now_unix/now_iso as the authoritative current time.",
             "- Never schedule calendar events in the past. If asked to schedule, use the upcoming 7–21 days relative to now.",
@@ -271,6 +413,10 @@ def _goal_tick_action_pack(
         for a in actions:
             if isinstance(a, dict) and isinstance(a.get("type"), str):
                 final_actions.append(a)
+
+    final_actions = _inject_telegram_meal_photo_actions_if_needed(
+        user_text, session, memory, final_actions
+    )
 
     # Safety: ensure we always persist an updated goals.active record.
     has_goal_upsert = False

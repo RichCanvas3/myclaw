@@ -4,6 +4,7 @@ import { mcpToolsCall, mcpToolsList } from "@/lib/mcp/client";
 import { orchestratorCompose, orchestratorComposeEmail, orchestratorPlan } from "@/lib/orchestrator/llm";
 import { memoryAppendEvent, memoryGet, memoryGetProfile, memoryQuery, memoryUpsert } from "@/lib/memory/client";
 import { hydrateWeightAnalyzeMealPhotoFromTelegram } from "@/lib/telegram/fetchFile";
+import { extractTelegramMessagePhotoFileId } from "@/lib/telegram/photoFileId";
 import { normStr, resolveTelegramChatIdByTitle } from "@/lib/telegram/resolve";
 
 export const runtime = "nodejs";
@@ -292,28 +293,6 @@ async function updateActiveGoalPlanWithCalendarEvent(params: {
   if (!changed) return;
   const nextGoal = { ...curVal, plan: newPlan };
   await memoryUpsert({ ctx: params.ctx, namespace: "goals", key: "active", value: nextGoal }).catch(() => {});
-}
-
-/** Best-effort extract Telegram Bot API file_id for vision / weight_analyze_meal_photo (largest photo when sizes array). */
-function extractTelegramMessagePhotoFileId(m: Record<string, unknown>): string | null {
-  const pickLastFileId = (arr: unknown): string | null => {
-    if (!Array.isArray(arr) || !arr.length) return null;
-    const last = arr[arr.length - 1];
-    if (!isRecord(last)) return null;
-    const id = (last.fileId ?? last.file_id) as unknown;
-    return typeof id === "string" && id.trim() ? id.trim() : null;
-  };
-  const fromPhotos = pickLastFileId(m.photos);
-  if (fromPhotos) return fromPhotos;
-  const fromPhoto = pickLastFileId(m.photo);
-  if (fromPhoto) return fromPhoto;
-  const doc = m.document;
-  if (isRecord(doc)) {
-    const id = doc.fileId ?? doc.file_id;
-    if (typeof id === "string" && id.trim()) return id.trim();
-    if (isRecord(id) && typeof id.file_id === "string") return id.file_id;
-  }
-  return null;
 }
 
 function summarizeTelegramMessages(resp: unknown): string {
