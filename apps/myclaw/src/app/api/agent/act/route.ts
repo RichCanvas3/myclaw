@@ -59,11 +59,47 @@ async function postGoalUpdateToTelegram(text: string): Promise<void> {
 }
 
 function extractCalendarLink(resp: unknown): string | null {
-  if (!isRecord(resp)) return null;
-  const ev = resp.event;
-  if (isRecord(ev) && typeof ev.htmlLink === "string" && ev.htmlLink.trim()) return ev.htmlLink.trim();
-  if (typeof resp.htmlLink === "string" && resp.htmlLink.trim()) return resp.htmlLink.trim();
+  const parsed = safeJson(resp);
+  if (!isRecord(parsed)) return null;
+  const ev = (parsed as any).event;
+  if (isRecord(ev) && typeof (ev as any).htmlLink === "string" && (ev as any).htmlLink.trim()) return (ev as any).htmlLink.trim();
+  if (typeof (parsed as any).htmlLink === "string" && (parsed as any).htmlLink.trim()) return (parsed as any).htmlLink.trim();
   return null;
+}
+
+function looksLikeGoogleCalendarNotFound(resp: unknown): boolean {
+  // Our MCP client unwraps tool results to a text string, so detect common failure text.
+  if (typeof resp === "string") {
+    const t = resp.toLowerCase();
+    const op = t.includes("events.insert failed") || t.includes("events.update failed") || t.includes("events.delete failed");
+    return op && t.includes("\"notfound\"") && t.includes("\"code\":404");
+  }
+  if (!isRecord(resp)) return false;
+  const s = JSON.stringify(resp);
+  return /notFound/i.test(s) && /"code"\s*:\s*404/.test(s);
+}
+
+function extractCalendarEventInfo(resp: unknown): {
+  eventId: string | null;
+  htmlLink: string | null;
+  summary: string | null;
+  startISO: string | null;
+  endISO: string | null;
+} {
+  const parsed = safeJson(resp);
+  if (!isRecord(parsed)) return { eventId: null, htmlLink: null, summary: null, startISO: null, endISO: null };
+  const ev = (parsed as any).event;
+  const obj = isRecord(ev) ? (ev as any) : (parsed as any);
+  const eventId = typeof obj.id === "string" && obj.id.trim() ? obj.id.trim() : null;
+  const htmlLink = typeof obj.htmlLink === "string" && obj.htmlLink.trim() ? obj.htmlLink.trim() : null;
+  const summary = typeof obj.summary === "string" && obj.summary.trim() ? obj.summary.trim() : null;
+  const start = obj.start;
+  const end = obj.end;
+  const startISO =
+    normalizeIsoMaybe(isRecord(start) ? (start as any).dateTime ?? (start as any).date : null) ?? normalizeIsoMaybe(obj.startISO);
+  const endISO =
+    normalizeIsoMaybe(isRecord(end) ? (end as any).dateTime ?? (end as any).date : null) ?? normalizeIsoMaybe(obj.endISO);
+  return { eventId, htmlLink, summary, startISO, endISO };
 }
 
 function extractActiveGoalText(memoryProfile: unknown): string | null {
@@ -107,6 +143,124 @@ function summarizeCalendarEvents(resp: unknown): string {
     lines.push(`- ${when} — ${summary}`.trim());
   }
   return lines.join("\n");
+}
+
+function normalizeIsoMaybe(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const t = v.trim();
+  if (!t) return null;
+  const ms = Date.parse(t);
+  if (!Number.isFinite(ms)) return null;
+  return new Date(ms).toISOString();
+}
+
+function parseCalendarItems(resp: unknown): Array<{ summary: string; startISO: string | null; endISO: string | null }> {
+  const parsed = safeJson(resp);
+  if (!isRecord(parsed)) return [];
+  const items =
+    (Array.isArray((parsed as any).items) ? ((parsed as any).items as unknown[]) : null) ??
+    (Array.isArray((parsed as any).events) ? ((parsed as any).events as unknown[]) : null) ??
+    (Array.isArray((parsed as any).events?.items) ? ((parsed as any).events.items as unknown[]) : null);
+  if (!items) return [];
+  const out: Array<{ summary: string; startISO: string | null; endISO: string | null }> = [];
+  for (const it of items) {
+    if (!isRecord(it)) continue;
+    const summary = typeof (it as any).summary === "string" ? ((it as any).summary as string).trim() : "";
+    const start = (it as any).start;
+    const end = (it as any).end;
+    const startISO =
+      normalizeIsoMaybe(isRecord(start) ? (start as any).dateTime ?? (start as any).date : null) ??
+      normalizeIsoMaybe((it as any).startISO);
+    const endISO =
+      normalizeIsoMaybe(isRecord(end) ? (end as any).dateTime ?? (end as any).date : null) ??
+      normalizeIsoMaybe((it as any).endISO);
+    if (!summary && !startISO) continue;
+    out.push({ summary, startISO, endISO });
+  }
+  return out;
+}
+
+function overlaps(aStart: number, aEnd: number, bStart: number, bEnd: number): boolean {
+  return aStart < bEnd && bStart < aEnd;
+}
+
+async function shouldSkipCreateEventDueToDuplicate(args: Record<string, unknown>): Promise<boolean> {
+  // Best-effort: if we can list events in a narrow window and find a same-summary overlap, skip.
+  const accountAddress = typeof args.accountAddress === "string" ? args.accountAddress : null;
+  const summary = typeof args.summary === "string" ? args.summary.trim() : "";
+  const startISO = typeof args.startISO === "string" ? args.startISO : null;
+  const endISO = typeof args.endISO === "string" ? args.endISO : null;
+  if (!accountAddress || !summary || !startISO || !endISO) return false;
+  const startMs = Date.parse(startISO);
+  const endMs = Date.parse(endISO);
+  if (!Number.isFinite(startMs) || !Number.isFinite(endMs) || endMs <= startMs) return false;
+
+  const padMs = 2 * 60 * 60 * 1000;
+  const timeMinISO = new Date(startMs - padMs).toISOString();
+  const timeMaxISO = new Date(endMs + padMs).toISOString();
+  const listed = await mcpToolsCall("gym-googlecalendar", "googlecalendar_list_events", {
+    accountAddress,
+    timeMinISO,
+    timeMaxISO,
+    maxResults: 50,
+  });
+  const items = parseCalendarItems(listed);
+  for (const it of items) {
+    if (!it.summary) continue;
+    if (it.summary.toLowerCase() !== summary.toLowerCase()) continue;
+    const itStart = it.startISO ? Date.parse(it.startISO) : NaN;
+    const itEnd = it.endISO ? Date.parse(it.endISO) : NaN;
+    if (!Number.isFinite(itStart) || !Number.isFinite(itEnd)) continue;
+    if (overlaps(startMs, endMs, itStart, itEnd)) return true;
+  }
+  return false;
+}
+
+async function updateActiveGoalPlanWithCalendarEvent(params: {
+  ctx: { churchId: string; userId: string; personId: string; householdId?: string | null; threadId: string };
+  event: { eventId: string; htmlLink: string | null; summary: string | null; startISO: string | null; endISO: string | null };
+  actionArgs: Record<string, unknown>;
+}) {
+  const { event } = params;
+  if (!event.eventId) return;
+  const cur = await memoryGet({ ctx: params.ctx, namespace: "goals", key: "active" }).catch(() => null);
+  const curVal = isRecord(cur) && isRecord(cur.value) ? (cur.value as Record<string, unknown>) : null;
+  if (!curVal) return;
+  const plan = Array.isArray((curVal as any).plan) ? ((curVal as any).plan as unknown[]) : null;
+  if (!plan) return;
+
+  const stepWhen = event.startISO;
+  const stepTitle = event.summary ?? (typeof params.actionArgs.summary === "string" ? params.actionArgs.summary : null);
+
+  const newPlan: unknown[] = [];
+  let changed = false;
+  for (const st of plan) {
+    if (!isRecord(st)) {
+      newPlan.push(st);
+      continue;
+    }
+    const title = typeof (st as any).title === "string" ? ((st as any).title as string).trim() : "";
+    const whenISO = typeof (st as any).whenISO === "string" ? ((st as any).whenISO as string).trim() : "";
+    const existingEventId = typeof (st as any).eventId === "string" ? ((st as any).eventId as string).trim() : "";
+
+    const titleMatch = stepTitle ? title.toLowerCase() === stepTitle.toLowerCase() : false;
+    const whenMatch =
+      stepWhen && whenISO
+        ? Math.abs(Date.parse(whenISO) - Date.parse(stepWhen)) <= 10 * 60 * 1000
+        : false;
+
+    if (!existingEventId && (whenMatch || titleMatch)) {
+      const next = { ...(st as any), eventId: event.eventId, calendarLink: event.htmlLink ?? (st as any).calendarLink };
+      newPlan.push(next);
+      changed = true;
+    } else {
+      newPlan.push(st);
+    }
+  }
+
+  if (!changed) return;
+  const nextGoal = { ...curVal, plan: newPlan };
+  await memoryUpsert({ ctx: params.ctx, namespace: "goals", key: "active", value: nextGoal }).catch(() => {});
 }
 
 function summarizeTelegramMessages(resp: unknown): string {
@@ -238,45 +392,65 @@ function coerceString(v: unknown): string | null {
 }
 
 function normalizeGoogleCalendarArgs(tool: string, args: Record<string, unknown>) {
-  if (tool !== "googlecalendar_create_event") return;
+  const isCreate = tool === "googlecalendar_create_event";
+  const isUpdate = tool === "googlecalendar_update_event";
+  const isDelete = tool === "googlecalendar_delete_event";
+  if (!isCreate && !isUpdate && !isDelete) return;
 
   // Common alternate field names emitted by planners.
-  args.summary ??= args.title ?? args.name ?? args.task ?? args.what;
-  args.startISO ??= args.start ?? args.startTime ?? args.start_time ?? args.startDateTime ?? args.whenStart;
-  args.endISO ??= args.end ?? args.endTime ?? args.end_time ?? args.endDateTime ?? args.whenEnd;
+  if (isCreate || isUpdate) {
+    args.summary ??= args.title ?? args.name ?? args.task ?? args.what;
+    args.startISO ??= args.start ?? args.startTime ?? args.start_time ?? args.startDateTime ?? args.whenStart;
+    args.endISO ??= args.end ?? args.endTime ?? args.end_time ?? args.endDateTime ?? args.whenEnd;
+  }
+  if (isUpdate || isDelete) {
+    args.eventId ??= args.id ?? args.event_id ?? args.eventID;
+  }
 
   // Ensure they're strings (not objects like {dateTime: "..."}).
-  const summary = coerceString(args.summary);
-  if (summary) args.summary = summary;
+  if (isCreate || isUpdate) {
+    const summary = coerceString(args.summary);
+    if (summary) args.summary = summary;
 
-  const start = coerceString(args.startISO) ?? coerceString((args.startISO as any)?.dateTime) ?? coerceString((args.startISO as any)?.date);
-  if (start) args.startISO = start;
+    const start =
+      coerceString(args.startISO) ?? coerceString((args.startISO as any)?.dateTime) ?? coerceString((args.startISO as any)?.date);
+    if (start) args.startISO = start;
 
-  const end = coerceString(args.endISO) ?? coerceString((args.endISO as any)?.dateTime) ?? coerceString((args.endISO as any)?.date);
-  if (end) args.endISO = end;
+    const end =
+      coerceString(args.endISO) ?? coerceString((args.endISO as any)?.dateTime) ?? coerceString((args.endISO as any)?.date);
+    if (end) args.endISO = end;
+  }
+  if (isUpdate || isDelete) {
+    const eventId = coerceString(args.eventId);
+    if (eventId) args.eventId = eventId;
+  }
 
   // If durationMinutes is present, derive endISO from startISO.
-  const durationRaw = args.durationMinutes;
-  if (!coerceString(args.endISO) && typeof durationRaw === "number" && Number.isFinite(durationRaw)) {
-    const startMs = Date.parse(String(args.startISO ?? ""));
-    if (Number.isFinite(startMs)) {
-      args.endISO = new Date(startMs + durationRaw * 60 * 1000).toISOString();
+  if (isCreate || isUpdate) {
+    const durationRaw = args.durationMinutes;
+    if (!coerceString(args.endISO) && typeof durationRaw === "number" && Number.isFinite(durationRaw)) {
+      const startMs = Date.parse(String(args.startISO ?? ""));
+      if (Number.isFinite(startMs)) {
+        args.endISO = new Date(startMs + durationRaw * 60 * 1000).toISOString();
+      }
     }
   }
 
   // Never schedule in the past: shift forward in whole weeks (preserves weekday/time).
-  const startMs = Date.parse(String(args.startISO ?? ""));
-  const endMs = Date.parse(String(args.endISO ?? ""));
-  if (Number.isFinite(startMs)) {
-    const nowMs = Date.now();
-    const thresholdMs = nowMs - 5 * 60 * 1000; // tolerate slight clock skew
-    if (startMs < thresholdMs) {
-      const weekMs = 7 * 24 * 60 * 60 * 1000;
-      const addWeeks = Math.min(520, Math.max(1, Math.ceil((nowMs - startMs) / weekMs)));
-      const durMs = Number.isFinite(endMs) && endMs > startMs ? endMs - startMs : 60 * 60 * 1000;
-      const newStart = startMs + addWeeks * weekMs;
-      args.startISO = new Date(newStart).toISOString();
-      args.endISO = new Date(newStart + durMs).toISOString();
+  if (isCreate) {
+    const startMs = Date.parse(String(args.startISO ?? ""));
+    const endMs = Date.parse(String(args.endISO ?? ""));
+    if (Number.isFinite(startMs)) {
+      const nowMs = Date.now();
+      const thresholdMs = nowMs - 5 * 60 * 1000; // tolerate slight clock skew
+      if (startMs < thresholdMs) {
+        const weekMs = 7 * 24 * 60 * 60 * 1000;
+        const addWeeks = Math.min(520, Math.max(1, Math.ceil((nowMs - startMs) / weekMs)));
+        const durMs = Number.isFinite(endMs) && endMs > startMs ? endMs - startMs : 60 * 60 * 1000;
+        const newStart = startMs + addWeeks * weekMs;
+        args.startISO = new Date(newStart).toISOString();
+        args.endISO = new Date(newStart + durMs).toISOString();
+      }
     }
   }
 }
@@ -293,6 +467,16 @@ function validateGoogleCalendarArgs(tool: string, args: Record<string, unknown>)
         `Invalid googlecalendar_create_event args: missing ${missing.join(", ")}. ` +
           `Provide summary/startISO/endISO (or use title/start/end/durationMinutes and the server will normalize).`,
       );
+    }
+  }
+  if (tool === "googlecalendar_update_event") {
+    if (typeof args.eventId !== "string" || !args.eventId.trim()) {
+      throw new Error("Invalid googlecalendar_update_event args: missing eventId.");
+    }
+  }
+  if (tool === "googlecalendar_delete_event") {
+    if (typeof args.eventId !== "string" || !args.eventId.trim()) {
+      throw new Error("Invalid googlecalendar_delete_event args: missing eventId.");
     }
   }
 }
@@ -1200,10 +1384,41 @@ export async function POST(req: Request): Promise<Response> {
                 validateGoogleCalendarArgs(tool, args as Record<string, unknown>);
               }
 
-              const resp = await mcpToolsCall(server, tool, args);
+              // De-dupe calendar creates (best-effort).
               if (server === "gym-googlecalendar" && tool === "googlecalendar_create_event") {
-                const link = extractCalendarLink(resp);
+                try {
+                  const skip = await shouldSkipCreateEventDueToDuplicate(args as Record<string, unknown>);
+                  if (skip) {
+                    const resp = { skipped: true, reason: "duplicate_event", args };
+                    const rendered = JSON.stringify(resp, null, 2);
+                    accumulated ||= rendered;
+                    controller.enqueue(encoder.encode(sse("delta", { text: rendered })));
+                    continue;
+                  }
+                } catch {
+                  // ignore dedupe failures; proceed with create
+                }
+              }
+
+              const resp = await mcpToolsCall(server, tool, args);
+              if (server === "gym-googlecalendar") {
+                const info = extractCalendarEventInfo(resp);
+                const link = info.htmlLink ?? extractCalendarLink(resp);
                 if (link) calendarLinks.push(link);
+
+                if (tool === "googlecalendar_create_event" && info.eventId) {
+                  await updateActiveGoalPlanWithCalendarEvent({
+                    ctx,
+                    event: info as any,
+                    actionArgs: args as Record<string, unknown>,
+                  }).catch(() => {});
+                }
+
+                if (looksLikeGoogleCalendarNotFound(resp)) {
+                  toolErrors.push(
+                    "Google Calendar Not Found (404). If using TARGET_CALENDAR_ID, ensure it's set to the calendar *id* (from googlecalendar_list_calendars), not the display name. Also, update/delete require an eventId that exists on that same target calendar.",
+                  );
+                }
               }
               const rendered = typeof resp === "string" ? resp : JSON.stringify(resp, null, 2);
               accumulated ||= rendered;

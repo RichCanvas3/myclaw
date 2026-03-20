@@ -1,0 +1,32 @@
+{
+  "gym-weather": {
+    "url": "PASTE_GYM_WEATHER_MCP_URL",
+    "headers": {
+      "x-api-key": "PASTE_GYM_MCP_API_KEY"
+    }
+  },
+  "gym-sendgrid": {
+    "url": "PASTE_GYM_SENDGRID_MCP_URL",
+    "headers": {
+      "x-api-key": "PASTE_GYM_MCP_API_KEY"
+    }
+  },
+  "gym-googlecalendar": {
+    "url": "PASTE_GYM_GOOGLECALENDAR_MCP_URL",
+    "headers": {
+      "x-api-key": "PASTE_GYM_MCP_API_KEY"
+    }
+  },
+  "gym-telegram": {
+    "url": "PASTE_GYM_TELEGRAM_MCP_URL",
+    "headers": {
+      "x-api-key": "PASTE_GYM_MCP_API_KEY"
+    }
+  },
+  "gym-weight": {
+    "url": "PASTE_GYM_WEIGHT_MCP_URL",
+    "headers": {
+      "x-api-key": "PASTE_GYM_MCP_API_KEY"
+    }
+  }
+}

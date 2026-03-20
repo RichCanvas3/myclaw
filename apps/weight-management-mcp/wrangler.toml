@@ -1,0 +1,17 @@
+name = "gym-weight-management-mcp"
+main = "src/index.ts"
+compatibility_date = "2026-03-19"
+
+[vars]
+# Secrets (wrangler secret put … or dashboard):
+# MCP_API_KEY — required; sent as x-api-key from clients
+# VISION_API_KEY — OpenAI-compatible key for meal photo analysis
+# VISION_MODEL — optional (default gpt-4o-mini)
+# VISION_OPENAI_BASE_URL — optional (default https://api.openai.com/v1)
+# TELEGRAM_BOT_TOKEN — same bot as ingest; for getFile when using telegram.fileId
+
+[[d1_databases]]
+binding = "DB"
+database_name = "myclaw-weight"
+database_id = "0810e607-0f5e-4453-b08d-b699adf2f990"
+

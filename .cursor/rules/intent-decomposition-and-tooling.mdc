@@ -1,0 +1,35 @@
+---
+description: Intent decomposition + tool-first execution for goals/intents
+alwaysApply: true
+---
+
+# Intent-driven delivery (generic, not goal-specific)
+
+## When user sets a goal or expresses an intent
+
+- Convert the user input into an **intent** and a short **definition of done** (DoD).
+- Break into a small backlog of concrete steps (plan) with:
+  - clear titles
+  - when it happens (time window or ISO)
+  - dependencies / prerequisites
+  - a “blocked_by” list (missing info)
+
+## Always prefer tools over talk
+
+- If a step is schedulable, create it on the calendar.
+- If a step depends on existing commitments, query the calendar first.
+- If coordination is needed, send a message to Telegram (“Smart Agent”) and ask for the missing piece.
+- If the system has a reliable watcher (Telegram), treat inbound updates as goal progress signals and iterate.
+
+## Execute/observe/iterate discipline
+
+- Every tick should:
+  - **Execute** at least one tool action when safe (calendar create, telegram message, memory update).
+  - **Observe**: check calendar (next 7 days) and recent Smart Agent messages; incorporate into next plan.
+  - **Iterate**: update `goals.active` with the new step_index, plan, and last_observation/errors.
+
+## Generality constraint
+
+- Do not embed domain-specific training logic into the platform.
+- The platform provides loop + decomposition + tool execution; domain content comes from user input and current context.
+

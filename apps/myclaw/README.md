@@ -1,5 +1,20 @@
 This is the `myclaw` Next.js web app (UI + server-side orchestrator).
 
+## LangGraph / LangSmith: MCP servers (Telegram, weight, calendar, weather, email)
+
+The Next.js app uses `GYM_*_MCP_URL` + `GYM_MCP_API_KEY` via `src/lib/mcp/registry.ts`. **Your hosted LangGraph agent uses separate env vars** — it does not load `myclaw`’s `.env`.
+
+1. In LangSmith → Deployment → Environment, set **`MCP_SERVERS_JSON`** to a **single-line JSON string** (or whatever your template expects) with the **same server ids** as the registry:
+   - `gym-weather`, `gym-sendgrid`, `gym-googlecalendar`, `gym-telegram`, `gym-weight`
+2. Each entry: `url` = value from `GYM_*_MCP_URL`, `headers.x-api-key` = `GYM_MCP_API_KEY`.
+3. Set **`MCP_TOOL_ALLOWLIST`** to include every tool your agent may call (format depends on platform — comma-separated or JSON array). **Full reference list:** [docs/MCP_TOOL_ALLOWLIST.md](./docs/MCP_TOOL_ALLOWLIST.md).
+
+Template: [docs/langgraph-mcp-servers.example.json](./docs/langgraph-mcp-servers.example.json) (replace `PASTE_*` with values from `.env`, then stringify for `MCP_SERVERS_JSON` if required).
+
+**Full wiring checklist:** [docs/CONFIG_CHECKLIST.md](./docs/CONFIG_CHECKLIST.md).
+
+*Calendaring + Google OAuth:* use **`gym-googlecalendar`** only (there is no separate “Google” MCP in this repo).
+
 ## Telegram autonomous actions
 
 If `gym-telegram-mcp` is configured, `myclaw` can **detect new Telegram messages and auto-act** server-side via:

@@ -148,6 +148,14 @@ export default function Home() {
   const [goalTickHint, setGoalTickHint] = useState("");
   const [telegramGoalLast, setTelegramGoalLast] = useState("");
 
+  async function setGoalAndKickoff(goal: string) {
+    const g = goal.trim();
+    if (!g || isStreaming || !isConnected) return;
+    await runGoalCommand(`/goal set ${g}`);
+    // Immediately start the loop (generic kickoff): propose + execute next steps.
+    await runGoalCommand("/goal tick");
+  }
+
   async function loadThreads() {
     const res = await fetch("/api/langgraph/threads?limit=100");
     if (!res.ok) throw new Error(await res.text());
@@ -405,8 +413,8 @@ export default function Home() {
       </header>
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 py-4">
-        <div className="grid min-h-0 w-full flex-1 grid-cols-1 gap-4 lg:grid-cols-[280px_1fr_320px]">
-          <aside className="flex min-h-0 flex-col rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="grid min-h-0 w-full flex-1 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)_minmax(0,320px)]">
+          <aside className="flex min-h-0 min-w-0 flex-col rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
           <div className="flex items-center justify-between">
             <div className="text-sm font-semibold">Topics</div>
             <button
@@ -443,7 +451,7 @@ export default function Home() {
           </div>
         </aside>
 
-        <section className="flex min-h-0 flex-col">
+        <section className="flex min-h-0 min-w-0 flex-col">
           <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
             <input
               value={churchId}
@@ -508,7 +516,7 @@ export default function Home() {
           </footer>
         </section>
 
-        <aside className="flex min-h-0 flex-col overflow-y-auto rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+        <aside className="flex min-h-0 min-w-0 flex-col overflow-y-auto rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
           <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-black">
             <div className="flex items-center justify-between">
               <div className="text-sm font-semibold">Autonomy</div>
@@ -549,7 +557,7 @@ export default function Home() {
                 disabled={isStreaming || !isConnected}
               />
               <button
-                onClick={() => void runGoalCommand(`/goal set ${goalText}`)}
+                onClick={() => void setGoalAndKickoff(goalText)}
                 className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-black dark:hover:bg-white"
                 disabled={isStreaming || !goalText.trim() || !isConnected}
                 title="Set active goal"

@@ -1,0 +1,17 @@
+{
+  "name": "@myclaw/weight-management-mcp",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "worker:dev": "wrangler dev",
+    "worker:deploy": "wrangler deploy",
+    "db:migrate": "wrangler d1 migrations apply myclaw-weight --remote"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260305.0",
+    "typescript": "^5.8.2",
+    "wrangler": "^4.10.0"
+  }
+}
+
