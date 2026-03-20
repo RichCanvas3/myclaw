@@ -219,7 +219,14 @@ def _goal_tick_action_pack(
             "Do not finish with only `memory.upsert` if the user expects workouts on Google Calendar.",
             "- If missing time fields for a create, ask one short question in `message` instead of omitting calendar actions entirely.",
             "- If coordinating with a coach/trainer/another person, prefer drafting a short message and sending via `gym-telegram` or `gym-sendgrid` (if you have an address).",
-            "- For nutrition/weight/meal photos/water/fasting: use `gym-weight` tools (weight_*). For meal photos: weight_analyze_meal_photo then weight_log_food_from_analysis after confirmation.",
+            "- For nutrition/weight/meal photos/water/fasting: use `gym-weight` tools (weight_*).",
+            "- **Meal photos from Telegram (when user asks to read/process images or calories):** Do NOT use `weight_list_food` for that — it only lists logged DB rows (empty if nothing logged). "
+            "Instead: (1) `telegram_list_messages` with `chatId` (from context or resolve via `telegram_list_chats`) and `limit` 25–50. "
+            "(2) For every message that has a photo `fileId` in the response, call `gym-weight` `weight_analyze_meal_photo` with "
+            '`scope` matching `session` keys (churchId, userId, personId, optional householdId), '
+            '`telegram`: {\"fileId\":\"...\",\"chatId\":\"...\",\"messageId\":<n>}, optional `meal` from caption/text. '
+            "(3) Then call `weight_log_food_from_analysis` with that `analysisId` and mode `aggregate` (or `items`) to persist calories unless the user asked not to log. "
+            "If list_messages returns **no** fileId on photo messages, the Telegram MCP must expose file_ids; you cannot analyze without fileId.",
             "- If contact/account details are missing, propose a `memory.query` for likely keys first; if still missing, ask the user for the missing detail in `message`.",
             "- The message may include `[context]` with headings like `observation_telegram_chat_lines` or `observation_google_calendar_21d` — these are **not** MCP tools. Use real tools only (e.g. `telegram_list_messages`, `googlecalendar_list_events`, `weight_*`).",
             "",

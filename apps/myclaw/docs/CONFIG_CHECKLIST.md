@@ -16,6 +16,7 @@ Use this when wiring **local dev**, **Vercel/hosted myclaw**, **each Cloudflare 
 | **Calendar default** | `MYCLAW_DEFAULT_GCAL_ACCOUNT_ADDRESS` | `acct_...` when memory has no `googlecalendar_accountAddress`. |
 | **Weather default** | `MYCLAW_DEFAULT_WEATHER_LAT`, `MYCLAW_DEFAULT_WEATHER_LON` | When user doesn’t pass location. |
 | **Telegram automation** | `MYCLAW_TELEGRAM_*`, `MYCLAW_TELEGRAM_BOT_USER_ID` | **Set bot user id** to avoid reply loops. Defaults for church/user/person/household for pump/watch. |
+| **Meal photos → weight MCP** | `MYCLAW_TELEGRAM_BOT_TOKEN` (same bot as telegram-mcp) | myclaw downloads Telegram files and sends `imageBase64` to `weight_analyze_meal_photo` so the weight worker may omit `TELEGRAM_BOT_TOKEN`. |
 | **Telegram → email** | `MYCLAW_TELEGRAM_NOTIFY_EMAIL_TO`, watch title, `MYCLAW_TELEGRAM_WATCH_TOKEN` | SendGrid path still needs **SendGrid MCP** configured with real API keys on **that** worker. |
 
 ---

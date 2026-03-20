@@ -390,7 +390,7 @@ function toolList() {
     {
       name: "weight_analyze_meal_photo",
       description:
-        "Estimate calories/macros from a meal image via vision API; persist row in wm_meal_analyses. Image: imageUrl, imageBase64 (raw or data URL), or telegram.fileId (+ TELEGRAM_BOT_TOKEN or telegram.botToken).",
+        "Estimate calories/macros from a meal image via vision API; persist row in wm_meal_analyses. Image: imageUrl, imageBase64 (raw or data URL), or telegram.fileId (myclaw may inject base64; else TELEGRAM_BOT_TOKEN or telegram.botToken on worker).",
       inputSchema: {
         type: "object",
         properties: {

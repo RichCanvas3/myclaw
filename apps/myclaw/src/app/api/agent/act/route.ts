@@ -3,6 +3,7 @@ import type { SuggestedAction } from "@/lib/agents/types";
 import { mcpToolsCall, mcpToolsList } from "@/lib/mcp/client";
 import { orchestratorCompose, orchestratorComposeEmail, orchestratorPlan } from "@/lib/orchestrator/llm";
 import { memoryAppendEvent, memoryGet, memoryGetProfile, memoryQuery, memoryUpsert } from "@/lib/memory/client";
+import { hydrateWeightAnalyzeMealPhotoFromTelegram } from "@/lib/telegram/fetchFile";
 import { normStr, resolveTelegramChatIdByTitle } from "@/lib/telegram/resolve";
 
 export const runtime = "nodejs";
@@ -293,18 +294,44 @@ async function updateActiveGoalPlanWithCalendarEvent(params: {
   await memoryUpsert({ ctx: params.ctx, namespace: "goals", key: "active", value: nextGoal }).catch(() => {});
 }
 
+/** Best-effort extract Telegram Bot API file_id for vision / weight_analyze_meal_photo (largest photo when sizes array). */
+function extractTelegramMessagePhotoFileId(m: Record<string, unknown>): string | null {
+  const pickLastFileId = (arr: unknown): string | null => {
+    if (!Array.isArray(arr) || !arr.length) return null;
+    const last = arr[arr.length - 1];
+    if (!isRecord(last)) return null;
+    const id = (last.fileId ?? last.file_id) as unknown;
+    return typeof id === "string" && id.trim() ? id.trim() : null;
+  };
+  const fromPhotos = pickLastFileId(m.photos);
+  if (fromPhotos) return fromPhotos;
+  const fromPhoto = pickLastFileId(m.photo);
+  if (fromPhoto) return fromPhoto;
+  const doc = m.document;
+  if (isRecord(doc)) {
+    const id = doc.fileId ?? doc.file_id;
+    if (typeof id === "string" && id.trim()) return id.trim();
+    if (isRecord(id) && typeof id.file_id === "string") return id.file_id;
+  }
+  return null;
+}
+
 function summarizeTelegramMessages(resp: unknown): string {
   const parsed = safeJson(resp);
   if (!isRecord(parsed)) return "";
   const messages = Array.isArray((parsed as any).messages) ? ((parsed as any).messages as unknown[]) : null;
   if (!messages || !messages.length) return "";
   const lines: string[] = [];
-  for (const m of messages.slice(0, 8)) {
+  for (const m of messages.slice(0, 20)) {
     if (!isRecord(m)) continue;
     const messageId = typeof (m as any).messageId === "number" ? (m as any).messageId : null;
-    const text = typeof (m as any).text === "string" ? (m as any).text.trim() : "";
-    if (!text) continue;
-    lines.push(`- msg#${messageId ?? ""}: ${text}`.trim());
+    const text = typeof (m as any).text === "string" ? ((m as any).text as string).trim() : "";
+    const caption = typeof (m as any).caption === "string" ? ((m as any).caption as string).trim() : "";
+    const body = text || caption;
+    const fileId = extractTelegramMessagePhotoFileId(m as Record<string, unknown>);
+    if (!body && !fileId) continue;
+    const tag = fileId ? ` fileId=${fileId}` : "";
+    lines.push(`- msg#${messageId ?? ""}${tag}: ${body || "(photo)"}`.trim());
   }
   return lines.join("\n");
 }
@@ -346,7 +373,7 @@ async function buildGoalContext(memoryProfile: unknown): Promise<string> {
     const title = goalTelegramChatTitle();
     const chatId = await resolveTelegramChatIdByTitle(title).catch(() => null);
     if (chatId) {
-      const msgs = await mcpToolsCall("gym-telegram", "telegram_list_messages", { chatId, limit: 10 });
+      const msgs = await mcpToolsCall("gym-telegram", "telegram_list_messages", { chatId, limit: 25 });
       const s = summarizeTelegramMessages(msgs);
       if (s) {
         pieces.push(
@@ -405,6 +432,20 @@ function tryParseJson(text: string): unknown {
 function defaultCalendarAccountAddress(): string | null {
   const v = process.env.MYCLAW_DEFAULT_GCAL_ACCOUNT_ADDRESS ?? "";
   return v.trim() ? v.trim() : null;
+}
+
+function applyDefaultWeightScopeIfMissing(
+  args: Record<string, unknown>,
+  session: { churchId: string; userId: string; personId: string; householdId?: string | null },
+): void {
+  const sc = args.scope;
+  if (isRecord(sc) && typeof sc.churchId === "string" && typeof sc.userId === "string") return;
+  args.scope = {
+    churchId: session.churchId,
+    userId: session.userId,
+    personId: session.personId,
+    ...(session.householdId ? { householdId: session.householdId } : {}),
+  };
 }
 
 function resolveCalendarAccountAddressFromProfile(memoryProfile: unknown): string | null {
@@ -1248,6 +1289,13 @@ export async function POST(req: Request): Promise<Response> {
                 }
               }
 
+              if (server === "gym-weight" && typeof tool === "string" && tool.startsWith("weight_")) {
+                applyDefaultWeightScopeIfMissing(args as Record<string, unknown>, session);
+              }
+              if (server === "gym-weight" && tool === "weight_analyze_meal_photo") {
+                await hydrateWeightAnalyzeMealPhotoFromTelegram(args as Record<string, unknown>);
+              }
+
               const res = await mcpToolsCall(server, tool, args);
               toolResults.push({ action, result: res });
             } catch (e) {
@@ -1510,6 +1558,13 @@ export async function POST(req: Request): Promise<Response> {
                 const n = await normalizeTelegramPlannerToolName(tool, args);
                 tool = n.tool;
                 args = n.args;
+              }
+
+              if (server === "gym-weight" && tool.startsWith("weight_")) {
+                applyDefaultWeightScopeIfMissing(args as Record<string, unknown>, session);
+              }
+              if (server === "gym-weight" && tool === "weight_analyze_meal_photo") {
+                await hydrateWeightAnalyzeMealPhotoFromTelegram(args as Record<string, unknown>);
               }
 
               // Default Google Calendar accountAddress when missing.
