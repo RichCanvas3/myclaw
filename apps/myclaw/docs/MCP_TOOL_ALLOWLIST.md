@@ -9,6 +9,7 @@ Use this as the **union** of tools LangGraph may call on:
 | `gym-googlecalendar` | `googlecalendar_*` |
 | `gym-telegram` | `telegram_*` |
 | `gym-weight` | `weight_*` |
+| `gym-core` | `core_*` |
 
 **Important:** LangSmith may expect **bare** names below, or **prefixed** names (e.g. `gym-weight_weight_ping`). Open the tool list your deployment exposes and match that exact spelling.
 
@@ -72,6 +73,11 @@ Use this as the **union** of tools LangGraph may call on:
 - `weight_fast_start`
 - `weight_fast_end`
 - `weight_fast_list`
+
+### gym-core
+- `core_list_workouts`
+- `core_latest_workout`
+- `core_get_workout`
 
 ---
 

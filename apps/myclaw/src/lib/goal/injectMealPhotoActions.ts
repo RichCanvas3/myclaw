@@ -5,6 +5,23 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null;
 }
 
+function normStr(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const t = v.trim();
+  return t ? t : null;
+}
+
+function extractTelegramMessageImageUrl(m: Record<string, unknown>): string | null {
+  const direct = normStr(m.imageUrl);
+  if (direct) return direct;
+  const img = m.image;
+  if (isRecord(img)) {
+    const u = normStr((img as Record<string, unknown>).imageUrl) ?? normStr((img as Record<string, unknown>).url);
+    if (u) return u;
+  }
+  return null;
+}
+
 function safeJson(v: unknown): unknown {
   if (typeof v !== "string") return v;
   try {
@@ -168,15 +185,12 @@ export function seedMealPhotoDedupeFromActions(actions: SuggestedAction[]): Set<
     if (a.input.tool !== "weight_analyze_meal_photo") continue;
     const args = isRecord(a.input.args) ? a.input.args : null;
     const tg = args && isRecord(args.telegram) ? args.telegram : null;
-    if (
-      !tg ||
-      typeof tg.chatId !== "string" ||
-      typeof tg.messageId !== "number" ||
-      typeof tg.fileId !== "string"
-    ) {
-      continue;
-    }
-    s.add(`${tg.chatId}:${tg.messageId}:${tg.fileId}`);
+    const chatId = tg && typeof tg.chatId === "string" ? tg.chatId.trim() : "";
+    const messageId = tg && typeof tg.messageId === "number" ? tg.messageId : null;
+    const fileId = tg && typeof tg.fileId === "string" ? tg.fileId.trim() : "";
+    const imageUrl = args ? normStr(args.imageUrl) : null;
+    if (!chatId || messageId == null) continue;
+    s.add(`${chatId}:${messageId}:${fileId || imageUrl || ""}`);
   }
   return s;
 }
@@ -212,8 +226,9 @@ export function weightAnalyzeActionsFromTelegramListResult(
     const messageId = typeof m.messageId === "number" ? m.messageId : null;
     if (messageId == null) continue;
     const fileId = extractTelegramMessagePhotoFileId(m);
-    if (!fileId) continue;
-    const key = `${chatId}:${messageId}:${fileId}`;
+    const imageUrl = extractTelegramMessageImageUrl(m);
+    if (!fileId && !imageUrl) continue;
+    const key = `${chatId}:${messageId}:${fileId ?? imageUrl ?? ""}`;
     if (dedupe.has(key)) continue;
     dedupe.add(key);
     out.push({
@@ -224,7 +239,8 @@ export function weightAnalyzeActionsFromTelegramListResult(
         args: {
           scope,
           meal: "Telegram meal photo (from list_messages)",
-          telegram: { fileId, chatId, messageId },
+          ...(imageUrl ? { imageUrl } : {}),
+          telegram: { ...(fileId ? { fileId } : {}), chatId, messageId },
         },
       },
     });

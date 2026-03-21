@@ -114,7 +114,7 @@ export async function orchestratorPlan(params: {
     "- If the user asks to edit/delete/pin, call telegram_edit_message_text / telegram_delete_message / telegram_pin_message (requires messageId and permissions).",
     "- If chatId is missing, first call telegram_list_chats OR ask the user for chatId.",
     "- For nutrition, food logging, water, fasting, weight trends, barcode lookup, or meal photos: use gym-weight (weight_*) tools; scope should mirror session (churchId, userId, personId, householdId, accountAddress as needed).",
-    "- For Telegram meal photos: use gym-telegram to list/read messages and copy the exact photo fileId + chatId + messageId from the tool JSON (never placeholders like image_file_id); then gym-weight weight_analyze_meal_photo with telegram: {fileId, chatId, messageId}. Do not invent arbitrary imageUrl. myclaw calls Telegram getFile (metadata) and passes a Telegram file imageUrl to gym-weight when MYCLAW_TELEGRAM_BOT_TOKEN is set; otherwise gym-weight needs TELEGRAM_BOT_TOKEN and the real fileId.",
+    "- For Telegram meal photos: prefer the public imageUrl returned by gym-telegram (messages[].imageUrl or messages[].image.imageUrl). Then call gym-weight weight_analyze_meal_photo with {imageUrl, telegram:{chatId,messageId}}. Only fall back to telegram.fileId when no imageUrl is present (then the worker needs TELEGRAM_BOT_TOKEN). Never use placeholders like image_file_id.",
     "- After user confirms analysis, use weight_log_food_from_analysis (items or aggregate).",
     "- For calendar: ALWAYS use calendar.range (do NOT call googlecalendar_* tools directly).",
     "- Use nowISO as the current time anchor.",

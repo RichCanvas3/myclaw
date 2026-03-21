@@ -45,6 +45,56 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null;
 }
 
+function normStr(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const t = v.trim();
+  return t ? t : null;
+}
+
+function extractTelegramImageUrl(m: Record<string, unknown>): string | null {
+  const direct = normStr(m.imageUrl);
+  if (direct) return direct;
+  const img = m.image;
+  if (isRecord(img)) {
+    const u = normStr((img as Record<string, unknown>).imageUrl) ?? normStr((img as Record<string, unknown>).url);
+    if (u) return u;
+  }
+  return null;
+}
+
+async function backfillMealPhotoArgsFromTelegramIfMissing(args: Record<string, unknown>): Promise<void> {
+  // If LLM supplies only {telegram:{chatId,messageId}} (no fileId, no imageUrl), we can look it up.
+  const imgUrl = normStr(args.imageUrl);
+  if (imgUrl) return;
+  const tg = isRecord(args.telegram) ? (args.telegram as Record<string, unknown>) : null;
+  const chatId = tg ? normStr(tg.chatId) : null;
+  const messageId = tg && typeof tg.messageId === "number" && Number.isFinite(tg.messageId) ? Math.trunc(tg.messageId) : null;
+  const fileId = tg ? normStr(tg.fileId) : null;
+  if (!chatId || messageId == null || fileId) return;
+
+  const resp = await mcpToolsCall("gym-telegram", "telegram_list_messages", { chatId, limit: 80, includeImageUrls: true }).catch(
+    () => null,
+  );
+  const parsed = safeJson(resp);
+  if (!isRecord(parsed) || !Array.isArray((parsed as any).messages)) return;
+  const msgs = (parsed as any).messages as unknown[];
+  const hit = msgs.find((m) => isRecord(m) && (m as any).messageId === messageId);
+  if (!hit || !isRecord(hit)) return;
+
+  const u = extractTelegramImageUrl(hit);
+  if (u) {
+    (args as any).imageUrl = u;
+    // Keep telegram metadata for attribution.
+    (args as any).telegram = { chatId, messageId };
+    return;
+  }
+
+  const fid = extractTelegramMessagePhotoFileId(hit as Record<string, unknown>);
+  if (fid) {
+    (args as any).telegram = { chatId, messageId, fileId: fid };
+  }
+}
+
 function envBool(name: string, defaultValue: boolean): boolean {
   const raw = (process.env[name] ?? "").trim().toLowerCase();
   if (!raw) return defaultValue;
@@ -81,8 +131,10 @@ const TELEGRAM_GOAL_POST_MAX_CHARS = 3900;
 async function postGoalUpdateToTelegram(text: string): Promise<void> {
   const enabled = envBool("MYCLAW_GOAL_TELEGRAM_POST_RESULTS", true);
   if (!enabled) return;
-  const chatTitle = goalTelegramChatTitle();
-  const chatId = await resolveTelegramChatIdByTitle(chatTitle).catch(() => null);
+  const chatIdOverride = (process.env.MYCLAW_GOAL_TELEGRAM_CHAT_ID ?? "").trim();
+  const chatId =
+    chatIdOverride ||
+    (await resolveTelegramChatIdByTitle(goalTelegramChatTitle()).catch(() => null));
   if (!chatId) return;
   const trimmed = text.length > TELEGRAM_GOAL_POST_MAX_CHARS ? text.slice(0, TELEGRAM_GOAL_POST_MAX_CHARS) + "…" : text;
   await mcpToolsCall("gym-telegram", "telegram_send_message", { chatId, text: trimmed }).catch(() => {});
@@ -1610,6 +1662,7 @@ export async function POST(req: Request): Promise<Response> {
                 applyDefaultWeightScopeIfMissing(args as Record<string, unknown>, session);
               }
               if (server === "gym-weight" && tool === "weight_analyze_meal_photo") {
+                await backfillMealPhotoArgsFromTelegramIfMissing(args as Record<string, unknown>);
                 await hydrateWeightAnalyzeMealPhotoFromTelegram(args as Record<string, unknown>);
                 validateWeightAnalyzeMealPhotoArgs(args as Record<string, unknown>);
               }
